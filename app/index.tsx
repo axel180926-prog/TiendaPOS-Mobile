@@ -34,9 +34,12 @@ export default function VentasScreen() {
   const { scannedCode, handleTextChange, resetScannedCode } = useBarcodeScannerInput();
   const scannerInputRef = useRef<RNTextInput>(null);
 
-  // Cargar caja activa al iniciar
+  // Cargar caja activa al iniciar (con delay para esperar DB)
   useEffect(() => {
-    cargarCajaActiva();
+    const timer = setTimeout(() => {
+      cargarCajaActiva();
+    }, 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   // Procesar código escaneado

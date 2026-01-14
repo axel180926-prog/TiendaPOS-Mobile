@@ -41,9 +41,12 @@ export const useCajaStore = create<CajaState>((set, get) => ({
       }
     } catch (error) {
       console.error('Error al cargar caja activa:', error);
+      // No mostrar error si la DB no está inicializada aún
+      // Solo establecer loading a false y dejar cajaActiva como null
       set({
-        error: 'No se pudo cargar la caja activa',
-        loading: false
+        cajaActiva: null,
+        loading: false,
+        error: null
       });
     }
   },
