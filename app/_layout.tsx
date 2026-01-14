@@ -11,7 +11,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useColorScheme } from '@/components/useColorScheme';
 import { initDatabase } from '@/lib/database';
 import { cargarProductosIniciales } from '@/lib/utils/seedData';
-import { CustomDrawerContent } from '@/components/navigation/CustomDrawerContent';
+import { DrawerContent } from '@/components/navigation/DrawerContent';
 
 export {
   ErrorBoundary,
@@ -72,7 +72,7 @@ function RootLayoutNav() {
       <PaperProvider>
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <Drawer
-            drawerContent={(props) => <CustomDrawerContent {...props} />}
+            drawerContent={(props) => <DrawerContent {...props} />}
             screenOptions={{
               headerShown: true,
               headerStyle: {

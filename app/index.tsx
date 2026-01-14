@@ -4,6 +4,7 @@ import { Button, Card, Text, TextInput, IconButton, Portal, Modal, FAB } from 'r
 import { useCartStore } from '@/lib/store/useCartStore';
 import { useProductStore } from '@/lib/store/useProductStore';
 import { useConfigStore } from '@/lib/store/useConfigStore';
+import { useCajaStore } from '@/lib/store/useCajaStore';
 import { useBarcodeScannerInput } from '@/lib/bluetooth/scanner';
 import { formatearMoneda, generarFolio } from '@/lib/utils/formatters';
 import { imprimirTicket } from '@/lib/bluetooth/printer';
@@ -17,6 +18,7 @@ export default function VentasScreen() {
   const { items, total, subtotal, iva, agregarProducto, removerProducto, actualizarCantidad, limpiarCarrito } = useCartStore();
   const { obtenerProductoPorCodigo, buscarProductos, cargarProductos } = useProductStore();
   const { configuracion } = useConfigStore();
+  const { cajaActiva, cargarCajaActiva } = useCajaStore();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -31,6 +33,11 @@ export default function VentasScreen() {
   // Scanner bluetooth
   const { scannedCode, handleTextChange, resetScannedCode } = useBarcodeScannerInput();
   const scannerInputRef = useRef<RNTextInput>(null);
+
+  // Cargar caja activa al iniciar
+  useEffect(() => {
+    cargarCajaActiva();
+  }, []);
 
   // Procesar código escaneado
   useEffect(() => {
@@ -120,6 +127,20 @@ export default function VentasScreen() {
   const handleOpenPaymentModal = () => {
     if (items.length === 0) {
       Alert.alert('Carrito vacío', 'Agrega productos para realizar una venta');
+      return;
+    }
+    if (!cajaActiva) {
+      Alert.alert(
+        'Caja Cerrada',
+        'Debe abrir la caja antes de realizar ventas. ¿Desea ir a Control de Caja?',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          { text: 'Ir a Caja', onPress: () => {
+            // Aquí podrías usar el router para navegar: router.push('/caja')
+            Alert.alert('Info', 'Por favor, abra la caja desde el menú de Control de Caja');
+          }}
+        ]
+      );
       return;
     }
     setPaymentModalVisible(true);

@@ -1,17 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
-import { Button, Card, Text, TextInput, DataTable, FAB, Portal, Modal, Divider } from 'react-native-paper';
+import { Button, Card, Text, TextInput, DataTable, Portal, Modal, Divider, Snackbar } from 'react-native-paper';
 import { formatearMoneda, formatearFecha } from '@/lib/utils/formatters';
+import { useCajaStore } from '@/lib/store/useCajaStore';
 import * as queries from '@/lib/database/queries';
 
 export default function CajaScreen() {
-  const [cajaActual, setCajaActual] = useState<any>(null);
+  const {
+    cajaActiva,
+    movimientos,
+    loading,
+    error,
+    cargarCajaActiva,
+    abrirNuevaCaja,
+    cerrarCajaActiva,
+    registrarMovimiento,
+    limpiarError,
+  } = useCajaStore();
+
   const [historial, setHistorial] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
 
   // Modal de apertura
   const [modalApertura, setModalApertura] = useState(false);
-  const [montoInicial, setMontoInicial] = useState('');
+  const [montoInicial, setMontoInicial] = useState('500');
 
   // Modal de cierre
   const [modalCierre, setModalCierre] = useState(false);
@@ -30,102 +41,72 @@ export default function CajaScreen() {
 
   const cargarDatos = async () => {
     try {
-      setLoading(true);
-      const caja = await queries.obtenerCajaActual();
-      setCajaActual(caja);
-
+      await cargarCajaActiva();
       const hist = await queries.obtenerHistorialCajas(10);
       setHistorial(hist);
     } catch (error) {
       console.error('Error al cargar datos:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleAbrirCaja = async () => {
-    if (!montoInicial || parseFloat(montoInicial) <= 0) {
-      Alert.alert('Error', 'Ingrese un monto inicial válido');
+    const monto = parseFloat(montoInicial);
+    if (!montoInicial || monto < 500) {
+      Alert.alert('Error', 'El monto inicial debe ser al menos $500');
       return;
     }
 
-    try {
-      setLoading(true);
-      await queries.abrirCaja(parseFloat(montoInicial));
+    const exito = await abrirNuevaCaja(monto);
+    if (exito) {
       Alert.alert('Éxito', 'Caja abierta correctamente');
       setModalApertura(false);
-      setMontoInicial('');
+      setMontoInicial('500');
       cargarDatos();
-    } catch (error) {
-      console.error('Error al abrir caja:', error);
-      Alert.alert('Error', 'No se pudo abrir la caja');
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleCerrarCaja = async () => {
-    if (!cajaActual) return;
-    if (!montoFinal || parseFloat(montoFinal) < 0) {
+    if (!cajaActiva) return;
+    const monto = parseFloat(montoFinal);
+    if (!montoFinal || monto < 0) {
       Alert.alert('Error', 'Ingrese un monto final válido');
       return;
     }
 
-    try {
-      setLoading(true);
-      const resultado = await queries.cerrarCaja(
-        cajaActual.id,
-        parseFloat(montoFinal),
-        notasCierre
-      );
+    const resultado = await queries.cerrarCaja(
+      cajaActiva.id,
+      monto,
+      notasCierre
+    );
 
-      const diferencia = resultado.diferencia || 0;
-      const mensaje = diferencia === 0
-        ? 'Caja cerrada correctamente. Cuadra perfecto.'
-        : diferencia > 0
-        ? `Caja cerrada. Sobrante: ${formatearMoneda(diferencia)}`
-        : `Caja cerrada. Faltante: ${formatearMoneda(Math.abs(diferencia))}`;
+    const diferencia = resultado.diferencia || 0;
+    const mensaje = diferencia === 0
+      ? 'Caja cerrada correctamente. Cuadra perfecto.'
+      : diferencia > 0
+      ? `Caja cerrada. Sobrante: ${formatearMoneda(diferencia)}`
+      : `Caja cerrada. Faltante: ${formatearMoneda(Math.abs(diferencia))}`;
 
-      Alert.alert('Caja Cerrada', mensaje);
-      setModalCierre(false);
-      setMontoFinal('');
-      setNotasCierre('');
-      cargarDatos();
-    } catch (error) {
-      console.error('Error al cerrar caja:', error);
-      Alert.alert('Error', 'No se pudo cerrar la caja');
-    } finally {
-      setLoading(false);
-    }
+    Alert.alert('Caja Cerrada', mensaje);
+
+    await cerrarCajaActiva(monto, notasCierre);
+    setModalCierre(false);
+    setMontoFinal('');
+    setNotasCierre('');
+    cargarDatos();
   };
 
   const handleRegistrarMovimiento = async () => {
-    if (!cajaActual) return;
-    if (!montoMovimiento || parseFloat(montoMovimiento) <= 0) {
+    const monto = parseFloat(montoMovimiento);
+    if (!montoMovimiento || monto <= 0) {
       Alert.alert('Error', 'Ingrese un monto válido');
       return;
     }
 
-    try {
-      setLoading(true);
-      await queries.registrarMovimientoCaja(
-        cajaActual.id,
-        tipoMovimiento,
-        parseFloat(montoMovimiento),
-        conceptoMovimiento
-      );
-
-      Alert.alert('Éxito', 'Movimiento registrado correctamente');
-      setModalMovimiento(false);
-      setMontoMovimiento('');
-      setConceptoMovimiento('');
-      cargarDatos();
-    } catch (error) {
-      console.error('Error al registrar movimiento:', error);
-      Alert.alert('Error', 'No se pudo registrar el movimiento');
-    } finally {
-      setLoading(false);
-    }
+    await registrarMovimiento(tipoMovimiento, monto, conceptoMovimiento);
+    Alert.alert('Éxito', 'Movimiento registrado correctamente');
+    setModalMovimiento(false);
+    setMontoMovimiento('');
+    setConceptoMovimiento('');
   };
 
   return (
@@ -135,7 +116,7 @@ export default function CajaScreen() {
         <Card style={styles.card}>
           <Card.Title title="Estado de Caja" />
           <Card.Content>
-            {cajaActual ? (
+            {cajaActiva ? (
               <View>
                 <View style={styles.row}>
                   <Text variant="labelLarge">Estado:</Text>
@@ -144,12 +125,12 @@ export default function CajaScreen() {
                 <View style={styles.row}>
                   <Text variant="labelLarge">Apertura:</Text>
                   <Text variant="bodyLarge">
-                    {cajaActual.fechaApertura ? formatearFecha(new Date(cajaActual.fechaApertura)) : 'N/A'}
+                    {cajaActiva.fechaApertura ? formatearFecha(new Date(cajaActiva.fechaApertura)) : 'N/A'}
                   </Text>
                 </View>
                 <View style={styles.row}>
                   <Text variant="labelLarge">Monto Inicial:</Text>
-                  <Text variant="bodyLarge">{formatearMoneda(cajaActual.montoInicial || 0)}</Text>
+                  <Text variant="bodyLarge">{formatearMoneda(cajaActiva.montoInicial || 0)}</Text>
                 </View>
 
                 <Divider style={styles.divider} />
@@ -341,6 +322,19 @@ export default function CajaScreen() {
           </View>
         </Modal>
       </Portal>
+
+      {/* Snackbar de error */}
+      <Snackbar
+        visible={!!error}
+        onDismiss={limpiarError}
+        duration={4000}
+        action={{
+          label: 'Cerrar',
+          onPress: limpiarError,
+        }}
+      >
+        {error}
+      </Snackbar>
     </View>
   );
 }

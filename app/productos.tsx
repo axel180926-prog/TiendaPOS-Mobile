@@ -5,6 +5,9 @@ import { formatearMoneda } from '@/lib/utils/formatters';
 import * as queries from '@/lib/database/queries';
 import { router } from 'expo-router';
 
+type OrdenType = 'nombre' | 'precio' | 'stock' | 'reciente';
+type FiltroStock = 'todos' | 'bajo' | 'sinStock';
+
 export default function ProductosScreen() {
   const [productos, setProductos] = useState<any[]>([]);
   const [filteredProductos, setFilteredProductos] = useState<any[]>([]);
@@ -12,6 +15,8 @@ export default function ProductosScreen() {
   const [loading, setLoading] = useState(false);
   const [filterCategoria, setFilterCategoria] = useState<string | null>(null);
   const [categorias, setCategorias] = useState<string[]>([]);
+  const [ordenamiento, setOrdenamiento] = useState<OrdenType>('nombre');
+  const [filtroStock, setFiltroStock] = useState<FiltroStock>('todos');
 
   useEffect(() => {
     cargarProductos();
@@ -19,7 +24,7 @@ export default function ProductosScreen() {
 
   useEffect(() => {
     filtrarProductos();
-  }, [searchQuery, filterCategoria, productos]);
+  }, [searchQuery, filterCategoria, productos, ordenamiento, filtroStock]);
 
   const cargarProductos = async () => {
     try {
@@ -41,17 +46,47 @@ export default function ProductosScreen() {
   const filtrarProductos = () => {
     let filtered = [...productos];
 
+    // Filtro de búsqueda
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(p =>
         p.nombre?.toLowerCase().includes(query) ||
         p.codigoBarras?.includes(query) ||
-        p.categoria?.toLowerCase().includes(query)
+        p.categoria?.toLowerCase().includes(query) ||
+        p.marca?.toLowerCase().includes(query)
       );
     }
 
+    // Filtro de categoría
     if (filterCategoria) {
       filtered = filtered.filter(p => p.categoria === filterCategoria);
+    }
+
+    // Filtro de stock
+    if (filtroStock === 'bajo') {
+      filtered = filtered.filter(p => (p.stock || 0) <= (p.stockMinimo || 5) && (p.stock || 0) > 0);
+    } else if (filtroStock === 'sinStock') {
+      filtered = filtered.filter(p => (p.stock || 0) === 0);
+    }
+
+    // Ordenamiento
+    switch (ordenamiento) {
+      case 'nombre':
+        filtered.sort((a, b) => a.nombre?.localeCompare(b.nombre));
+        break;
+      case 'precio':
+        filtered.sort((a, b) => (b.precioVenta || 0) - (a.precioVenta || 0));
+        break;
+      case 'stock':
+        filtered.sort((a, b) => (a.stock || 0) - (b.stock || 0));
+        break;
+      case 'reciente':
+        filtered.sort((a, b) => {
+          const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return dateB - dateA;
+        });
+        break;
     }
 
     setFilteredProductos(filtered);
@@ -177,11 +212,80 @@ export default function ProductosScreen() {
         />
       </View>
 
+      {/* Filtros adicionales */}
+      <View style={styles.filtersRow}>
+        <View style={styles.filterGroup}>
+          <Text variant="labelSmall" style={styles.filterLabel}>Ordenar:</Text>
+          <View style={styles.chips}>
+            <Chip
+              compact
+              selected={ordenamiento === 'nombre'}
+              onPress={() => setOrdenamiento('nombre')}
+              style={styles.smallChip}
+            >
+              A-Z
+            </Chip>
+            <Chip
+              compact
+              selected={ordenamiento === 'precio'}
+              onPress={() => setOrdenamiento('precio')}
+              style={styles.smallChip}
+            >
+              Precio
+            </Chip>
+            <Chip
+              compact
+              selected={ordenamiento === 'stock'}
+              onPress={() => setOrdenamiento('stock')}
+              style={styles.smallChip}
+            >
+              Stock
+            </Chip>
+          </View>
+        </View>
+
+        <View style={styles.filterGroup}>
+          <Text variant="labelSmall" style={styles.filterLabel}>Stock:</Text>
+          <View style={styles.chips}>
+            <Chip
+              compact
+              selected={filtroStock === 'todos'}
+              onPress={() => setFiltroStock('todos')}
+              style={styles.smallChip}
+            >
+              Todos
+            </Chip>
+            <Chip
+              compact
+              selected={filtroStock === 'bajo'}
+              onPress={() => setFiltroStock('bajo')}
+              style={styles.smallChip}
+            >
+              Bajo
+            </Chip>
+            <Chip
+              compact
+              selected={filtroStock === 'sinStock'}
+              onPress={() => setFiltroStock('sinStock')}
+              style={styles.smallChip}
+            >
+              Sin stock
+            </Chip>
+          </View>
+        </View>
+      </View>
+
       {/* Resumen */}
       <View style={styles.summary}>
         <Text variant="bodyMedium">
           Mostrando {filteredProductos.length} de {productos.length} productos
         </Text>
+        {filtroStock !== 'todos' && (
+          <Text variant="bodySmall" style={styles.summaryNote}>
+            {filtroStock === 'bajo' && '⚠️ Productos con stock bajo'}
+            {filtroStock === 'sinStock' && '❌ Productos sin stock'}
+          </Text>
+        )}
       </View>
 
       {/* Lista de productos */}
@@ -231,9 +335,32 @@ const styles = StyleSheet.create({
   categoryChip: {
     marginRight: 8,
   },
+  filtersRow: {
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    gap: 12,
+  },
+  filterGroup: {
+    gap: 8,
+  },
+  filterLabel: {
+    paddingLeft: 4,
+    opacity: 0.7,
+  },
+  chips: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  smallChip: {
+    height: 32,
+  },
   summary: {
     paddingHorizontal: 15,
     paddingVertical: 8,
+  },
+  summaryNote: {
+    color: '#666',
+    marginTop: 4,
   },
   list: {
     padding: 10,
