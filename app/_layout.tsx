@@ -127,6 +127,16 @@ function RootLayoutNav() {
               }}
             />
             <Drawer.Screen
+              name="catalogo"
+              options={{
+                drawerLabel: 'Catálogo',
+                headerTitle: 'Catálogo de Productos',
+                drawerIcon: ({ color, size }) => (
+                  <FontAwesome name="book" size={size} color={color} />
+                ),
+              }}
+            />
+            <Drawer.Screen
               name="proveedores"
               options={{
                 drawerLabel: 'Proveedores',
