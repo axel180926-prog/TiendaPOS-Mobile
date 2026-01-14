@@ -278,13 +278,112 @@ export async function initDatabase() {
       );
     `);
 
-    // Insertar configuración por defecto si no existe
+    // ============================================
+    // INICIALIZACIÓN AUTOMÁTICA DE CONFIGURACIÓN
+    // ============================================
+    console.log('⚙️ Verificando configuración inicial...');
+
     const configResult = await expo.getAllAsync('SELECT * FROM configuracion WHERE id = 1 LIMIT 1');
     if (configResult.length === 0) {
+      console.log('📝 Creando configuración por defecto...');
       await expo.runAsync(`
-        INSERT INTO configuracion (id, nombre_tienda, direccion, telefono, mensaje_ticket)
-        VALUES (1, 'Mi Tiendita', 'Calle Principal #123', '555-1234', '¡Gracias por su compra! Vuelva pronto')
+        INSERT INTO configuracion (
+          id,
+          nombre_tienda,
+          direccion,
+          telefono,
+          email,
+          rfc,
+          mensaje_ticket,
+          tema,
+          tamano_fuente,
+          iva_tasa,
+          aplicar_iva,
+          permitir_descuentos,
+          descuento_maximo,
+          control_stock,
+          alerta_stock_bajo,
+          monto_inicial_requerido,
+          monto_inicial_minimo
+        )
+        VALUES (
+          1,
+          'Mi Tiendita',
+          'Calle Principal #123, Col. Centro',
+          '555-1234',
+          'contacto@mitiendita.com',
+          '',
+          '¡Gracias por su compra! Vuelva pronto',
+          'claro',
+          'mediano',
+          16,
+          1,
+          1,
+          50,
+          1,
+          1,
+          1,
+          500
+        )
       `);
+      console.log('✅ Configuración inicial creada');
+    } else {
+      console.log('✅ Configuración ya existe');
+    }
+
+    // ============================================
+    // ÍNDICES PARA OPTIMIZACIÓN DE RENDIMIENTO
+    // ============================================
+    console.log('🔍 Creando índices para optimización...');
+
+    try {
+      // Índices para productos (búsquedas frecuentes)
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_productos_codigo_barras ON productos(codigo_barras)');
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_productos_nombre ON productos(nombre)');
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_productos_activo ON productos(activo)');
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_productos_categoria ON productos(categoria)');
+
+      // Índices para ventas (consultas de reportes)
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_ventas_fecha ON ventas(fecha)');
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_ventas_caja_id ON ventas(caja_id)');
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_ventas_metodo_pago ON ventas(metodo_pago)');
+
+      // Índices para venta_items (joins frecuentes)
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_venta_items_venta_id ON venta_items(venta_id)');
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_venta_items_producto_id ON venta_items(producto_id)');
+
+      // Índices para cajas
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_cajas_estado ON cajas(estado)');
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_cajas_fecha_apertura ON cajas(fecha_apertura)');
+
+      // Índices para movimientos de caja
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_movimientos_caja_caja_id ON movimientos_caja(caja_id)');
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_movimientos_caja_fecha ON movimientos_caja(fecha)');
+
+      // Índices para compras
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_compras_proveedor_id ON compras(proveedor_id)');
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_compras_fecha ON compras(fecha)');
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_compras_estado ON compras(estado)');
+
+      // Índices para compra_items
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_compra_items_compra_id ON compra_items(compra_id)');
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_compra_items_producto_id ON compra_items(producto_id)');
+
+      // Índices para proveedores
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_proveedores_activo ON proveedores(activo)');
+
+      // Índices para productos_proveedores
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_productos_proveedores_producto_id ON productos_proveedores(producto_id)');
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_productos_proveedores_proveedor_id ON productos_proveedores(proveedor_id)');
+
+      // Índices para lista_compras
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_lista_compras_estado ON lista_compras(estado)');
+      await expo.execAsync('CREATE INDEX IF NOT EXISTS idx_lista_compras_producto_id ON lista_compras(producto_id)');
+
+      console.log('✅ Índices creados correctamente');
+    } catch (indexError) {
+      console.log('⚠️ Advertencia al crear índices:', indexError);
+      // No lanzar error, los índices son opcionales
     }
 
     console.log('✅ Base de datos inicializada correctamente');

@@ -79,6 +79,82 @@ export async function obtenerProductosStockBajo() {
 }
 
 // ============================================
+// FUNCIONES DE VALIDACIÓN
+// ============================================
+
+/**
+ * Valida si hay suficiente stock para una venta
+ */
+export async function validarStockDisponible(
+  items: Array<{ productoId: number; cantidad: number }>
+): Promise<{ valido: boolean; errores: string[] }> {
+  const errores: string[] = [];
+
+  for (const item of items) {
+    const producto = await obtenerProductoPorId(item.productoId);
+    if (!producto) {
+      errores.push(`Producto con ID ${item.productoId} no encontrado`);
+      continue;
+    }
+
+    const stockActual = producto.stock || 0;
+    if (stockActual < item.cantidad) {
+      errores.push(
+        `Stock insuficiente para ${producto.nombre}. Disponible: ${stockActual}, Solicitado: ${item.cantidad}`
+      );
+    }
+  }
+
+  return {
+    valido: errores.length === 0,
+    errores
+  };
+}
+
+/**
+ * Valida si existe una caja abierta
+ */
+export async function validarCajaAbierta(): Promise<{ valido: boolean; caja: any | null }> {
+  const caja = await obtenerCajaActual();
+  return {
+    valido: caja !== null,
+    caja
+  };
+}
+
+/**
+ * Valida los precios de un producto
+ */
+export function validarPreciosProducto(
+  precioCompra: number,
+  precioVenta: number
+): { valido: boolean; advertencias: string[] } {
+  const advertencias: string[] = [];
+
+  if (precioVenta <= 0) {
+    advertencias.push('El precio de venta debe ser mayor a 0');
+  }
+
+  if (precioCompra < 0) {
+    advertencias.push('El precio de compra no puede ser negativo');
+  }
+
+  if (precioCompra > precioVenta) {
+    advertencias.push('El precio de compra es mayor al precio de venta (generará pérdidas)');
+  }
+
+  const margen = precioVenta > 0 ? ((precioVenta - precioCompra) / precioVenta) * 100 : 0;
+  if (margen < 10 && margen >= 0) {
+    advertencias.push(`Margen de ganancia muy bajo (${margen.toFixed(1)}%)`);
+  }
+
+  return {
+    valido: precioVenta > 0 && precioCompra >= 0,
+    advertencias
+  };
+}
+
+// ============================================
 // VENTAS
 // ============================================
 
@@ -86,24 +162,39 @@ export async function crearVenta(
   venta: NuevaVenta,
   items: Array<Omit<NuevoVentaItem, 'ventaId'>>
 ) {
-  // Crear la venta
-  const ventaCreada = await db.insert(schema.ventas).values(venta).returning();
-  const ventaId = ventaCreada[0].id;
-
-  // Crear los items de la venta
-  const itemsConVentaId = items.map(item => ({
-    ...item,
-    ventaId
-  }));
-
-  await db.insert(schema.ventaItems).values(itemsConVentaId);
-
-  // Actualizar el stock de los productos
-  for (const item of items) {
-    await actualizarStock(item.productoId, -item.cantidad);
+  // VALIDACIÓN CRÍTICA: Verificar stock antes de crear la venta
+  const validacion = await validarStockDisponible(items);
+  if (!validacion.valido) {
+    throw new Error(`Error de stock: ${validacion.errores.join(', ')}`);
   }
 
-  return ventaCreada[0];
+  // TODO: Implementar transacción completa cuando expo-sqlite soporte transacciones
+  // Por ahora, usamos el enfoque secuencial con validación previa
+
+  try {
+    // Crear la venta
+    const ventaCreada = await db.insert(schema.ventas).values(venta).returning();
+    const ventaId = ventaCreada[0].id;
+
+    // Crear los items de la venta
+    const itemsConVentaId = items.map(item => ({
+      ...item,
+      ventaId
+    }));
+
+    await db.insert(schema.ventaItems).values(itemsConVentaId);
+
+    // Actualizar el stock de los productos
+    for (const item of items) {
+      await actualizarStock(item.productoId, -item.cantidad);
+    }
+
+    return ventaCreada[0];
+  } catch (error) {
+    // Si algo falla, el error se propaga
+    // En una transacción real, aquí se haría rollback automático
+    throw new Error(`Error al crear venta: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+  }
 }
 
 export async function obtenerVentas(limite = 50) {
@@ -148,6 +239,50 @@ export async function obtenerTotalVentasDelDia() {
   .where(sql`DATE(${schema.ventas.fecha}) = ${hoy}`);
 
   return result[0]?.total || 0;
+}
+
+/**
+ * Revierte una venta (cancela y devuelve stock)
+ * IMPORTANTE: Solo debe usarse para cancelaciones autorizadas
+ */
+export async function revertirVenta(ventaId: number, motivo: string = 'Cancelación') {
+  try {
+    // Obtener la venta
+    const venta = await obtenerVentaPorId(ventaId);
+    if (!venta) {
+      throw new Error('Venta no encontrada');
+    }
+
+    // Obtener los items de la venta
+    const items = await obtenerDetallesVenta(ventaId);
+
+    // Devolver el stock de cada producto
+    for (const item of items) {
+      if (item.producto) {
+        await actualizarStock(item.producto.id, item.cantidad);
+      }
+    }
+
+    // Marcar la venta como cancelada agregando nota
+    // Como no tenemos campo 'estado' en ventas, registramos en movimientos de caja
+    const cajaActual = await obtenerCajaActual();
+    if (cajaActual && venta.metodoPago === 'efectivo') {
+      await registrarMovimientoCaja(
+        cajaActual.id,
+        'retiro',
+        venta.total,
+        `Cancelación de venta #${ventaId}: ${motivo}`
+      );
+    }
+
+    return {
+      exito: true,
+      mensaje: `Venta #${ventaId} revertida correctamente`,
+      stockDevuelto: items.length
+    };
+  } catch (error) {
+    throw new Error(`Error al revertir venta: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+  }
 }
 
 // Función removida: el campo ticketImpreso no existe en el nuevo esquema
@@ -219,16 +354,51 @@ export async function abrirCaja(montoInicial: number, notas?: string) {
   return result[0];
 }
 
-export async function cerrarCaja(cajaId: number, montoFinal: number, notas?: string) {
+/**
+ * Obtiene el resumen completo de una caja incluyendo movimientos
+ */
+export async function obtenerResumenCompletoCaja(cajaId: number) {
   const caja = await db.select().from(schema.cajas).where(eq(schema.cajas.id, cajaId));
   if (!caja[0]) throw new Error('Caja no encontrada');
 
+  // Ventas en efectivo del periodo
   const resumen = await obtenerResumenVentas(
     caja[0].fechaApertura!.split('T')[0],
     new Date().toISOString().split('T')[0]
   );
 
-  const montoEsperado = caja[0].montoInicial + resumen.totalEfectivo;
+  // Movimientos de caja (retiros y depósitos)
+  const movimientos = await db.select({
+    totalRetiros: sql<number>`COALESCE(SUM(CASE WHEN ${schema.movimientosCaja.tipo} = 'retiro' THEN ${schema.movimientosCaja.monto} ELSE 0 END), 0)`,
+    totalDepositos: sql<number>`COALESCE(SUM(CASE WHEN ${schema.movimientosCaja.tipo} = 'deposito' THEN ${schema.movimientosCaja.monto} ELSE 0 END), 0)`,
+    numeroMovimientos: sql<number>`COUNT(*)`
+  })
+  .from(schema.movimientosCaja)
+  .where(eq(schema.movimientosCaja.cajaId, cajaId));
+
+  const mov = movimientos[0];
+
+  // Cálculo correcto del monto esperado:
+  // Monto Inicial + Ventas en Efectivo + Depósitos - Retiros
+  const montoEsperado =
+    caja[0].montoInicial +
+    resumen.totalEfectivo +
+    mov.totalDepositos -
+    mov.totalRetiros;
+
+  return {
+    caja: caja[0],
+    ventas: resumen,
+    movimientos: mov,
+    montoEsperado
+  };
+}
+
+export async function cerrarCaja(cajaId: number, montoFinal: number, notas?: string) {
+  // Obtener resumen completo incluyendo movimientos
+  const resumen = await obtenerResumenCompletoCaja(cajaId);
+
+  const montoEsperado = resumen.montoEsperado;
   const diferencia = montoFinal - montoEsperado;
 
   const result = await db.update(schema.cajas)
@@ -377,19 +547,35 @@ export async function crearCompra(
   compra: typeof schema.compras.$inferInsert,
   items: Array<Omit<typeof schema.compraItems.$inferInsert, 'compraId'>>
 ) {
-  // Crear la compra
-  const compraCreada = await db.insert(schema.compras).values(compra).returning();
-  const compraId = compraCreada[0].id;
+  // NOTA: Idealmente esto debería estar en una transacción
+  // expo-sqlite en versiones futuras podría soportar db.transaction()
+  // Por ahora usamos enfoque secuencial con manejo de errores
 
-  // Crear los items de la compra
-  const itemsConCompraId = items.map(item => ({
-    ...item,
-    compraId
-  }));
+  try {
+    // Validar que existan los productos
+    for (const item of items) {
+      const producto = await obtenerProductoPorId(item.productoId);
+      if (!producto) {
+        throw new Error(`Producto con ID ${item.productoId} no encontrado`);
+      }
+    }
 
-  await db.insert(schema.compraItems).values(itemsConCompraId);
+    // Crear la compra
+    const compraCreada = await db.insert(schema.compras).values(compra).returning();
+    const compraId = compraCreada[0].id;
 
-  return compraCreada[0];
+    // Crear los items de la compra
+    const itemsConCompraId = items.map(item => ({
+      ...item,
+      compraId
+    }));
+
+    await db.insert(schema.compraItems).values(itemsConCompraId);
+
+    return compraCreada[0];
+  } catch (error) {
+    throw new Error(`Error al crear compra: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+  }
 }
 
 export async function obtenerCompras(limite = 50) {
