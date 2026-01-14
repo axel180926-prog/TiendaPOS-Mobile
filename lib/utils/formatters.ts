@@ -35,6 +35,13 @@ export function formatearFechaHora(fecha: Date | string): string {
 }
 
 /**
+ * Alias de formatearFechaHora para compatibilidad
+ */
+export function formatearFecha(fecha: Date | string): string {
+  return formatearFechaHora(fecha);
+}
+
+/**
  * Formatea una fecha de forma relativa (hace 5 minutos, ayer, etc.)
  */
 export function formatearFechaRelativa(fecha: Date | string): string {
