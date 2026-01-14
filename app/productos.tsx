@@ -118,13 +118,25 @@ export default function ProductosScreen() {
 
   const renderProducto = ({ item }: { item: any }) => {
     const stockBajo = (item.stock || 0) <= (item.stockMinimo || 5);
+    const precioCompra = item.precioCompra || 0;
+    const precioVenta = item.precioVenta || 0;
+    const ganancia = precioVenta - precioCompra;
+    const porcentajeGanancia = precioCompra > 0 ? ((ganancia / precioCompra) * 100) : 0;
+    const activo = item.activo === true || item.activo === 1;
 
     return (
       <Card style={styles.card}>
         <Card.Content>
           <View style={styles.cardHeader}>
             <View style={styles.cardInfo}>
-              <Text variant="titleMedium" style={styles.nombre}>{item.nombre}</Text>
+              <View style={styles.nombreRow}>
+                <Text variant="titleMedium" style={styles.nombre}>{item.nombre}</Text>
+                {!activo && (
+                  <Chip mode="outlined" style={styles.chipInactivo} compact textStyle={styles.chipInactivoText}>
+                    Inactivo
+                  </Chip>
+                )}
+              </View>
               <Text variant="bodySmall" style={styles.codigo}>
                 Código: {item.codigoBarras}
               </Text>
@@ -150,9 +162,29 @@ export default function ProductosScreen() {
 
           <View style={styles.details}>
             <View style={styles.detailRow}>
-              <Text variant="labelMedium">Precio:</Text>
-              <Text variant="bodyLarge" style={styles.precio}>
-                {formatearMoneda(item.precioVenta || 0)}
+              <Text variant="labelMedium">Precio Proveedor:</Text>
+              <Text variant="bodyLarge" style={styles.precioCompra}>
+                {formatearMoneda(precioCompra)}
+              </Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text variant="labelMedium">Precio Venta:</Text>
+              <Text variant="bodyLarge" style={styles.precioVenta}>
+                {formatearMoneda(precioVenta)}
+              </Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text variant="labelMedium">Ganancia:</Text>
+              <Text
+                variant="bodyLarge"
+                style={[styles.ganancia, ganancia < 0 && styles.gananciaNegativa]}
+              >
+                {formatearMoneda(ganancia)}
+                {precioCompra > 0 && (
+                  <Text variant="bodySmall" style={styles.porcentaje}>
+                    {' '}({porcentajeGanancia.toFixed(1)}%)
+                  </Text>
+                )}
               </Text>
             </View>
             <View style={styles.detailRow}>
@@ -379,9 +411,15 @@ const styles = StyleSheet.create({
   cardActions: {
     flexDirection: 'row',
   },
+  nombreRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 4,
+  },
   nombre: {
     fontWeight: 'bold',
-    marginBottom: 4,
+    flex: 1,
   },
   codigo: {
     color: '#666',
@@ -391,6 +429,14 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginTop: 4,
   },
+  chipInactivo: {
+    backgroundColor: '#ffebee',
+    borderColor: '#f44336',
+  },
+  chipInactivoText: {
+    color: '#c62828',
+    fontSize: 11,
+  },
   details: {
     gap: 8,
   },
@@ -399,9 +445,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  precio: {
+  precioCompra: {
+    color: '#e65100',
+    fontWeight: '600',
+  },
+  precioVenta: {
     color: '#2c5f7c',
+    fontWeight: '600',
+  },
+  ganancia: {
+    color: '#4caf50',
     fontWeight: 'bold',
+  },
+  gananciaNegativa: {
+    color: '#f44336',
+  },
+  porcentaje: {
+    color: '#666',
+    fontSize: 12,
   },
   stock: {
     fontWeight: '600',
