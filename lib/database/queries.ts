@@ -272,3 +272,263 @@ export async function registrarMovimientoCaja(cajaId: number, tipo: string, mont
   }).returning();
   return result[0];
 }
+
+export async function obtenerMovimientosCaja(cajaId: number) {
+  return await db.select()
+    .from(schema.movimientosCaja)
+    .where(eq(schema.movimientosCaja.cajaId, cajaId))
+    .orderBy(desc(schema.movimientosCaja.fecha));
+}
+
+// ============================================
+// PROVEEDORES
+// ============================================
+
+export async function obtenerProveedores() {
+  return await db.select().from(schema.proveedores).where(eq(schema.proveedores.activo, true));
+}
+
+export async function obtenerProveedorPorId(id: number) {
+  const result = await db.select().from(schema.proveedores).where(eq(schema.proveedores.id, id));
+  return result[0] || null;
+}
+
+export async function buscarProveedores(query: string) {
+  return await db.select()
+    .from(schema.proveedores)
+    .where(and(
+      like(schema.proveedores.nombre, `%${query}%`),
+      eq(schema.proveedores.activo, true)
+    ));
+}
+
+export async function crearProveedor(proveedor: typeof schema.proveedores.$inferInsert) {
+  const result = await db.insert(schema.proveedores).values(proveedor).returning();
+  return result[0];
+}
+
+export async function actualizarProveedor(id: number, datos: Partial<typeof schema.proveedores.$inferInsert>) {
+  const result = await db.update(schema.proveedores)
+    .set({ ...datos, updatedAt: new Date().toISOString() })
+    .where(eq(schema.proveedores.id, id))
+    .returning();
+  return result[0];
+}
+
+export async function eliminarProveedor(id: number) {
+  // Soft delete
+  return await actualizarProveedor(id, { activo: false });
+}
+
+// ============================================
+// PRODUCTOS-PROVEEDORES
+// ============================================
+
+export async function vincularProductoProveedor(
+  productoId: number,
+  proveedorId: number,
+  datos?: Partial<typeof schema.productosProveedores.$inferInsert>
+) {
+  const result = await db.insert(schema.productosProveedores).values({
+    productoId,
+    proveedorId,
+    ...datos
+  }).returning();
+  return result[0];
+}
+
+export async function obtenerProveedoresDeProducto(productoId: number) {
+  return await db.select({
+    id: schema.productosProveedores.id,
+    precioProveedor: schema.productosProveedores.precioProveedor,
+    tiempoEntregaDias: schema.productosProveedores.tiempoEntregaDias,
+    productoEstrella: schema.productosProveedores.productoEstrella,
+    notas: schema.productosProveedores.notas,
+    proveedor: schema.proveedores
+  })
+  .from(schema.productosProveedores)
+  .leftJoin(schema.proveedores, eq(schema.productosProveedores.proveedorId, schema.proveedores.id))
+  .where(eq(schema.productosProveedores.productoId, productoId));
+}
+
+export async function obtenerProductosDeProveedor(proveedorId: number) {
+  return await db.select({
+    id: schema.productosProveedores.id,
+    precioProveedor: schema.productosProveedores.precioProveedor,
+    tiempoEntregaDias: schema.productosProveedores.tiempoEntregaDias,
+    productoEstrella: schema.productosProveedores.productoEstrella,
+    notas: schema.productosProveedores.notas,
+    producto: schema.productos
+  })
+  .from(schema.productosProveedores)
+  .leftJoin(schema.productos, eq(schema.productosProveedores.productoId, schema.productos.id))
+  .where(eq(schema.productosProveedores.proveedorId, proveedorId));
+}
+
+export async function desvincularProductoProveedor(id: number) {
+  await db.delete(schema.productosProveedores).where(eq(schema.productosProveedores.id, id));
+}
+
+// ============================================
+// COMPRAS
+// ============================================
+
+export async function crearCompra(
+  compra: typeof schema.compras.$inferInsert,
+  items: Array<Omit<typeof schema.compraItems.$inferInsert, 'compraId'>>
+) {
+  // Crear la compra
+  const compraCreada = await db.insert(schema.compras).values(compra).returning();
+  const compraId = compraCreada[0].id;
+
+  // Crear los items de la compra
+  const itemsConCompraId = items.map(item => ({
+    ...item,
+    compraId
+  }));
+
+  await db.insert(schema.compraItems).values(itemsConCompraId);
+
+  return compraCreada[0];
+}
+
+export async function obtenerCompras(limite = 50) {
+  return await db.select({
+    compra: schema.compras,
+    proveedor: schema.proveedores
+  })
+  .from(schema.compras)
+  .leftJoin(schema.proveedores, eq(schema.compras.proveedorId, schema.proveedores.id))
+  .orderBy(desc(schema.compras.fecha))
+  .limit(limite);
+}
+
+export async function obtenerCompraPorId(id: number) {
+  const result = await db.select({
+    compra: schema.compras,
+    proveedor: schema.proveedores
+  })
+  .from(schema.compras)
+  .leftJoin(schema.proveedores, eq(schema.compras.proveedorId, schema.proveedores.id))
+  .where(eq(schema.compras.id, id));
+
+  return result[0] || null;
+}
+
+export async function obtenerDetallesCompra(compraId: number) {
+  return await db.select({
+    id: schema.compraItems.id,
+    cantidad: schema.compraItems.cantidad,
+    precioUnitario: schema.compraItems.precioUnitario,
+    subtotal: schema.compraItems.subtotal,
+    producto: schema.productos
+  })
+  .from(schema.compraItems)
+  .leftJoin(schema.productos, eq(schema.compraItems.productoId, schema.productos.id))
+  .where(eq(schema.compraItems.compraId, compraId));
+}
+
+export async function actualizarCompra(id: number, datos: Partial<typeof schema.compras.$inferInsert>) {
+  const result = await db.update(schema.compras)
+    .set({ ...datos, updatedAt: new Date().toISOString() })
+    .where(eq(schema.compras.id, id))
+    .returning();
+  return result[0];
+}
+
+export async function marcarCompraRecibida(compraId: number) {
+  const detalles = await obtenerDetallesCompra(compraId);
+
+  // Actualizar stock de productos
+  for (const detalle of detalles) {
+    if (detalle.producto) {
+      await actualizarStock(detalle.producto.id, detalle.cantidad);
+    }
+  }
+
+  // Marcar compra como recibida
+  return await actualizarCompra(compraId, { estado: 'recibida' });
+}
+
+export async function cancelarCompra(compraId: number) {
+  return await actualizarCompra(compraId, { estado: 'cancelada' });
+}
+
+// ============================================
+// LISTA DE COMPRAS
+// ============================================
+
+export async function obtenerListaCompras() {
+  return await db.select({
+    id: schema.listaCompras.id,
+    cantidadSugerida: schema.listaCompras.cantidadSugerida,
+    cantidadComprar: schema.listaCompras.cantidadComprar,
+    prioridad: schema.listaCompras.prioridad,
+    estado: schema.listaCompras.estado,
+    notas: schema.listaCompras.notas,
+    fechaAgregado: schema.listaCompras.fechaAgregado,
+    producto: schema.productos
+  })
+  .from(schema.listaCompras)
+  .leftJoin(schema.productos, eq(schema.listaCompras.productoId, schema.productos.id))
+  .where(eq(schema.listaCompras.estado, 'pendiente'))
+  .orderBy(desc(schema.listaCompras.prioridad));
+}
+
+export async function agregarAListaCompras(
+  productoId: number,
+  cantidadSugerida: number,
+  prioridad: string = 'media',
+  notas?: string
+) {
+  const result = await db.insert(schema.listaCompras).values({
+    productoId,
+    cantidadSugerida,
+    prioridad,
+    notas,
+    estado: 'pendiente'
+  }).returning();
+  return result[0];
+}
+
+export async function actualizarItemListaCompras(
+  id: number,
+  datos: Partial<typeof schema.listaCompras.$inferInsert>
+) {
+  const result = await db.update(schema.listaCompras)
+    .set(datos)
+    .where(eq(schema.listaCompras.id, id))
+    .returning();
+  return result[0];
+}
+
+export async function eliminarDeListaCompras(id: number) {
+  await db.delete(schema.listaCompras).where(eq(schema.listaCompras.id, id));
+}
+
+export async function generarListaComprasAutomatica() {
+  // Obtener productos con stock bajo
+  const productosBajoStock = await obtenerProductosStockBajo();
+
+  // Agregar a lista de compras si no están ya
+  for (const producto of productosBajoStock) {
+    const yaEnLista = await db.select()
+      .from(schema.listaCompras)
+      .where(and(
+        eq(schema.listaCompras.productoId, producto.id),
+        eq(schema.listaCompras.estado, 'pendiente')
+      ));
+
+    if (yaEnLista.length === 0) {
+      const cantidadSugerida = (producto.stockMinimo || 5) * 3 - (producto.stock || 0);
+      await agregarAListaCompras(
+        producto.id,
+        cantidadSugerida,
+        'alta',
+        'Generado automáticamente por stock bajo'
+      );
+    }
+  }
+
+  return await obtenerListaCompras();
+}

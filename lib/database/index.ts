@@ -129,6 +129,39 @@ export async function initDatabase() {
     `);
 
     // ============================================
+    // TABLA: COMPRAS
+    // ============================================
+    await expo.execAsync(`
+      CREATE TABLE IF NOT EXISTS compras (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        proveedor_id INTEGER NOT NULL,
+        folio TEXT,
+        total REAL NOT NULL,
+        fecha TEXT DEFAULT CURRENT_TIMESTAMP,
+        fecha_entrega TEXT,
+        forma_pago TEXT DEFAULT 'Efectivo',
+        estado TEXT DEFAULT 'pendiente',
+        notas TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (proveedor_id) REFERENCES proveedores(id)
+      );
+    `);
+
+    await expo.execAsync(`
+      CREATE TABLE IF NOT EXISTS compra_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        compra_id INTEGER NOT NULL,
+        producto_id INTEGER NOT NULL,
+        cantidad INTEGER NOT NULL,
+        precio_unitario REAL NOT NULL,
+        subtotal REAL NOT NULL,
+        FOREIGN KEY (compra_id) REFERENCES compras(id),
+        FOREIGN KEY (producto_id) REFERENCES productos(id)
+      );
+    `);
+
+    // ============================================
     // TABLA: LISTA DE COMPRAS
     // ============================================
     await expo.execAsync(`
@@ -198,13 +231,16 @@ export async function clearDatabase() {
   try {
     console.log('🗑️ Limpiando base de datos...');
 
+    // Eliminar en orden inverso debido a las foreign keys
+    await expo.execAsync('DROP TABLE IF EXISTS compra_items;');
+    await expo.execAsync('DROP TABLE IF EXISTS compras;');
     await expo.execAsync('DROP TABLE IF EXISTS venta_items;');
     await expo.execAsync('DROP TABLE IF EXISTS ventas;');
     await expo.execAsync('DROP TABLE IF EXISTS productos_proveedores;');
     await expo.execAsync('DROP TABLE IF EXISTS lista_compras;');
-    await expo.execAsync('DROP TABLE IF EXISTS productos;');
     await expo.execAsync('DROP TABLE IF EXISTS movimientos_caja;');
     await expo.execAsync('DROP TABLE IF EXISTS cajas;');
+    await expo.execAsync('DROP TABLE IF EXISTS productos;');
     await expo.execAsync('DROP TABLE IF EXISTS proveedores;');
     await expo.execAsync('DROP TABLE IF EXISTS configuracion;');
 
