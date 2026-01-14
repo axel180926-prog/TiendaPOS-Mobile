@@ -3,7 +3,7 @@ import type { Caja, MovimientoCaja } from '../database/schema';
 import {
   abrirCaja,
   cerrarCaja,
-  obtenerCajaActiva,
+  obtenerCajaActual,
   registrarMovimientoCaja,
   obtenerMovimientosCaja
 } from '../database/queries';
@@ -32,7 +32,7 @@ export const useCajaStore = create<CajaState>((set, get) => ({
   cargarCajaActiva: async () => {
     set({ loading: true, error: null });
     try {
-      const caja = await obtenerCajaActiva();
+      const caja = await obtenerCajaActual();
       set({ cajaActiva: caja, loading: false });
 
       // Si hay caja activa, cargar sus movimientos
@@ -52,7 +52,7 @@ export const useCajaStore = create<CajaState>((set, get) => ({
     set({ loading: true, error: null });
     try {
       // Verificar que no haya una caja abierta
-      const cajaExistente = await obtenerCajaActiva();
+      const cajaExistente = await obtenerCajaActual();
       if (cajaExistente) {
         set({
           error: 'Ya existe una caja abierta. Debe cerrarla primero.',
