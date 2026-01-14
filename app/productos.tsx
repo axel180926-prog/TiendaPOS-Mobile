@@ -380,7 +380,7 @@ export default function ProductosScreen() {
               onPress={() => setFiltroRentabilidad('rentable')}
               style={styles.smallChip}
             >
-              Rentable (≥30%)
+              {'Rentable (≥30%)'}
             </Chip>
             <Chip
               compact
@@ -396,7 +396,7 @@ export default function ProductosScreen() {
               onPress={() => setFiltroRentabilidad('noRentable')}
               style={styles.smallChip}
             >
-              Bajo (<10%)
+              {'Bajo (<10%)'}
             </Chip>
           </View>
         </View>
