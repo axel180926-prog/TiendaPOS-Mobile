@@ -82,12 +82,12 @@ export default function InventarioScreen() {
             </View>
             <View style={styles.row}>
               <Text variant="labelMedium">Precio:</Text>
-              <Text variant="bodyMedium">{formatearMoneda(item.precio || 0)}</Text>
+              <Text variant="bodyMedium">{formatearMoneda(item.precioVenta || 0)}</Text>
             </View>
             <View style={styles.row}>
               <Text variant="labelMedium">Valor en Inventario:</Text>
               <Text variant="bodyLarge" style={styles.valor}>
-                {formatearMoneda((item.stock || 0) * (item.precio || 0))}
+                {formatearMoneda((item.stock || 0) * (item.precioVenta || 0))}
               </Text>
             </View>
           </View>
@@ -97,7 +97,7 @@ export default function InventarioScreen() {
   };
 
   const totalValor = filteredProductos.reduce(
-    (sum, p) => sum + ((p.stock || 0) * (p.precio || 0)),
+    (sum, p) => sum + ((p.stock || 0) * (p.precioVenta || 0)),
     0
   );
 

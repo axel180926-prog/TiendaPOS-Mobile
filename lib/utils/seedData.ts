@@ -20,7 +20,8 @@ export async function cargarProductosIniciales(): Promise<boolean> {
         nombre: producto.nombre,
         descripcion: producto.descripcion || null,
         categoria: producto.categoria || null,
-        precio: producto.precio,
+        precioCompra: producto.precio_compra || 0,
+        precioVenta: producto.precio_venta,
         stock: producto.stock || 0,
         stockMinimo: producto.stock_minimo || 5,
         activo: true
@@ -43,7 +44,8 @@ export const productosEjemplo: NuevoProducto[] = [
     nombre: 'Producto de Prueba 1',
     descripcion: 'Producto para testing',
     categoria: 'Pruebas',
-    precio: 10.00,
+    precioCompra: 6.00,
+    precioVenta: 10.00,
     stock: 100,
     stockMinimo: 10,
     activo: true

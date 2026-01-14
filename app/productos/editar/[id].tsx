@@ -50,7 +50,7 @@ export default function EditarProductoScreen() {
       setMarca(producto.marca || '');
       setPresentacion(producto.presentacion || '');
       setSku(producto.sku || '');
-      setPrecio(producto.precio?.toString() || '');
+      setPrecio(producto.precioVenta?.toString() || '');
       setStock(producto.stock?.toString() || '');
       setStockMinimo(producto.stockMinimo?.toString() || '');
       setUnidadMedida(producto.unidadMedida || 'Pieza');

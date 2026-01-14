@@ -4,8 +4,8 @@
     "nombre": "Coca-Cola 600ml",
     "descripcion": "Refresco de cola 600ml",
     "categoria": "Bebidas",
-    
-    "precio": 15.00,
+    "precio_compra": 9.3,
+    "precio_venta": 15,
     "stock": 50,
     "stock_minimo": 10
   },
@@ -14,8 +14,8 @@
     "nombre": "Sabritas Original 40g",
     "descripcion": "Papas fritas sabor original",
     "categoria": "Botanas",
-    
-    "precio": 15.00,
+    "precio_compra": 9.3,
+    "precio_venta": 15,
     "stock": 100,
     "stock_minimo": 20
   },
@@ -24,8 +24,8 @@
     "nombre": "Salsa Valentina 370ml",
     "descripcion": "Salsa picante etiqueta negra",
     "categoria": "Salsas",
-    
-    "precio": 18.00,
+    "precio_compra": 11.16,
+    "precio_venta": 18,
     "stock": 30,
     "stock_minimo": 10
   },
@@ -34,8 +34,8 @@
     "nombre": "Cheetos Flamin Hot 62g",
     "descripcion": "Botana de queso picante",
     "categoria": "Botanas",
-    
-    "precio": 17.00,
+    "precio_compra": 10.54,
+    "precio_venta": 17,
     "stock": 80,
     "stock_minimo": 15
   },
@@ -44,8 +44,8 @@
     "nombre": "Ruffles Queso 45g",
     "descripcion": "Papas fritas sabor queso",
     "categoria": "Botanas",
-    
-    "precio": 15.00,
+    "precio_compra": 9.3,
+    "precio_venta": 15,
     "stock": 75,
     "stock_minimo": 15
   },
@@ -54,8 +54,8 @@
     "nombre": "Sprite 600ml",
     "descripcion": "Refresco de lima-limón",
     "categoria": "Bebidas",
-    
-    "precio": 15.00,
+    "precio_compra": 9.3,
+    "precio_venta": 15,
     "stock": 45,
     "stock_minimo": 10
   },
@@ -64,8 +64,8 @@
     "nombre": "Fanta Naranja 600ml",
     "descripcion": "Refresco sabor naranja",
     "categoria": "Bebidas",
-    
-    "precio": 15.00,
+    "precio_compra": 9.3,
+    "precio_venta": 15,
     "stock": 40,
     "stock_minimo": 10
   },
@@ -74,8 +74,8 @@
     "nombre": "Mayonesa McCormick 380g",
     "descripcion": "Mayonesa con limón",
     "categoria": "Condimentos",
-    
-    "precio": 35.00,
+    "precio_compra": 21.7,
+    "precio_venta": 35,
     "stock": 20,
     "stock_minimo": 5
   },
@@ -84,8 +84,8 @@
     "nombre": "Jumex Mango 1L",
     "descripcion": "Néctar de mango",
     "categoria": "Bebidas",
-    
-    "precio": 22.00,
+    "precio_compra": 13.64,
+    "precio_venta": 22,
     "stock": 30,
     "stock_minimo": 8
   },
@@ -94,8 +94,8 @@
     "nombre": "Jumex Guayaba 1L",
     "descripcion": "Néctar de guayaba",
     "categoria": "Bebidas",
-    
-    "precio": 22.00,
+    "precio_compra": 13.64,
+    "precio_venta": 22,
     "stock": 25,
     "stock_minimo": 8
   },
@@ -104,8 +104,8 @@
     "nombre": "Doritos Nacho 62g",
     "descripcion": "Totopos sabor queso nacho",
     "categoria": "Botanas",
-    
-    "precio": 17.00,
+    "precio_compra": 10.54,
+    "precio_venta": 17,
     "stock": 90,
     "stock_minimo": 20
   },
@@ -114,8 +114,8 @@
     "nombre": "Bimbo Pan Blanco Grande",
     "descripcion": "Pan de caja blanco 680g",
     "categoria": "Panadería",
-    
-    "precio": 42.00,
+    "precio_compra": 26.04,
+    "precio_venta": 42,
     "stock": 15,
     "stock_minimo": 5
   },
@@ -124,8 +124,8 @@
     "nombre": "Bimbo Pan Integral Grande",
     "descripcion": "Pan de caja integral 680g",
     "categoria": "Panadería",
-    
-    "precio": 45.00,
+    "precio_compra": 27.9,
+    "precio_venta": 45,
     "stock": 12,
     "stock_minimo": 5
   },
@@ -134,8 +134,8 @@
     "nombre": "Gamesa Marías 385g",
     "descripcion": "Galletas Marías",
     "categoria": "Galletas",
-    
-    "precio": 26.00,
+    "precio_compra": 16.12,
+    "precio_venta": 26,
     "stock": 40,
     "stock_minimo": 10
   },
@@ -144,8 +144,8 @@
     "nombre": "Gamesa Emperador Chocolate",
     "descripcion": "Galletas con crema de chocolate",
     "categoria": "Galletas",
-    
-    "precio": 18.00,
+    "precio_compra": 11.16,
+    "precio_venta": 18,
     "stock": 50,
     "stock_minimo": 10
   },
@@ -154,8 +154,8 @@
     "nombre": "Agua Ciel 600ml",
     "descripcion": "Agua purificada",
     "categoria": "Bebidas",
-    
-    "precio": 10.00,
+    "precio_compra": 6.2,
+    "precio_venta": 10,
     "stock": 100,
     "stock_minimo": 25
   },
@@ -164,8 +164,8 @@
     "nombre": "Maseca 1kg",
     "descripcion": "Harina de maíz nixtamalizado",
     "categoria": "Abarrotes",
-    
-    "precio": 25.00,
+    "precio_compra": 15.5,
+    "precio_venta": 25,
     "stock": 35,
     "stock_minimo": 10
   },
@@ -174,8 +174,8 @@
     "nombre": "Aceite 1-2-3 1L",
     "descripcion": "Aceite vegetal comestible",
     "categoria": "Abarrotes",
-    
-    "precio": 48.00,
+    "precio_compra": 29.76,
+    "precio_venta": 48,
     "stock": 20,
     "stock_minimo": 5
   },
@@ -184,8 +184,8 @@
     "nombre": "Arroz Verde Valle 1kg",
     "descripcion": "Arroz blanco grano largo",
     "categoria": "Abarrotes",
-    
-    "precio": 30.00,
+    "precio_compra": 18.6,
+    "precio_venta": 30,
     "stock": 30,
     "stock_minimo": 8
   },
@@ -194,8 +194,8 @@
     "nombre": "Frijol Negro La Costeña 560g",
     "descripcion": "Frijoles negros refritos",
     "categoria": "Abarrotes",
-    
-    "precio": 26.00,
+    "precio_compra": 16.12,
+    "precio_venta": 26,
     "stock": 40,
     "stock_minimo": 10
   },
@@ -204,8 +204,8 @@
     "nombre": "Frijol Bayo La Costeña 560g",
     "descripcion": "Frijoles bayos refritos",
     "categoria": "Abarrotes",
-    
-    "precio": 26.00,
+    "precio_compra": 16.12,
+    "precio_venta": 26,
     "stock": 35,
     "stock_minimo": 10
   },
@@ -214,8 +214,8 @@
     "nombre": "Atún Tuny 140g Agua",
     "descripcion": "Atún en agua",
     "categoria": "Abarrotes",
-    
-    "precio": 22.00,
+    "precio_compra": 13.64,
+    "precio_venta": 22,
     "stock": 60,
     "stock_minimo": 15
   },
@@ -224,8 +224,8 @@
     "nombre": "Atún Tuny 140g Aceite",
     "descripcion": "Atún en aceite",
     "categoria": "Abarrotes",
-    
-    "precio": 23.00,
+    "precio_compra": 14.26,
+    "precio_venta": 23,
     "stock": 55,
     "stock_minimo": 15
   },
@@ -234,8 +234,8 @@
     "nombre": "Sopa Nissin Res 64g",
     "descripcion": "Sopa instantánea sabor res",
     "categoria": "Sopas",
-    
-    "precio": 12.00,
+    "precio_compra": 7.44,
+    "precio_venta": 12,
     "stock": 80,
     "stock_minimo": 20
   },
@@ -244,8 +244,8 @@
     "nombre": "Sopa Nissin Pollo 64g",
     "descripcion": "Sopa instantánea sabor pollo",
     "categoria": "Sopas",
-    
-    "precio": 12.00,
+    "precio_compra": 7.44,
+    "precio_venta": 12,
     "stock": 85,
     "stock_minimo": 20
   },
@@ -254,8 +254,8 @@
     "nombre": "Del Valle Naranja 1L",
     "descripcion": "Jugo de naranja",
     "categoria": "Bebidas",
-    
-    "precio": 26.00,
+    "precio_compra": 16.12,
+    "precio_venta": 26,
     "stock": 25,
     "stock_minimo": 8
   },
@@ -264,8 +264,8 @@
     "nombre": "Del Valle Manzana 1L",
     "descripcion": "Jugo de manzana",
     "categoria": "Bebidas",
-    
-    "precio": 26.00,
+    "precio_compra": 16.12,
+    "precio_venta": 26,
     "stock": 20,
     "stock_minimo": 8
   },
@@ -274,8 +274,8 @@
     "nombre": "Chilitos Jalapeños 220g",
     "descripcion": "Chiles jalapeños en escabeche",
     "categoria": "Enlatados",
-    
-    "precio": 20.00,
+    "precio_compra": 12.4,
+    "precio_venta": 20,
     "stock": 30,
     "stock_minimo": 8
   },
@@ -284,8 +284,8 @@
     "nombre": "Crujitos Queso 240g",
     "descripcion": "Palitos de maíz sabor queso",
     "categoria": "Botanas",
-    
-    "precio": 38.00,
+    "precio_compra": 23.56,
+    "precio_venta": 38,
     "stock": 25,
     "stock_minimo": 8
   },
@@ -294,8 +294,8 @@
     "nombre": "Marinela Gansito",
     "descripcion": "Pastelito con mermelada y chispas",
     "categoria": "Dulces",
-    
-    "precio": 13.00,
+    "precio_compra": 8.06,
+    "precio_venta": 13,
     "stock": 60,
     "stock_minimo": 15
   },
@@ -304,8 +304,8 @@
     "nombre": "Marinela Pingüinos",
     "descripcion": "Pastelito de chocolate relleno",
     "categoria": "Dulces",
-    
-    "precio": 13.00,
+    "precio_compra": 8.06,
+    "precio_venta": 13,
     "stock": 55,
     "stock_minimo": 15
   },
@@ -314,8 +314,8 @@
     "nombre": "Marinela Submarinos",
     "descripcion": "Pastelito con crema sabor vainilla",
     "categoria": "Dulces",
-    
-    "precio": 13.00,
+    "precio_compra": 8.06,
+    "precio_venta": 13,
     "stock": 50,
     "stock_minimo": 15
   },
@@ -324,8 +324,8 @@
     "nombre": "Nescafé Clásico 100g",
     "descripcion": "Café soluble",
     "categoria": "Bebidas Calientes",
-    
-    "precio": 62.00,
+    "precio_compra": 38.44,
+    "precio_venta": 62,
     "stock": 15,
     "stock_minimo": 5
   },
@@ -334,8 +334,8 @@
     "nombre": "Nescafé Decaf 100g",
     "descripcion": "Café soluble descafeinado",
     "categoria": "Bebidas Calientes",
-    
-    "precio": 68.00,
+    "precio_compra": 42.16,
+    "precio_venta": 68,
     "stock": 12,
     "stock_minimo": 5
   },
@@ -344,8 +344,8 @@
     "nombre": "Papel Higiénico Pétalo 4 Rollos",
     "descripcion": "Papel higiénico doble hoja",
     "categoria": "Higiene",
-    
-    "precio": 35.00,
+    "precio_compra": 21.7,
+    "precio_venta": 35,
     "stock": 30,
     "stock_minimo": 10
   },
@@ -354,8 +354,8 @@
     "nombre": "Jabón Zote Rosa 200g",
     "descripcion": "Jabón de lavandería",
     "categoria": "Limpieza",
-    
-    "precio": 18.00,
+    "precio_compra": 11.16,
+    "precio_venta": 18,
     "stock": 40,
     "stock_minimo": 10
   },
@@ -364,8 +364,8 @@
     "nombre": "Jabón Zote Blanco 200g",
     "descripcion": "Jabón de lavandería blanco",
     "categoria": "Limpieza",
-    
-    "precio": 18.00,
+    "precio_compra": 11.16,
+    "precio_venta": 18,
     "stock": 38,
     "stock_minimo": 10
   },
@@ -374,8 +374,8 @@
     "nombre": "Cloro Cloralex 1L",
     "descripcion": "Blanqueador y desinfectante",
     "categoria": "Limpieza",
-    
-    "precio": 26.00,
+    "precio_compra": 16.12,
+    "precio_venta": 26,
     "stock": 25,
     "stock_minimo": 8
   },
@@ -384,8 +384,8 @@
     "nombre": "Jabón Líquido Salvo 1L",
     "descripcion": "Detergente líquido para trastes",
     "categoria": "Limpieza",
-    
-    "precio": 32.00,
+    "precio_compra": 19.84,
+    "precio_venta": 32,
     "stock": 20,
     "stock_minimo": 5
   },
@@ -394,8 +394,8 @@
     "nombre": "Huevo San Juan 12 piezas",
     "descripcion": "Huevos frescos",
     "categoria": "Lácteos y Huevos",
-    
-    "precio": 48.00,
+    "precio_compra": 29.76,
+    "precio_venta": 48,
     "stock": 20,
     "stock_minimo": 5
   }

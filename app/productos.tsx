@@ -117,7 +117,7 @@ export default function ProductosScreen() {
             <View style={styles.detailRow}>
               <Text variant="labelMedium">Precio:</Text>
               <Text variant="bodyLarge" style={styles.precio}>
-                {formatearMoneda(item.precio || 0)}
+                {formatearMoneda(item.precioVenta || 0)}
               </Text>
             </View>
             <View style={styles.detailRow}>

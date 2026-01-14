@@ -72,7 +72,7 @@ export default function RegistrarCompraScreen() {
         id: p.id,
         nombre: p.nombre,
         codigoBarras: p.codigoBarras,
-        precio: p.precio,
+        precio: p.precioVenta,
         stock: p.stock || 0
       })));
     } catch (error) {
@@ -92,7 +92,7 @@ export default function RegistrarCompraScreen() {
 
   const seleccionarProducto = (producto: Producto) => {
     setProductoSeleccionado(producto);
-    setPrecioProducto(producto.precio.toString());
+    setPrecioProducto(producto.precioVenta.toString());
     setCantidadProducto('1');
     setMenuProductoVisible(false);
   };

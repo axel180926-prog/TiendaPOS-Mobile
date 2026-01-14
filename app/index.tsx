@@ -57,7 +57,7 @@ export default function VentasScreen() {
       if (producto) {
         if ((producto.stock || 0) > 0) {
           agregarProducto(producto, 1);
-          Alert.alert('Producto agregado', `${producto.nombre} - ${formatearMoneda(producto.precio)}`);
+          Alert.alert('Producto agregado', `${producto.nombre} - ${formatearMoneda(producto.precioVenta)}`);
         } else {
           Alert.alert('Sin stock', `El producto "${producto.nombre}" no tiene stock disponible`);
         }
@@ -183,7 +183,7 @@ export default function VentasScreen() {
       const ventaItems = items.map(item => ({
         productoId: item.id,
         cantidad: item.cantidad,
-        precioUnitario: item.precio
+        precioUnitario: item.precioVenta
       }));
 
       await queries.crearVenta(ventaData, ventaItems);
@@ -200,7 +200,7 @@ export default function VentasScreen() {
           productos: items.map(item => ({
             nombre: item.nombre,
             cantidad: item.cantidad,
-            precio: item.precio,
+            precio: item.precioVenta,
             subtotal: item.subtotal
           })),
           subtotal,
@@ -282,7 +282,7 @@ export default function VentasScreen() {
                 <Card.Content>
                   <Text variant="titleMedium">{item.nombre}</Text>
                   <Text variant="bodySmall">
-                    {formatearMoneda(item.precio)} • Stock: {item.stock}
+                    {formatearMoneda(item.precioVenta)} • Stock: {item.stock}
                   </Text>
                 </Card.Content>
               </Card>
@@ -303,7 +303,7 @@ export default function VentasScreen() {
                 <View style={styles.productInfo}>
                   <Text variant="titleMedium">{item.nombre}</Text>
                   <Text variant="bodySmall" style={styles.productPrice}>
-                    {formatearMoneda(item.precio)} × {item.cantidad} = {formatearMoneda(item.subtotal)}
+                    {formatearMoneda(item.precioVenta)} × {item.cantidad} = {formatearMoneda(item.subtotal)}
                   </Text>
                 </View>
                 <View style={styles.productActions}>

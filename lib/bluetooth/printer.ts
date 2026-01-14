@@ -39,7 +39,7 @@ function generarHTMLTicket(data: TicketData): string {
     </tr>
     <tr>
       <td style="text-align: left; padding: 0 0 8px 10px; font-size: 11px;">
-        ${p.cantidad} x $${p.precio.toFixed(2)} = $${p.subtotal.toFixed(2)}
+        ${p.cantidad} x $${p.precioVenta.toFixed(2)} = $${p.subtotal.toFixed(2)}
       </td>
     </tr>
   `).join('');

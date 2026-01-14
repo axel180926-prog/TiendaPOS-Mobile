@@ -532,3 +532,131 @@ export async function generarListaComprasAutomatica() {
 
   return await obtenerListaCompras();
 }
+
+// ============================================
+// REPORTES DE GANANCIAS E INVERSIONES
+// ============================================
+
+export async function obtenerGananciasDelDia() {
+  const hoy = new Date().toISOString().split('T')[0];
+
+  const result = await db.select({
+    totalVentas: sql<number>`COALESCE(SUM(${schema.ventaItems.cantidad} * ${schema.ventaItems.precioUnitario}), 0)`,
+    totalCosto: sql<number>`COALESCE(SUM(${schema.ventaItems.cantidad} * ${schema.productos.precioCompra}), 0)`,
+    gananciaTotal: sql<number>`COALESCE(SUM(${schema.ventaItems.cantidad} * (${schema.ventaItems.precioUnitario} - ${schema.productos.precioCompra})), 0)`,
+    unidadesVendidas: sql<number>`COALESCE(SUM(${schema.ventaItems.cantidad}), 0)`
+  })
+  .from(schema.ventaItems)
+  .leftJoin(schema.productos, eq(schema.ventaItems.productoId, schema.productos.id))
+  .leftJoin(schema.ventas, eq(schema.ventaItems.ventaId, schema.ventas.id))
+  .where(sql`DATE(${schema.ventas.fecha}) = ${hoy}`);
+
+  const datos = result[0];
+  const margenPorcentaje = datos.totalVentas > 0
+    ? ((datos.gananciaTotal / datos.totalVentas) * 100)
+    : 0;
+
+  return {
+    ...datos,
+    margenPorcentaje
+  };
+}
+
+export async function obtenerGananciasPorPeriodo(fechaInicio: string, fechaFin: string) {
+  const result = await db.select({
+    totalVentas: sql<number>`COALESCE(SUM(${schema.ventaItems.cantidad} * ${schema.ventaItems.precioUnitario}), 0)`,
+    totalCosto: sql<number>`COALESCE(SUM(${schema.ventaItems.cantidad} * ${schema.productos.precioCompra}), 0)`,
+    gananciaTotal: sql<number>`COALESCE(SUM(${schema.ventaItems.cantidad} * (${schema.ventaItems.precioUnitario} - ${schema.productos.precioCompra})), 0)`,
+    unidadesVendidas: sql<number>`COALESCE(SUM(${schema.ventaItems.cantidad}), 0)`
+  })
+  .from(schema.ventaItems)
+  .leftJoin(schema.productos, eq(schema.ventaItems.productoId, schema.productos.id))
+  .leftJoin(schema.ventas, eq(schema.ventaItems.ventaId, schema.ventas.id))
+  .where(sql`DATE(${schema.ventas.fecha}) BETWEEN ${fechaInicio} AND ${fechaFin}`);
+
+  const datos = result[0];
+  const margenPorcentaje = datos.totalVentas > 0
+    ? ((datos.gananciaTotal / datos.totalVentas) * 100)
+    : 0;
+
+  return {
+    ...datos,
+    margenPorcentaje
+  };
+}
+
+export async function obtenerProductosMasRentables(limite = 10) {
+  return await db.select({
+    producto: schema.productos,
+    totalVendido: sql<number>`SUM(${schema.ventaItems.cantidad})`,
+    totalIngresos: sql<number>`SUM(${schema.ventaItems.cantidad} * ${schema.ventaItems.precioUnitario})`,
+    totalCosto: sql<number>`SUM(${schema.ventaItems.cantidad} * ${schema.productos.precioCompra})`,
+    gananciaTotal: sql<number>`SUM(${schema.ventaItems.cantidad} * (${schema.ventaItems.precioUnitario} - ${schema.productos.precioCompra}))`,
+    margenPorcentaje: sql<number>`CASE
+      WHEN SUM(${schema.ventaItems.cantidad} * ${schema.ventaItems.precioUnitario}) > 0
+      THEN (SUM(${schema.ventaItems.cantidad} * (${schema.ventaItems.precioUnitario} - ${schema.productos.precioCompra})) * 100.0) / SUM(${schema.ventaItems.cantidad} * ${schema.ventaItems.precioUnitario})
+      ELSE 0
+    END`
+  })
+  .from(schema.ventaItems)
+  .leftJoin(schema.productos, eq(schema.ventaItems.productoId, schema.productos.id))
+  .groupBy(schema.ventaItems.productoId)
+  .orderBy(desc(sql`SUM(${schema.ventaItems.cantidad} * (${schema.ventaItems.precioUnitario} - ${schema.productos.precioCompra}))`))
+  .limit(limite);
+}
+
+export async function obtenerInversionEnInventario() {
+  const result = await db.select({
+    totalProductos: sql<number>`COUNT(*)`,
+    totalUnidades: sql<number>`COALESCE(SUM(${schema.productos.stock}), 0)`,
+    inversionTotal: sql<number>`COALESCE(SUM(${schema.productos.stock} * ${schema.productos.precioCompra}), 0)`,
+    valorVentaPotencial: sql<number>`COALESCE(SUM(${schema.productos.stock} * ${schema.productos.precioVenta}), 0)`,
+    gananciaPotencial: sql<number>`COALESCE(SUM(${schema.productos.stock} * (${schema.productos.precioVenta} - ${schema.productos.precioCompra})), 0)`
+  })
+  .from(schema.productos)
+  .where(eq(schema.productos.activo, true));
+
+  return result[0];
+}
+
+export async function obtenerInversionPorCategoria() {
+  return await db.select({
+    categoria: schema.productos.categoria,
+    totalProductos: sql<number>`COUNT(*)`,
+    totalUnidades: sql<number>`COALESCE(SUM(${schema.productos.stock}), 0)`,
+    inversionTotal: sql<number>`COALESCE(SUM(${schema.productos.stock} * ${schema.productos.precioCompra}), 0)`,
+    valorVentaPotencial: sql<number>`COALESCE(SUM(${schema.productos.stock} * ${schema.productos.precioVenta}), 0)`,
+    gananciaPotencial: sql<number>`COALESCE(SUM(${schema.productos.stock} * (${schema.productos.precioVenta} - ${schema.productos.precioCompra})), 0)`
+  })
+  .from(schema.productos)
+  .where(eq(schema.productos.activo, true))
+  .groupBy(schema.productos.categoria)
+  .orderBy(desc(sql`SUM(${schema.productos.stock} * ${schema.productos.precioCompra})`));
+}
+
+export async function obtenerResumenFinanciero(fechaInicio: string, fechaFin: string) {
+  // Ganancias por ventas
+  const ganancias = await obtenerGananciasPorPeriodo(fechaInicio, fechaFin);
+
+  // Inversión en compras del periodo
+  const comprasResult = await db.select({
+    totalCompras: sql<number>`COALESCE(SUM(${schema.compras.total}), 0)`,
+    numeroCompras: sql<number>`COUNT(*)`
+  })
+  .from(schema.compras)
+  .where(and(
+    sql`DATE(${schema.compras.fecha}) BETWEEN ${fechaInicio} AND ${fechaFin}`,
+    eq(schema.compras.estado, 'recibida')
+  ));
+
+  // Inversión actual en inventario
+  const inventario = await obtenerInversionEnInventario();
+
+  return {
+    periodo: { fechaInicio, fechaFin },
+    ventas: ganancias,
+    compras: comprasResult[0],
+    inventario,
+    balanceNeto: ganancias.gananciaTotal - comprasResult[0].totalCompras
+  };
+}
