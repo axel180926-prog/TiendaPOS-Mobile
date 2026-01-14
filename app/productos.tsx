@@ -5,8 +5,9 @@ import { formatearMoneda } from '@/lib/utils/formatters';
 import * as queries from '@/lib/database/queries';
 import { router } from 'expo-router';
 
-type OrdenType = 'nombre' | 'precio' | 'stock' | 'reciente';
+type OrdenType = 'nombre' | 'precio' | 'stock' | 'reciente' | 'ganancia';
 type FiltroStock = 'todos' | 'bajo' | 'sinStock';
+type FiltroRentabilidad = 'todos' | 'rentable' | 'pocoRentable' | 'noRentable';
 
 export default function ProductosScreen() {
   const [productos, setProductos] = useState<any[]>([]);
@@ -17,6 +18,7 @@ export default function ProductosScreen() {
   const [categorias, setCategorias] = useState<string[]>([]);
   const [ordenamiento, setOrdenamiento] = useState<OrdenType>('nombre');
   const [filtroStock, setFiltroStock] = useState<FiltroStock>('todos');
+  const [filtroRentabilidad, setFiltroRentabilidad] = useState<FiltroRentabilidad>('todos');
 
   useEffect(() => {
     cargarProductos();
@@ -24,7 +26,7 @@ export default function ProductosScreen() {
 
   useEffect(() => {
     filtrarProductos();
-  }, [searchQuery, filterCategoria, productos, ordenamiento, filtroStock]);
+  }, [searchQuery, filterCategoria, productos, ordenamiento, filtroStock, filtroRentabilidad]);
 
   const cargarProductos = async () => {
     try {
@@ -69,6 +71,25 @@ export default function ProductosScreen() {
       filtered = filtered.filter(p => (p.stock || 0) === 0);
     }
 
+    // Filtro de rentabilidad
+    if (filtroRentabilidad !== 'todos') {
+      filtered = filtered.filter(p => {
+        const compra = p.precioCompra || 0;
+        const venta = p.precioVenta || 0;
+        const ganancia = venta - compra;
+        const porcentaje = compra > 0 ? ((ganancia / compra) * 100) : 0;
+
+        if (filtroRentabilidad === 'rentable') {
+          return porcentaje >= 30; // Margen >= 30%
+        } else if (filtroRentabilidad === 'pocoRentable') {
+          return porcentaje >= 10 && porcentaje < 30; // Margen 10-30%
+        } else if (filtroRentabilidad === 'noRentable') {
+          return porcentaje < 10; // Margen < 10% o negativo
+        }
+        return true;
+      });
+    }
+
     // Ordenamiento
     switch (ordenamiento) {
       case 'nombre':
@@ -79,6 +100,13 @@ export default function ProductosScreen() {
         break;
       case 'stock':
         filtered.sort((a, b) => (a.stock || 0) - (b.stock || 0));
+        break;
+      case 'ganancia':
+        filtered.sort((a, b) => {
+          const gananciaA = (a.precioVenta || 0) - (a.precioCompra || 0);
+          const gananciaB = (b.precioVenta || 0) - (b.precioCompra || 0);
+          return gananciaB - gananciaA; // Mayor a menor
+        });
         break;
       case 'reciente':
         filtered.sort((a, b) => {
@@ -116,6 +144,21 @@ export default function ProductosScreen() {
     );
   };
 
+  const handleToggleActivo = async (id: number, nombre: string, activoActual: boolean) => {
+    const nuevoEstado = !activoActual;
+    try {
+      await queries.actualizarProducto(id, { activo: nuevoEstado });
+      Alert.alert(
+        'Producto ' + (nuevoEstado ? 'Activado' : 'Desactivado'),
+        `"${nombre}" ahora está ${nuevoEstado ? 'disponible' : 'no disponible'} para venta`
+      );
+      cargarProductos();
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'No se pudo cambiar el estado del producto');
+    }
+  };
+
   const renderProducto = ({ item }: { item: any }) => {
     const stockBajo = (item.stock || 0) <= (item.stockMinimo || 5);
     const precioCompra = item.precioCompra || 0;
@@ -147,6 +190,12 @@ export default function ProductosScreen() {
               )}
             </View>
             <View style={styles.cardActions}>
+              <IconButton
+                icon={activo ? 'eye-off' : 'eye'}
+                size={20}
+                iconColor={activo ? '#666' : '#4caf50'}
+                onPress={() => handleToggleActivo(item.id, item.nombre, activo)}
+              />
               <IconButton
                 icon="pencil"
                 size={20}
@@ -267,6 +316,14 @@ export default function ProductosScreen() {
             </Chip>
             <Chip
               compact
+              selected={ordenamiento === 'ganancia'}
+              onPress={() => setOrdenamiento('ganancia')}
+              style={styles.smallChip}
+            >
+              Ganancia
+            </Chip>
+            <Chip
+              compact
               selected={ordenamiento === 'stock'}
               onPress={() => setOrdenamiento('stock')}
               style={styles.smallChip}
@@ -305,6 +362,44 @@ export default function ProductosScreen() {
             </Chip>
           </View>
         </View>
+
+        <View style={styles.filterGroup}>
+          <Text variant="labelSmall" style={styles.filterLabel}>Rentabilidad:</Text>
+          <View style={styles.chips}>
+            <Chip
+              compact
+              selected={filtroRentabilidad === 'todos'}
+              onPress={() => setFiltroRentabilidad('todos')}
+              style={styles.smallChip}
+            >
+              Todos
+            </Chip>
+            <Chip
+              compact
+              selected={filtroRentabilidad === 'rentable'}
+              onPress={() => setFiltroRentabilidad('rentable')}
+              style={styles.smallChip}
+            >
+              Rentable (≥30%)
+            </Chip>
+            <Chip
+              compact
+              selected={filtroRentabilidad === 'pocoRentable'}
+              onPress={() => setFiltroRentabilidad('pocoRentable')}
+              style={styles.smallChip}
+            >
+              Medio (10-30%)
+            </Chip>
+            <Chip
+              compact
+              selected={filtroRentabilidad === 'noRentable'}
+              onPress={() => setFiltroRentabilidad('noRentable')}
+              style={styles.smallChip}
+            >
+              Bajo (<10%)
+            </Chip>
+          </View>
+        </View>
       </View>
 
       {/* Resumen */}
@@ -316,6 +411,13 @@ export default function ProductosScreen() {
           <Text variant="bodySmall" style={styles.summaryNote}>
             {filtroStock === 'bajo' && '⚠️ Productos con stock bajo'}
             {filtroStock === 'sinStock' && '❌ Productos sin stock'}
+          </Text>
+        )}
+        {filtroRentabilidad !== 'todos' && (
+          <Text variant="bodySmall" style={styles.summaryNote}>
+            {filtroRentabilidad === 'rentable' && '💰 Productos muy rentables (margen ≥30%)'}
+            {filtroRentabilidad === 'pocoRentable' && '📊 Productos rentabilidad media (margen 10-30%)'}
+            {filtroRentabilidad === 'noRentable' && '⚠️ Productos baja rentabilidad (margen <10%)'}
           </Text>
         )}
       </View>

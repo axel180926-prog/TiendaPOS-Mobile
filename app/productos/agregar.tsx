@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
-import { TextInput, Button, Card, SegmentedButtons } from 'react-native-paper';
+import { TextInput, Button, Card, SegmentedButtons, Text } from 'react-native-paper';
 import { router } from 'expo-router';
 import * as queries from '@/lib/database/queries';
+import { formatearMoneda } from '@/lib/utils/formatters';
 
 const CATEGORIAS = [
   'Bebidas',
@@ -32,7 +33,8 @@ export default function AgregarProductoScreen() {
   const [marca, setMarca] = useState('');
   const [presentacion, setPresentacion] = useState('');
   const [sku, setSku] = useState('');
-  const [precio, setPrecio] = useState('');
+  const [precioCompra, setPrecioCompra] = useState('');
+  const [precioVenta, setPrecioVenta] = useState('');
   const [stock, setStock] = useState('');
   const [stockMinimo, setStockMinimo] = useState('5');
   const [unidadMedida, setUnidadMedida] = useState('Pieza');
@@ -52,19 +54,35 @@ export default function AgregarProductoScreen() {
       Alert.alert('Error', 'El nombre es obligatorio');
       return false;
     }
-    if (!precio || parseFloat(precio) <= 0) {
-      Alert.alert('Error', 'El precio debe ser mayor a 0');
+    if (!precioVenta || parseFloat(precioVenta) <= 0) {
+      Alert.alert('Error', 'El precio de venta debe ser mayor a 0');
       return false;
     }
     if (!stock || parseInt(stock) < 0) {
       Alert.alert('Error', 'El stock debe ser 0 o mayor');
       return false;
     }
+
+    const compra = parseFloat(precioCompra) || 0;
+    const venta = parseFloat(precioVenta);
+    if (compra > venta) {
+      return new Promise((resolve) => {
+        Alert.alert(
+          'Advertencia',
+          'El precio de compra es mayor al precio de venta. Esto resultará en pérdidas. ¿Desea continuar?',
+          [
+            { text: 'Cancelar', style: 'cancel', onPress: () => resolve(false) },
+            { text: 'Continuar', onPress: () => resolve(true) }
+          ]
+        );
+      });
+    }
     return true;
   };
 
   const handleGuardar = async () => {
-    if (!validarFormulario()) return;
+    const esValido = await validarFormulario();
+    if (!esValido) return;
 
     try {
       setLoading(true);
@@ -77,10 +95,12 @@ export default function AgregarProductoScreen() {
         marca: marca.trim() || undefined,
         presentacion: presentacion.trim() || undefined,
         sku: sku.trim() || undefined,
-        precio: parseFloat(precio),
+        precioCompra: parseFloat(precioCompra) || 0,
+        precioVenta: parseFloat(precioVenta),
         stock: parseInt(stock),
         stockMinimo: parseInt(stockMinimo),
         unidadMedida: unidadMedida,
+        activo: true,
       };
 
       await queries.crearProducto(nuevoProducto);
@@ -185,18 +205,63 @@ export default function AgregarProductoScreen() {
         <Card.Title title="Precio y Stock" />
         <Card.Content>
           <TextInput
-            label="Precio de Venta *"
-            value={precio}
-            onChangeText={setPrecio}
+            label="Precio de Compra (Proveedor)"
+            value={precioCompra}
+            onChangeText={setPrecioCompra}
+            mode="outlined"
+            keyboardType="decimal-pad"
+            style={styles.input}
+            left={<TextInput.Affix text="$" />}
+            placeholder="9.30"
+            right={
+              <TextInput.Icon
+                icon="information"
+                onPress={() => Alert.alert('Info', 'Precio al que compras el producto a tu proveedor')}
+              />
+            }
+          />
+
+          <TextInput
+            label="Precio de Venta (Cliente) *"
+            value={precioVenta}
+            onChangeText={setPrecioVenta}
             mode="outlined"
             keyboardType="decimal-pad"
             style={styles.input}
             left={<TextInput.Affix text="$" />}
             placeholder="15.00"
+            right={
+              <TextInput.Icon
+                icon="information"
+                onPress={() => Alert.alert('Info', 'Precio al que vendes el producto a tus clientes')}
+              />
+            }
           />
 
+          {/* Cálculo de ganancia */}
+          {precioCompra && precioVenta && (
+            <Card style={styles.gananciaCard}>
+              <Card.Content>
+                <View style={styles.gananciaContainer}>
+                  <Text variant="labelMedium">Ganancia por unidad:</Text>
+                  <Text variant="titleMedium" style={[
+                    styles.gananciaValue,
+                    (parseFloat(precioVenta) - parseFloat(precioCompra)) < 0 && styles.gananciaNegativa
+                  ]}>
+                    {formatearMoneda(parseFloat(precioVenta) - parseFloat(precioCompra))}
+                  </Text>
+                  <Text variant="bodySmall" style={styles.gananciaPorcentaje}>
+                    {parseFloat(precioCompra) > 0
+                      ? `(${(((parseFloat(precioVenta) - parseFloat(precioCompra)) / parseFloat(precioCompra)) * 100).toFixed(1)}%)`
+                      : ''}
+                  </Text>
+                </View>
+              </Card.Content>
+            </Card>
+          )}
+
           <TextInput
-            label="Stock Actual *"
+            label="Stock Inicial *"
             value={stock}
             onChangeText={setStock}
             mode="outlined"
@@ -266,6 +331,24 @@ const styles = StyleSheet.create({
   },
   segmented: {
     marginTop: 10,
+  },
+  gananciaCard: {
+    marginBottom: 15,
+    backgroundColor: '#e8f5e9',
+  },
+  gananciaContainer: {
+    alignItems: 'center',
+  },
+  gananciaValue: {
+    color: '#4caf50',
+    fontWeight: 'bold',
+    marginTop: 4,
+  },
+  gananciaNegativa: {
+    color: '#f44336',
+  },
+  gananciaPorcentaje: {
+    color: '#2e7d32',
   },
   buttonRow: {
     flexDirection: 'row',
