@@ -37,6 +37,74 @@ export async function initDatabase() {
     `);
 
     // ============================================
+    // MIGRACIONES: Agregar columnas faltantes
+    // ============================================
+    try {
+      // Verificar qué columnas existen
+      const tableInfo = await expo.getAllAsync(`PRAGMA table_info(productos)`);
+      const hasColumnas = {
+        precio_compra: tableInfo.some((col: any) => col.name === 'precio_compra'),
+        precio_venta: tableInfo.some((col: any) => col.name === 'precio_venta'),
+        marca: tableInfo.some((col: any) => col.name === 'marca'),
+        presentacion: tableInfo.some((col: any) => col.name === 'presentacion'),
+        sku: tableInfo.some((col: any) => col.name === 'sku'),
+        activo: tableInfo.some((col: any) => col.name === 'activo'),
+      };
+
+      console.log('🔍 Columnas existentes en productos:', tableInfo.map((col: any) => col.name).join(', '));
+
+      // Agregar precio_compra si no existe
+      if (!hasColumnas.precio_compra) {
+        console.log('📝 Agregando columna precio_compra...');
+        await expo.execAsync('ALTER TABLE productos ADD COLUMN precio_compra REAL DEFAULT 0');
+      }
+
+      // Agregar precio_venta si no existe (renombrar desde precio si existe)
+      if (!hasColumnas.precio_venta) {
+        const hasPrecio = tableInfo.some((col: any) => col.name === 'precio');
+        if (hasPrecio) {
+          console.log('📝 Renombrando columna precio a precio_venta...');
+          // SQLite no soporta RENAME COLUMN directamente en versiones antiguas
+          // Necesitamos copiar los datos
+          await expo.execAsync('ALTER TABLE productos ADD COLUMN precio_venta REAL DEFAULT 0');
+          await expo.execAsync('UPDATE productos SET precio_venta = precio WHERE precio IS NOT NULL');
+        } else {
+          console.log('📝 Agregando columna precio_venta...');
+          await expo.execAsync('ALTER TABLE productos ADD COLUMN precio_venta REAL DEFAULT 0');
+        }
+      }
+
+      // Agregar marca si no existe
+      if (!hasColumnas.marca) {
+        console.log('📝 Agregando columna marca...');
+        await expo.execAsync('ALTER TABLE productos ADD COLUMN marca TEXT');
+      }
+
+      // Agregar presentacion si no existe
+      if (!hasColumnas.presentacion) {
+        console.log('📝 Agregando columna presentacion...');
+        await expo.execAsync('ALTER TABLE productos ADD COLUMN presentacion TEXT');
+      }
+
+      // Agregar sku si no existe
+      if (!hasColumnas.sku) {
+        console.log('📝 Agregando columna sku...');
+        await expo.execAsync('ALTER TABLE productos ADD COLUMN sku TEXT');
+      }
+
+      // Agregar activo si no existe
+      if (!hasColumnas.activo) {
+        console.log('📝 Agregando columna activo...');
+        await expo.execAsync('ALTER TABLE productos ADD COLUMN activo INTEGER DEFAULT 1');
+      }
+
+      console.log('✅ Migraciones completadas');
+    } catch (migrationError) {
+      console.log('⚠️ Error en migraciones:', migrationError);
+      // No lanzar error, continuar con la inicialización
+    }
+
+    // ============================================
     // TABLA: VENTAS
     // ============================================
     await expo.execAsync(`
