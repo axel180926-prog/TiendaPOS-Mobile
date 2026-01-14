@@ -1,0 +1,402 @@
+[
+  {
+    "codigo_barras": "7501000110049",
+    "nombre": "Coca-Cola 600ml",
+    "descripcion": "Refresco de cola 600ml",
+    "categoria": "Bebidas",
+    
+    "precio": 15.00,
+    "stock": 50,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501055300013",
+    "nombre": "Sabritas Original 40g",
+    "descripcion": "Papas fritas sabor original",
+    "categoria": "Botanas",
+    
+    "precio": 15.00,
+    "stock": 100,
+    "stock_minimo": 20
+  },
+  {
+    "codigo_barras": "7501005102728",
+    "nombre": "Salsa Valentina 370ml",
+    "descripcion": "Salsa picante etiqueta negra",
+    "categoria": "Salsas",
+    
+    "precio": 18.00,
+    "stock": 30,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030400053",
+    "nombre": "Cheetos Flamin Hot 62g",
+    "descripcion": "Botana de queso picante",
+    "categoria": "Botanas",
+    
+    "precio": 17.00,
+    "stock": 80,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501055300204",
+    "nombre": "Ruffles Queso 45g",
+    "descripcion": "Papas fritas sabor queso",
+    "categoria": "Botanas",
+    
+    "precio": 15.00,
+    "stock": 75,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501000112166",
+    "nombre": "Sprite 600ml",
+    "descripcion": "Refresco de lima-limón",
+    "categoria": "Bebidas",
+    
+    "precio": 15.00,
+    "stock": 45,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000125012",
+    "nombre": "Fanta Naranja 600ml",
+    "descripcion": "Refresco sabor naranja",
+    "categoria": "Bebidas",
+    
+    "precio": 15.00,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501005100502",
+    "nombre": "Mayonesa McCormick 380g",
+    "descripcion": "Mayonesa con limón",
+    "categoria": "Condimentos",
+    
+    "precio": 35.00,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501000902231",
+    "nombre": "Jumex Mango 1L",
+    "descripcion": "Néctar de mango",
+    "categoria": "Bebidas",
+    
+    "precio": 22.00,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000902255",
+    "nombre": "Jumex Guayaba 1L",
+    "descripcion": "Néctar de guayaba",
+    "categoria": "Bebidas",
+    
+    "precio": 22.00,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501055300037",
+    "nombre": "Doritos Nacho 62g",
+    "descripcion": "Totopos sabor queso nacho",
+    "categoria": "Botanas",
+    
+    "precio": 17.00,
+    "stock": 90,
+    "stock_minimo": 20
+  },
+  {
+    "codigo_barras": "7501011111110",
+    "nombre": "Bimbo Pan Blanco Grande",
+    "descripcion": "Pan de caja blanco 680g",
+    "categoria": "Panadería",
+    
+    "precio": 42.00,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501011111127",
+    "nombre": "Bimbo Pan Integral Grande",
+    "descripcion": "Pan de caja integral 680g",
+    "categoria": "Panadería",
+    
+    "precio": 45.00,
+    "stock": 12,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501017000050",
+    "nombre": "Gamesa Marías 385g",
+    "descripcion": "Galletas Marías",
+    "categoria": "Galletas",
+    
+    "precio": 26.00,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501017000067",
+    "nombre": "Gamesa Emperador Chocolate",
+    "descripcion": "Galletas con crema de chocolate",
+    "categoria": "Galletas",
+    
+    "precio": 18.00,
+    "stock": 50,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000123001",
+    "nombre": "Agua Ciel 600ml",
+    "descripcion": "Agua purificada",
+    "categoria": "Bebidas",
+    
+    "precio": 10.00,
+    "stock": 100,
+    "stock_minimo": 25
+  },
+  {
+    "codigo_barras": "7501025400019",
+    "nombre": "Maseca 1kg",
+    "descripcion": "Harina de maíz nixtamalizado",
+    "categoria": "Abarrotes",
+    
+    "precio": 25.00,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501003203001",
+    "nombre": "Aceite 1-2-3 1L",
+    "descripcion": "Aceite vegetal comestible",
+    "categoria": "Abarrotes",
+    
+    "precio": 48.00,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501058600015",
+    "nombre": "Arroz Verde Valle 1kg",
+    "descripcion": "Arroz blanco grano largo",
+    "categoria": "Abarrotes",
+    
+    "precio": 30.00,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000900510",
+    "nombre": "Frijol Negro La Costeña 560g",
+    "descripcion": "Frijoles negros refritos",
+    "categoria": "Abarrotes",
+    
+    "precio": 26.00,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000900527",
+    "nombre": "Frijol Bayo La Costeña 560g",
+    "descripcion": "Frijoles bayos refritos",
+    "categoria": "Abarrotes",
+    
+    "precio": 26.00,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501005102001",
+    "nombre": "Atún Tuny 140g Agua",
+    "descripcion": "Atún en agua",
+    "categoria": "Abarrotes",
+    
+    "precio": 22.00,
+    "stock": 60,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501005102018",
+    "nombre": "Atún Tuny 140g Aceite",
+    "descripcion": "Atún en aceite",
+    "categoria": "Abarrotes",
+    
+    "precio": 23.00,
+    "stock": 55,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030403009",
+    "nombre": "Sopa Nissin Res 64g",
+    "descripcion": "Sopa instantánea sabor res",
+    "categoria": "Sopas",
+    
+    "precio": 12.00,
+    "stock": 80,
+    "stock_minimo": 20
+  },
+  {
+    "codigo_barras": "7501030403016",
+    "nombre": "Sopa Nissin Pollo 64g",
+    "descripcion": "Sopa instantánea sabor pollo",
+    "categoria": "Sopas",
+    
+    "precio": 12.00,
+    "stock": 85,
+    "stock_minimo": 20
+  },
+  {
+    "codigo_barras": "7501000111039",
+    "nombre": "Del Valle Naranja 1L",
+    "descripcion": "Jugo de naranja",
+    "categoria": "Bebidas",
+    
+    "precio": 26.00,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000111046",
+    "nombre": "Del Valle Manzana 1L",
+    "descripcion": "Jugo de manzana",
+    "categoria": "Bebidas",
+    
+    "precio": 26.00,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000900190",
+    "nombre": "Chilitos Jalapeños 220g",
+    "descripcion": "Chiles jalapeños en escabeche",
+    "categoria": "Enlatados",
+    
+    "precio": 20.00,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501055300105",
+    "nombre": "Crujitos Queso 240g",
+    "descripcion": "Palitos de maíz sabor queso",
+    "categoria": "Botanas",
+    
+    "precio": 38.00,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501011115033",
+    "nombre": "Marinela Gansito",
+    "descripcion": "Pastelito con mermelada y chispas",
+    "categoria": "Dulces",
+    
+    "precio": 13.00,
+    "stock": 60,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501011115040",
+    "nombre": "Marinela Pingüinos",
+    "descripcion": "Pastelito de chocolate relleno",
+    "categoria": "Dulces",
+    
+    "precio": 13.00,
+    "stock": 55,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501011115057",
+    "nombre": "Marinela Submarinos",
+    "descripcion": "Pastelito con crema sabor vainilla",
+    "categoria": "Dulces",
+    
+    "precio": 13.00,
+    "stock": 50,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501000900715",
+    "nombre": "Nescafé Clásico 100g",
+    "descripcion": "Café soluble",
+    "categoria": "Bebidas Calientes",
+    
+    "precio": 62.00,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501000900722",
+    "nombre": "Nescafé Decaf 100g",
+    "descripcion": "Café soluble descafeinado",
+    "categoria": "Bebidas Calientes",
+    
+    "precio": 68.00,
+    "stock": 12,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501020500011",
+    "nombre": "Papel Higiénico Pétalo 4 Rollos",
+    "descripcion": "Papel higiénico doble hoja",
+    "categoria": "Higiene",
+    
+    "precio": 35.00,
+    "stock": 30,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501001100011",
+    "nombre": "Jabón Zote Rosa 200g",
+    "descripcion": "Jabón de lavandería",
+    "categoria": "Limpieza",
+    
+    "precio": 18.00,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501001100028",
+    "nombre": "Jabón Zote Blanco 200g",
+    "descripcion": "Jabón de lavandería blanco",
+    "categoria": "Limpieza",
+    
+    "precio": 18.00,
+    "stock": 38,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501032800017",
+    "nombre": "Cloro Cloralex 1L",
+    "descripcion": "Blanqueador y desinfectante",
+    "categoria": "Limpieza",
+    
+    "precio": 26.00,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501006701012",
+    "nombre": "Jabón Líquido Salvo 1L",
+    "descripcion": "Detergente líquido para trastes",
+    "categoria": "Limpieza",
+    
+    "precio": 32.00,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501045400013",
+    "nombre": "Huevo San Juan 12 piezas",
+    "descripcion": "Huevos frescos",
+    "categoria": "Lácteos y Huevos",
+    
+    "precio": 48.00,
+    "stock": 20,
+    "stock_minimo": 5
+  }
+]

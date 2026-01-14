@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "TiendaPOS-Mobile",
+    "name": "POS Tienda",
     "slug": "TiendaPOS-Mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -30,7 +30,9 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-sqlite",
+      "expo-barcode-scanner"
     ],
     "experiments": {
       "typedRoutes": true
