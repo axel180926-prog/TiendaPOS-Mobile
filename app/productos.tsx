@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, Alert } from 'react-native';
-import { Searchbar, Card, Text, Button, FAB, IconButton, Chip } from 'react-native-paper';
+import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
+import { View, StyleSheet, FlatList, Alert, ScrollView, TextInput as RNTextInput } from 'react-native';
+import { Searchbar, Card, Text, Button, FAB, IconButton, Chip, Portal, Modal, Badge, TextInput } from 'react-native-paper';
+
+// Importación de expo-camera
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { formatearMoneda } from '@/lib/utils/formatters';
 import * as queries from '@/lib/database/queries';
 import { router } from 'expo-router';
@@ -19,6 +22,15 @@ export default function ProductosScreen() {
   const [ordenamiento, setOrdenamiento] = useState<OrdenType>('nombre');
   const [filtroStock, setFiltroStock] = useState<FiltroStock>('todos');
   const [filtroRentabilidad, setFiltroRentabilidad] = useState<FiltroRentabilidad>('todos');
+  const [filtrosVisible, setFiltrosVisible] = useState(false);
+
+  // Estado para escáner de código de barras
+  const [scannerBuffer, setScannerBuffer] = useState('');
+  const scannerInputRef = useRef<RNTextInput>(null);
+
+  // Scanner de cámara
+  const [cameraScannerVisible, setCameraScannerVisible] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
 
   useEffect(() => {
     cargarProductos();
@@ -48,15 +60,26 @@ export default function ProductosScreen() {
   const filtrarProductos = () => {
     let filtered = [...productos];
 
-    // Filtro de búsqueda
+    // Filtro de búsqueda mejorado - busca en múltiples campos
     if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(p =>
-        p.nombre?.toLowerCase().includes(query) ||
-        p.codigoBarras?.includes(query) ||
-        p.categoria?.toLowerCase().includes(query) ||
-        p.marca?.toLowerCase().includes(query)
-      );
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(p => {
+        // Búsqueda exacta por código de barras (prioridad)
+        if (p.codigoBarras?.toLowerCase() === query) {
+          return true;
+        }
+
+        // Búsqueda en todos los campos de texto
+        return (
+          p.nombre?.toLowerCase().includes(query) ||
+          p.codigoBarras?.toLowerCase().includes(query) ||
+          p.categoria?.toLowerCase().includes(query) ||
+          p.marca?.toLowerCase().includes(query) ||
+          p.presentacion?.toLowerCase().includes(query) ||
+          p.descripcion?.toLowerCase().includes(query) ||
+          p.sku?.toLowerCase().includes(query)
+        );
+      });
     }
 
     // Filtro de categoría
@@ -120,7 +143,7 @@ export default function ProductosScreen() {
     setFilteredProductos(filtered);
   };
 
-  const handleEliminarProducto = async (id: number, nombre: string) => {
+  const handleEliminarProducto = useCallback(async (id: number, nombre: string) => {
     Alert.alert(
       'Eliminar Producto',
       `¿Está seguro de eliminar "${nombre}"?`,
@@ -142,9 +165,9 @@ export default function ProductosScreen() {
         }
       ]
     );
-  };
+  }, [cargarProductos]);
 
-  const handleToggleActivo = async (id: number, nombre: string, activoActual: boolean) => {
+  const handleToggleActivo = useCallback(async (id: number, nombre: string, activoActual: boolean) => {
     const nuevoEstado = !activoActual;
     try {
       await queries.actualizarProducto(id, { activo: nuevoEstado });
@@ -157,9 +180,111 @@ export default function ProductosScreen() {
       console.error('Error:', error);
       Alert.alert('Error', 'No se pudo cambiar el estado del producto');
     }
+  }, [cargarProductos]);
+
+  // Solicitar permisos de cámara
+  const requestCameraPermission = async () => {
+    if (!permission) {
+      return;
+    }
+
+    if (!permission.granted) {
+      const result = await requestPermission();
+      if (result.granted) {
+        setCameraScannerVisible(true);
+      } else {
+        Alert.alert('Permiso denegado', 'Se necesita acceso a la cámara para escanear códigos de barras');
+      }
+    } else {
+      setCameraScannerVisible(true);
+    }
   };
 
-  const renderProducto = ({ item }: { item: any }) => {
+  // Manejar escaneo desde cámara
+  const handleCameraScan = ({ type, data }: { type: string; data: string }) => {
+    setCameraScannerVisible(false);
+    handleBarcodeScanned(data);
+  };
+
+  // Manejar escaneo de código de barras
+  const handleBarcodeScanned = async (codigo: string) => {
+    try {
+      const producto = await queries.obtenerProductoPorCodigoBarras(codigo);
+
+      if (producto) {
+        // Mostrar opciones: Ver o Editar
+        Alert.alert(
+          'Producto Encontrado',
+          `${producto.nombre}\n${formatearMoneda(producto.precioVenta)}\nStock: ${producto.stock || 0}`,
+          [
+            {
+              text: 'Cancelar',
+              style: 'cancel',
+              onPress: () => {
+                setScannerBuffer('');
+                scannerInputRef.current?.focus();
+              }
+            },
+            {
+              text: 'Editar',
+              onPress: () => {
+                setScannerBuffer('');
+                router.push(`/productos/editar/${producto.id}`);
+              }
+            },
+            {
+              text: 'Ver Lista',
+              onPress: () => {
+                setScannerBuffer('');
+                setSearchQuery(codigo);
+                scannerInputRef.current?.focus();
+              }
+            }
+          ]
+        );
+      } else {
+        Alert.alert(
+          'Producto No Encontrado',
+          `No existe un producto con el código: ${codigo}`,
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                setScannerBuffer('');
+                scannerInputRef.current?.focus();
+              }
+            }
+          ]
+        );
+      }
+    } catch (error) {
+      console.error('Error al buscar producto:', error);
+      Alert.alert('Error', 'No se pudo buscar el producto');
+      setScannerBuffer('');
+      scannerInputRef.current?.focus();
+    }
+  };
+
+  // Manejar input del escáner
+  const handleScannerInput = (text: string) => {
+    setScannerBuffer(text);
+  };
+
+  // Optimización: Usar useCallback para evitar recrear la función en cada render
+  const renderProducto = useCallback(({ item }: { item: any }) => {
+    // Debug: Log marca y presentacion para diagnosticar
+    if (item.nombre === 'LAUTREC') {
+      console.log('DEBUG LAUTREC:', {
+        nombre: item.nombre,
+        marca: item.marca,
+        presentacion: item.presentacion,
+        marcaTipo: typeof item.marca,
+        presentacionTipo: typeof item.presentacion,
+        marcaTrim: item.marca?.trim(),
+        presentacionTrim: item.presentacion?.trim()
+      });
+    }
+
     const stockBajo = (item.stock || 0) <= (item.stockMinimo || 5);
     const precioCompra = item.precioCompra || 0;
     const precioVenta = item.precioVenta || 0;
@@ -169,109 +294,179 @@ export default function ProductosScreen() {
 
     return (
       <Card style={styles.card}>
-        <Card.Content>
-          <View style={styles.cardHeader}>
-            <View style={styles.cardInfo}>
-              <View style={styles.nombreRow}>
-                <Text variant="titleMedium" style={styles.nombre}>{item.nombre}</Text>
-                {!activo && (
-                  <Chip mode="outlined" style={styles.chipInactivo} compact textStyle={styles.chipInactivoText}>
-                    Inactivo
-                  </Chip>
-                )}
-              </View>
-              <Text variant="bodySmall" style={styles.codigo}>
-                Código: {item.codigoBarras}
-              </Text>
+        <Card.Content style={styles.cardContent}>
+          {/* Header: Nombre + Categoría + Acciones */}
+          <View style={styles.cardHeaderNew}>
+            <View style={styles.headerLeft}>
               {item.categoria && (
-                <Chip mode="outlined" style={styles.chip} compact>
+                <Chip mode="outlined" style={styles.chipCategoria} textStyle={styles.chipCategoriaText}>
                   {item.categoria}
                 </Chip>
               )}
+              {!activo && (
+                <Chip mode="flat" style={styles.chipInactivoNew} compact textStyle={styles.chipInactivoTextNew}>
+                  Inactivo
+                </Chip>
+              )}
             </View>
-            <View style={styles.cardActions}>
+            <View style={styles.cardActionsNew}>
               <IconButton
                 icon={activo ? 'eye-off' : 'eye'}
-                size={20}
-                iconColor={activo ? '#666' : '#4caf50'}
+                size={18}
+                iconColor={activo ? '#999' : '#4caf50'}
                 onPress={() => handleToggleActivo(item.id, item.nombre, activo)}
+                style={styles.iconBtn}
               />
               <IconButton
                 icon="pencil"
-                size={20}
+                size={18}
+                iconColor="#2196f3"
                 onPress={() => router.push(`/productos/editar/${item.id}`)}
+                style={styles.iconBtn}
               />
               <IconButton
                 icon="delete"
-                size={20}
+                size={18}
+                iconColor="#f44336"
                 onPress={() => handleEliminarProducto(item.id, item.nombre)}
+                style={styles.iconBtn}
               />
             </View>
           </View>
 
-          <View style={styles.details}>
-            <View style={styles.detailRow}>
-              <Text variant="labelMedium">Precio Proveedor:</Text>
-              <Text variant="bodyLarge" style={styles.precioCompra}>
+          {/* Nombre del producto */}
+          <Text variant="titleLarge" style={styles.nombreProducto} numberOfLines={2}>
+            {item.nombre}
+          </Text>
+
+          {/* Código de barras */}
+          <Text variant="bodySmall" style={styles.codigoBarras}>
+            {item.codigoBarras}
+          </Text>
+
+          {/* Sección de Precios en Grid */}
+          <View style={styles.preciosGrid}>
+            {/* Precio Compra */}
+            <View style={styles.precioCard}>
+              <Text variant="labelSmall" style={styles.precioLabel}>COMPRA</Text>
+              <Text variant="bodyLarge" style={styles.precioCompraValue}>
                 {formatearMoneda(precioCompra)}
               </Text>
             </View>
-            <View style={styles.detailRow}>
-              <Text variant="labelMedium">Precio Venta:</Text>
-              <Text variant="bodyLarge" style={styles.precioVenta}>
+
+            {/* Precio Venta */}
+            <View style={styles.precioCard}>
+              <Text variant="labelSmall" style={styles.precioLabel}>VENTA</Text>
+              <Text variant="bodyLarge" style={styles.precioVentaValue}>
                 {formatearMoneda(precioVenta)}
               </Text>
             </View>
-            <View style={styles.detailRow}>
-              <Text variant="labelMedium">Ganancia:</Text>
+
+            {/* Ganancia */}
+            <View style={[styles.precioCard, styles.gananciaCard]}>
+              <Text variant="labelSmall" style={styles.precioLabel}>GANANCIA</Text>
               <Text
-                variant="bodyLarge"
-                style={[styles.ganancia, ganancia < 0 && styles.gananciaNegativa]}
+                variant="bodyMedium"
+                style={[styles.gananciaValue, ganancia < 0 && styles.gananciaNegativaValue]}
               >
                 {formatearMoneda(ganancia)}
-                {precioCompra > 0 && (
-                  <Text variant="bodySmall" style={styles.porcentaje}>
-                    {' '}({porcentajeGanancia.toFixed(1)}%)
-                  </Text>
-                )}
               </Text>
+              {precioCompra > 0 && (
+                <Text variant="bodySmall" style={styles.porcentajeNew}>
+                  {porcentajeGanancia.toFixed(1)}%
+                </Text>
+              )}
             </View>
-            <View style={styles.detailRow}>
-              <Text variant="labelMedium">Stock:</Text>
+          </View>
+
+          {/* Stock + Detalles adicionales */}
+          <View style={styles.footerInfo}>
+            <View style={styles.stockContainer}>
+              <Text variant="labelSmall" style={styles.stockLabel}>STOCK</Text>
               <Text
-                variant="bodyLarge"
-                style={[styles.stock, stockBajo && styles.stockBajo]}
+                variant="titleSmall"
+                style={[styles.stockValue, stockBajo && styles.stockBajoValue]}
               >
                 {item.stock || 0} {item.unidadMedida || 'pzas'}
-                {stockBajo && ' ⚠️'}
               </Text>
             </View>
-            {item.marca && (
-              <View style={styles.detailRow}>
-                <Text variant="labelMedium">Marca:</Text>
-                <Text variant="bodyMedium">{item.marca}</Text>
-              </View>
-            )}
-            {item.presentacion && (
-              <View style={styles.detailRow}>
-                <Text variant="labelMedium">Presentación:</Text>
-                <Text variant="bodyMedium">{item.presentacion}</Text>
+
+            {(item.marca?.trim() || item.presentacion?.trim()) && (
+              <View style={styles.detallesAdicionales}>
+                {item.marca?.trim() && (
+                  <Text variant="bodySmall" style={styles.detalleText} numberOfLines={1}>
+                    {item.marca.trim()}
+                  </Text>
+                )}
+                {item.presentacion?.trim() && (
+                  <Text variant="bodySmall" style={styles.detalleText} numberOfLines={1}>
+                    {item.presentacion.trim()}
+                  </Text>
+                )}
               </View>
             )}
           </View>
         </Card.Content>
       </Card>
     );
+  }, [handleToggleActivo, handleEliminarProducto]);
+
+  // Verificar si hay filtros activos
+  const hayFiltrosActivos =
+    ordenamiento !== 'nombre' ||
+    filtroStock !== 'todos' ||
+    filtroRentabilidad !== 'todos';
+
+  const limpiarFiltros = () => {
+    setOrdenamiento('nombre');
+    setFiltroStock('todos');
+    setFiltroRentabilidad('todos');
   };
 
   return (
     <View style={styles.container}>
-      <Searchbar
-        placeholder="Buscar productos..."
-        onChangeText={setSearchQuery}
-        value={searchQuery}
-        style={styles.searchbar}
+      {/* TextInput oculto para capturar escáner de código de barras */}
+      <RNTextInput
+        ref={scannerInputRef}
+        value={scannerBuffer}
+        onChangeText={handleScannerInput}
+        autoFocus={true}
+        showSoftInputOnFocus={false}
+        keyboardType="numeric"
+        onSubmitEditing={(e) => {
+          const code = e.nativeEvent.text.trim();
+          if (code) handleBarcodeScanned(code);
+        }}
+        style={styles.hiddenInput}
       />
+
+      {/* Barra de búsqueda con botón de filtros */}
+      <View style={styles.searchbarContainer}>
+        <Searchbar
+          placeholder="Buscar productos o escanear..."
+          onChangeText={setSearchQuery}
+          value={searchQuery}
+          style={styles.searchbarInput}
+          icon="barcode-scan"
+          placeholderTextColor="#888"
+        />
+        <IconButton
+          icon="camera"
+          size={24}
+          mode="contained"
+          onPress={requestCameraPermission}
+          style={styles.cameraButton}
+        />
+        <IconButton
+          icon="tune"
+          size={24}
+          onPress={() => setFiltrosVisible(true)}
+          style={styles.filterButton}
+        />
+        {hayFiltrosActivos && (
+          <Badge style={styles.filterBadge} size={8} />
+        )}
+      </View>
 
       {/* Filtros de categoría */}
       <View style={styles.categoriesContainer}>
@@ -286,6 +481,7 @@ export default function ProductosScreen() {
               selected={filterCategoria === item}
               onPress={() => setFilterCategoria(filterCategoria === item ? null : item)}
               style={styles.categoryChip}
+              textStyle={styles.categoryChipText}
             >
               {item}
             </Chip>
@@ -293,118 +489,176 @@ export default function ProductosScreen() {
         />
       </View>
 
-      {/* Filtros adicionales */}
-      <View style={styles.filtersRow}>
-        <View style={styles.filterGroup}>
-          <Text variant="labelSmall" style={styles.filterLabel}>Ordenar:</Text>
-          <View style={styles.chips}>
-            <Chip
-              compact
-              selected={ordenamiento === 'nombre'}
-              onPress={() => setOrdenamiento('nombre')}
-              style={styles.smallChip}
-            >
-              A-Z
-            </Chip>
-            <Chip
-              compact
-              selected={ordenamiento === 'precio'}
-              onPress={() => setOrdenamiento('precio')}
-              style={styles.smallChip}
-            >
-              Precio
-            </Chip>
-            <Chip
-              compact
-              selected={ordenamiento === 'ganancia'}
-              onPress={() => setOrdenamiento('ganancia')}
-              style={styles.smallChip}
-            >
-              Ganancia
-            </Chip>
-            <Chip
-              compact
-              selected={ordenamiento === 'stock'}
-              onPress={() => setOrdenamiento('stock')}
-              style={styles.smallChip}
-            >
-              Stock
-            </Chip>
+      {/* Modal de escáner de cámara */}
+      <Portal>
+        <Modal
+          visible={cameraScannerVisible}
+          onDismiss={() => setCameraScannerVisible(false)}
+          contentContainerStyle={styles.cameraModalContainer}
+        >
+          <View style={styles.cameraContainer}>
+            <CameraView
+              onBarcodeScanned={handleCameraScan}
+              barcodeScannerSettings={{
+                barcodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e', 'code128', 'code39', 'qr'],
+              }}
+              style={StyleSheet.absoluteFillObject}
+            />
+            <View style={styles.cameraOverlay}>
+              <Text variant="headlineSmall" style={styles.cameraTitle}>
+                Escanea el código de barras
+              </Text>
+              <Button
+                mode="contained"
+                onPress={() => setCameraScannerVisible(false)}
+                style={styles.cameraCancelButton}
+                icon="close"
+              >
+                Cancelar
+              </Button>
+            </View>
           </View>
-        </View>
+        </Modal>
+      </Portal>
 
-        <View style={styles.filterGroup}>
-          <Text variant="labelSmall" style={styles.filterLabel}>Stock:</Text>
-          <View style={styles.chips}>
-            <Chip
-              compact
-              selected={filtroStock === 'todos'}
-              onPress={() => setFiltroStock('todos')}
-              style={styles.smallChip}
-            >
-              Todos
-            </Chip>
-            <Chip
-              compact
-              selected={filtroStock === 'bajo'}
-              onPress={() => setFiltroStock('bajo')}
-              style={styles.smallChip}
-            >
-              Bajo
-            </Chip>
-            <Chip
-              compact
-              selected={filtroStock === 'sinStock'}
-              onPress={() => setFiltroStock('sinStock')}
-              style={styles.smallChip}
-            >
-              Sin stock
-            </Chip>
-          </View>
-        </View>
+      {/* Modal de filtros */}
+      <Portal>
+        <Modal
+          visible={filtrosVisible}
+          onDismiss={() => setFiltrosVisible(false)}
+          contentContainerStyle={styles.modalContainer}
+        >
+          <ScrollView>
+            <View style={styles.modalHeader}>
+              <Text variant="headlineSmall">Filtros</Text>
+              <IconButton
+                icon="close"
+                onPress={() => setFiltrosVisible(false)}
+              />
+            </View>
 
-        <View style={styles.filterGroup}>
-          <Text variant="labelSmall" style={styles.filterLabel}>Rentabilidad:</Text>
-          <View style={styles.chips}>
-            <Chip
-              compact
-              selected={filtroRentabilidad === 'todos'}
-              onPress={() => setFiltroRentabilidad('todos')}
-              style={styles.smallChip}
-            >
-              Todos
-            </Chip>
-            <Chip
-              compact
-              selected={filtroRentabilidad === 'rentable'}
-              onPress={() => setFiltroRentabilidad('rentable')}
-              style={styles.smallChip}
-            >
-              {'Rentable (≥30%)'}
-            </Chip>
-            <Chip
-              compact
-              selected={filtroRentabilidad === 'pocoRentable'}
-              onPress={() => setFiltroRentabilidad('pocoRentable')}
-              style={styles.smallChip}
-            >
-              Medio (10-30%)
-            </Chip>
-            <Chip
-              compact
-              selected={filtroRentabilidad === 'noRentable'}
-              onPress={() => setFiltroRentabilidad('noRentable')}
-              style={styles.smallChip}
-            >
-              {'Bajo (<10%)'}
-            </Chip>
-          </View>
-        </View>
-      </View>
+            {/* Ordenar */}
+            <View style={styles.filterSection}>
+              <Text variant="titleMedium" style={styles.filterTitle}>Ordenar por:</Text>
+              <View style={styles.filterOptions}>
+                <Chip
+                  selected={ordenamiento === 'nombre'}
+                  onPress={() => setOrdenamiento('nombre')}
+                  style={styles.filterChip}
+                >
+                  A-Z
+                </Chip>
+                <Chip
+                  selected={ordenamiento === 'precio'}
+                  onPress={() => setOrdenamiento('precio')}
+                  style={styles.filterChip}
+                >
+                  Precio
+                </Chip>
+                <Chip
+                  selected={ordenamiento === 'ganancia'}
+                  onPress={() => setOrdenamiento('ganancia')}
+                  style={styles.filterChip}
+                >
+                  Ganancia
+                </Chip>
+                <Chip
+                  selected={ordenamiento === 'stock'}
+                  onPress={() => setOrdenamiento('stock')}
+                  style={styles.filterChip}
+                >
+                  Stock
+                </Chip>
+              </View>
+            </View>
+
+            {/* Stock */}
+            <View style={styles.filterSection}>
+              <Text variant="titleMedium" style={styles.filterTitle}>Nivel de Stock:</Text>
+              <View style={styles.filterOptions}>
+                <Chip
+                  selected={filtroStock === 'todos'}
+                  onPress={() => setFiltroStock('todos')}
+                  style={styles.filterChip}
+                >
+                  Todos
+                </Chip>
+                <Chip
+                  selected={filtroStock === 'bajo'}
+                  onPress={() => setFiltroStock('bajo')}
+                  style={styles.filterChip}
+                >
+                  Stock Bajo
+                </Chip>
+                <Chip
+                  selected={filtroStock === 'sinStock'}
+                  onPress={() => setFiltroStock('sinStock')}
+                  style={styles.filterChip}
+                >
+                  Sin Stock
+                </Chip>
+              </View>
+            </View>
+
+            {/* Rentabilidad */}
+            <View style={styles.filterSection}>
+              <Text variant="titleMedium" style={styles.filterTitle}>Rentabilidad:</Text>
+              <View style={styles.filterOptions}>
+                <Chip
+                  selected={filtroRentabilidad === 'todos'}
+                  onPress={() => setFiltroRentabilidad('todos')}
+                  style={styles.filterChip}
+                >
+                  Todos
+                </Chip>
+                <Chip
+                  selected={filtroRentabilidad === 'rentable'}
+                  onPress={() => setFiltroRentabilidad('rentable')}
+                  style={styles.filterChip}
+                >
+                  Rentable (≥30%)
+                </Chip>
+                <Chip
+                  selected={filtroRentabilidad === 'pocoRentable'}
+                  onPress={() => setFiltroRentabilidad('pocoRentable')}
+                  style={styles.filterChip}
+                >
+                  Medio (10-30%)
+                </Chip>
+                <Chip
+                  selected={filtroRentabilidad === 'noRentable'}
+                  onPress={() => setFiltroRentabilidad('noRentable')}
+                  style={styles.filterChip}
+                >
+                  Bajo (&lt;10%)
+                </Chip>
+              </View>
+            </View>
+
+            {/* Botones de acción */}
+            <View style={styles.modalActions}>
+              <Button
+                mode="outlined"
+                onPress={limpiarFiltros}
+                style={styles.actionButton}
+              >
+                Limpiar
+              </Button>
+              <Button
+                mode="contained"
+                onPress={() => setFiltrosVisible(false)}
+                style={styles.actionButton}
+              >
+                Aplicar
+              </Button>
+            </View>
+          </ScrollView>
+        </Modal>
+      </Portal>
 
       {/* Resumen */}
       <View style={styles.summary}>
-        <Text variant="bodyMedium">
+        <Text variant="bodyMedium" style={styles.summaryText}>
           Mostrando {filteredProductos.length} de {productos.length} productos
         </Text>
         {filtroStock !== 'todos' && (
@@ -453,54 +707,159 @@ export default function ProductosScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#e8eff5',
   },
-  searchbar: {
-    margin: 10,
-    elevation: 2,
+  hiddenInput: {
+    position: 'absolute',
+    left: -9999,
+    width: 1,
+    height: 1,
+  },
+  searchbarContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 16,
+    position: 'relative',
+    backgroundColor: '#2c5f7c',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+  },
+  searchbarInput: {
+    flex: 1,
+    elevation: 0,
+    backgroundColor: '#ffffff',
+    fontSize: 15,
+    borderRadius: 12,
+  },
+  filterButton: {
+    margin: 0,
+    marginLeft: 4,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+  },
+  filterBadge: {
+    position: 'absolute',
+    top: 14,
+    right: 14,
+    backgroundColor: '#4caf50',
   },
   categoriesContainer: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
+    backgroundColor: '#2c5f7c',
+    paddingBottom: 12,
   },
   categories: {
-    paddingVertical: 8,
+    paddingVertical: 4,
     gap: 8,
   },
   categoryChip: {
     marginRight: 8,
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    height: 38,
+    paddingHorizontal: 6,
+    borderRadius: 20,
+    elevation: 2,
   },
-  filtersRow: {
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    gap: 12,
+  categoryChipText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#2c5f7c',
   },
-  filterGroup: {
-    gap: 8,
+  modalContainer: {
+    backgroundColor: 'white',
+    margin: 20,
+    borderRadius: 24,
+    maxHeight: '80%',
+    elevation: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
   },
-  filterLabel: {
-    paddingLeft: 4,
-    opacity: 0.7,
-  },
-  chips: {
+  modalHeader: {
     flexDirection: 'row',
-    gap: 8,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 16,
+    borderBottomWidth: 2,
+    borderBottomColor: '#e8eff5',
   },
-  smallChip: {
-    height: 32,
+  filterSection: {
+    padding: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  filterTitle: {
+    marginBottom: 14,
+    fontWeight: '800',
+    fontSize: 17,
+    color: '#1a1a1a',
+  },
+  filterOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  filterChip: {
+    marginBottom: 4,
+    borderRadius: 12,
+    elevation: 1,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    gap: 12,
+    padding: 24,
+  },
+  actionButton: {
+    flex: 1,
+    borderRadius: 12,
+    elevation: 2,
   },
   summary: {
-    paddingHorizontal: 15,
-    paddingVertical: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 2,
+    borderBottomColor: '#2c5f7c',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  summaryText: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#2c5f7c',
+    letterSpacing: 0.3,
   },
   summaryNote: {
-    color: '#666',
-    marginTop: 4,
+    color: '#555',
+    marginTop: 6,
+    fontStyle: 'italic',
+    fontSize: 14,
+    fontWeight: '600',
   },
   list: {
-    padding: 10,
+    padding: 16,
   },
   card: {
-    marginBottom: 10,
+    marginBottom: 16,
+    backgroundColor: '#ffffff',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    borderRadius: 16,
+    borderLeftWidth: 6,
+    borderLeftColor: '#4caf50',
   },
   cardHeader: {
     flexDirection: 'row',
@@ -575,15 +934,208 @@ const styles = StyleSheet.create({
   empty: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 40,
+    paddingVertical: 60,
   },
   emptyText: {
-    color: '#999',
+    color: '#888',
+    fontSize: 16,
+    fontWeight: '600',
   },
   fab: {
     position: 'absolute',
-    right: 16,
-    bottom: 16,
+    right: 20,
+    bottom: 20,
     backgroundColor: '#2c5f7c',
+    elevation: 8,
+    shadowColor: '#2c5f7c',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
+  // Nuevos estilos mejorados
+  cardContent: {
+    padding: 18,
+  },
+  cardHeaderNew: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    gap: 8,
+    flex: 1,
+  },
+  chipCategoria: {
+    height: 34,
+    backgroundColor: '#e3f2fd',
+    borderColor: '#2196f3',
+    paddingHorizontal: 14,
+    borderRadius: 18,
+    elevation: 1,
+  },
+  chipCategoriaText: {
+    fontSize: 13,
+    color: '#1976d2',
+    fontWeight: '800',
+    letterSpacing: 0.3,
+  },
+  chipInactivoNew: {
+    height: 28,
+    backgroundColor: '#ffebee',
+    borderRadius: 14,
+    elevation: 1,
+  },
+  chipInactivoTextNew: {
+    fontSize: 11,
+    color: '#c62828',
+    fontWeight: '700',
+  },
+  cardActionsNew: {
+    flexDirection: 'row',
+    gap: 0,
+    marginRight: -8,
+  },
+  iconBtn: {
+    margin: 0,
+  },
+  nombreProducto: {
+    fontWeight: '800',
+    marginBottom: 8,
+    lineHeight: 26,
+    color: '#1a1a1a',
+    fontSize: 20,
+    letterSpacing: 0.2,
+  },
+  codigoBarras: {
+    color: '#888',
+    fontSize: 13,
+    marginBottom: 14,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+  },
+  preciosGrid: {
+    flexDirection: 'row',
+    gap: 10,
+    marginBottom: 14,
+  },
+  precioCard: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 10,
+    padding: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 76,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
+  },
+  gananciaCard: {
+    backgroundColor: '#f1f8f4',
+  },
+  precioLabel: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#555',
+    marginBottom: 6,
+    letterSpacing: 1.2,
+  },
+  precioCompraValue: {
+    color: '#e65100',
+    fontWeight: '800',
+    fontSize: 19,
+    letterSpacing: 0.3,
+  },
+  precioVentaValue: {
+    color: '#1976d2',
+    fontWeight: '800',
+    fontSize: 19,
+    letterSpacing: 0.3,
+  },
+  gananciaValue: {
+    color: '#2e7d32',
+    fontWeight: '800',
+    fontSize: 18,
+    letterSpacing: 0.3,
+  },
+  gananciaNegativaValue: {
+    color: '#d32f2f',
+  },
+  porcentajeNew: {
+    color: '#4caf50',
+    fontSize: 12,
+    fontWeight: '800',
+    marginTop: 3,
+    letterSpacing: 0.3,
+  },
+  footerInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 12,
+    borderTopWidth: 2,
+    borderTopColor: '#e8eff5',
+  },
+  stockContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  stockLabel: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#555',
+    letterSpacing: 1,
+  },
+  stockValue: {
+    fontWeight: '800',
+    color: '#2c5f7c',
+    fontSize: 18,
+    letterSpacing: 0.3,
+  },
+  stockBajoValue: {
+    color: '#f44336',
+  },
+  detallesAdicionales: {
+    flex: 1,
+    alignItems: 'flex-end',
+    gap: 3,
+  },
+  detalleText: {
+    color: '#999',
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  cameraButton: {
+    margin: 0,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+  },
+  cameraModalContainer: {
+    flex: 1,
+    backgroundColor: 'black'
+  },
+  cameraContainer: {
+    flex: 1
+  },
+  cameraOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    padding: 20,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center'
+  },
+  cameraTitle: {
+    color: 'white',
+    marginBottom: 16,
+    textAlign: 'center'
+  },
+  cameraCancelButton: {
+    backgroundColor: '#d32f2f'
+  }
 });
