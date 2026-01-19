@@ -302,6 +302,21 @@ export default function ConfiguracionScreen() {
 
             <Divider style={styles.divider} />
 
+            <View style={styles.switchRow}>
+              <View style={styles.switchInfo}>
+                <Text variant="bodyMedium">🔊 Sonido Beep</Text>
+                <Text variant="bodySmall" style={styles.switchDescription}>
+                  Reproducir sonido al escanear exitosamente
+                </Text>
+              </View>
+              <Switch
+                value={scannerConfig.sonidoHabilitado}
+                onValueChange={scannerConfig.setSonido}
+              />
+            </View>
+
+            <Divider style={styles.divider} />
+
             {/* Display */}
             <Text variant="titleSmall" style={[styles.sectionTitle, {marginTop: 16}]}>Visualización</Text>
 

@@ -481,34 +481,36 @@ export default function VentasScreen() {
         style={styles.hiddenInput}
       />
 
-      {/* Barra de búsqueda */}
-      <View style={styles.searchContainer}>
-        <RNTextInput
-          placeholder="Buscar producto o escanear código"
-          value={searchQuery}
-          onChangeText={handleSearch}
-          onSubmitEditing={(e) => {
-            const query = e.nativeEvent.text;
-            const esCodigoBarras = /^\d{8,}$/.test(query);
-            if (esCodigoBarras) {
-              console.log('🔍 Enter presionado con código de barras:', query);
-              handleBarcodeScanned(query);
-              setSearchQuery('');
-            }
-          }}
-          style={styles.searchBarNative}
-          autoComplete="off"
-          keyboardType="default"
-          returnKeyType="search"
-        />
-        <IconButton
-          icon="camera"
-          size={28}
-          mode="contained"
-          onPress={requestCameraPermission}
-          style={styles.cameraButton}
-        />
-      </View>
+      {/* Barra de búsqueda - OCULTA cuando la cámara está activa */}
+      {!cameraScannerVisible && (
+        <View style={styles.searchContainer}>
+          <RNTextInput
+            placeholder="Buscar producto o escanear código"
+            value={searchQuery}
+            onChangeText={handleSearch}
+            onSubmitEditing={(e) => {
+              const query = e.nativeEvent.text;
+              const esCodigoBarras = /^\d{8,}$/.test(query);
+              if (esCodigoBarras) {
+                console.log('🔍 Enter presionado con código de barras:', query);
+                handleBarcodeScanned(query);
+                setSearchQuery('');
+              }
+            }}
+            style={styles.searchBarNative}
+            autoComplete="off"
+            keyboardType="default"
+            returnKeyType="search"
+          />
+          <IconButton
+            icon="camera"
+            size={28}
+            mode="contained"
+            onPress={requestCameraPermission}
+            style={styles.cameraButton}
+          />
+        </View>
+      )}
 
       {/* Resultados de búsqueda */}
       {isSearching && searchResults.length > 0 && (
@@ -590,23 +592,58 @@ export default function VentasScreen() {
             </View>
           </View>
 
-          {/* Historial de códigos escaneados */}
-          {scannerConfig.mostrarHistorial && scanHistory.length > 0 && (
-            <View style={styles.scanHistoryContainer}>
-              <Text style={styles.scanHistoryTitle}>Últimos escaneados:</Text>
-              {scanHistory.slice(0, 3).map((item, index) => (
-                <Chip
-                  key={index}
-                  style={styles.scanHistoryChip}
-                  textStyle={styles.scanHistoryText}
+          {/* Botones de cantidad rápida - debajo de la cámara */}
+          {scannerConfig.modoRapidoHabilitado && lastScannedProduct && (
+            <View style={styles.quickQuantityOverlay}>
+              <Text style={styles.quickQuantityOverlayTitle}>
+                {lastScannedProduct.nombre}
+              </Text>
+              <View style={styles.quickQuantityOverlayButtons}>
+                <Button
+                  mode="contained"
                   compact
-                  onPress={() => handleBarcodeScanned(item.code)}
+                  onPress={() => handleQuickAdd(1)}
+                  buttonColor="#4caf50"
+                  textColor="#fff"
+                  style={styles.quickOverlayButton}
                 >
-                  {item.code}
-                </Chip>
-              ))}
+                  +1
+                </Button>
+                <Button
+                  mode="contained"
+                  compact
+                  onPress={() => handleQuickAdd(2)}
+                  buttonColor="#4caf50"
+                  textColor="#fff"
+                  style={styles.quickOverlayButton}
+                >
+                  +2
+                </Button>
+                <Button
+                  mode="contained"
+                  compact
+                  onPress={() => handleQuickAdd(5)}
+                  buttonColor="#4caf50"
+                  textColor="#fff"
+                  style={styles.quickOverlayButton}
+                >
+                  +5
+                </Button>
+                <Button
+                  mode="contained"
+                  compact
+                  onPress={() => handleQuickAdd(10)}
+                  buttonColor="#4caf50"
+                  textColor="#fff"
+                  style={styles.quickOverlayButton}
+                >
+                  +10
+                </Button>
+              </View>
             </View>
           )}
+
+          {/* Historial de códigos escaneados - DESHABILITADO para dar más espacio */}
         </View>
       )}
 
@@ -1121,8 +1158,8 @@ const styles = StyleSheet.create({
   footer: {
     backgroundColor: '#fff',
     borderTopWidth: 0,
-    padding: 20,
-    paddingBottom: 24,
+    padding: 12,
+    paddingBottom: 16,
     elevation: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
@@ -1130,10 +1167,10 @@ const styles = StyleSheet.create({
     shadowRadius: 8
   },
   totalsContainer: {
-    marginBottom: 16,
+    marginBottom: 12,
     backgroundColor: '#2c5f7c',
-    padding: 20,
-    borderRadius: 16,
+    padding: 12,
+    borderRadius: 12,
     elevation: 4
   },
   totalRow: {
@@ -1159,15 +1196,15 @@ const styles = StyleSheet.create({
   },
   totalText: {
     fontWeight: '900',
-    fontSize: 32,
+    fontSize: 24,
     color: '#fff',
     textShadowColor: 'rgba(0,0,0,0.2)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2
   },
   checkoutButton: {
-    marginTop: 8,
-    borderRadius: 16,
+    marginTop: 6,
+    borderRadius: 12,
     elevation: 8,
     shadowColor: '#4caf50',
     shadowOffset: { width: 0, height: 4 },
@@ -1175,10 +1212,10 @@ const styles = StyleSheet.create({
     shadowRadius: 6
   },
   checkoutButtonContent: {
-    paddingVertical: 16
+    paddingVertical: 8
   },
   checkoutButtonLabel: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '900',
     letterSpacing: 1
   },
@@ -1427,6 +1464,30 @@ const styles = StyleSheet.create({
   scanHistoryText: {
     color: 'white',
     fontSize: 11,
+  },
+  quickQuantityOverlay: {
+    position: 'absolute',
+    bottom: 16,
+    left: 16,
+    right: 16,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    padding: 12,
+    borderRadius: 12,
+  },
+  quickQuantityOverlayTitle: {
+    color: 'white',
+    fontSize: 13,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  quickQuantityOverlayButtons: {
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'space-between',
+  },
+  quickOverlayButton: {
+    flex: 1,
   },
   quickQuantityModal: {
     backgroundColor: 'white',
