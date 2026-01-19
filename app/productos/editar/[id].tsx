@@ -1,14 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
-import { TextInput, Button, Card, SegmentedButtons, ActivityIndicator, Text } from 'react-native-paper';
+import { View, StyleSheet, ScrollView, Alert, TouchableOpacity } from 'react-native';
+import { TextInput, Button, Card, SegmentedButtons, ActivityIndicator, Text, Portal, Modal, List, IconButton } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useLocalSearchParams } from 'expo-router';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as queries from '@/lib/database/queries';
 import { formatearMoneda } from '@/lib/utils/formatters';
+
+const CATEGORIAS = [
+  'Bebidas',
+  'Botanas',
+  'Abarrotes',
+  'Panadería',
+  'Galletas',
+  'Dulces',
+  'Sopas',
+  'Condimentos',
+  'Limpieza',
+  'Lácteos y Huevos',
+  'Enlatados',
+  'Salsas',
+  'Bebidas Calientes',
+  'Higiene',
+];
 
 export default function EditarProductoScreen() {
   const { id } = useLocalSearchParams();
   const [loading, setLoading] = useState(false);
   const [cargando, setCargando] = useState(true);
+  const [categoriaSelectorVisible, setCategoriaSelectorVisible] = useState(false);
+
+  // Estados para la cámara
+  const [cameraScannerVisible, setCameraScannerVisible] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+  const [isScanning, setIsScanning] = useState(false);
 
   // Campos del formulario
   const [codigoBarras, setCodigoBarras] = useState('');
@@ -29,6 +54,17 @@ export default function EditarProductoScreen() {
     { value: 'Kg', label: 'Kg' },
     { value: 'Litro', label: 'Litro' },
   ];
+
+  // Función para aplicar margen de ganancia
+  const aplicarMargen = (porcentaje: number) => {
+    if (!precioCompra) {
+      Alert.alert('Aviso', 'Primero ingresa el precio de compra');
+      return;
+    }
+    const compra = parseFloat(precioCompra);
+    const venta = compra * (1 + porcentaje / 100);
+    setPrecioVenta(venta.toFixed(2));
+  };
 
   useEffect(() => {
     cargarProducto();
@@ -96,6 +132,37 @@ export default function EditarProductoScreen() {
     return true;
   };
 
+  // Solicitar permisos de cámara
+  const requestCameraPermission = async () => {
+    if (!permission) {
+      return;
+    }
+
+    if (!permission.granted) {
+      const result = await requestPermission();
+      if (result.granted) {
+        setCameraScannerVisible(true);
+      } else {
+        Alert.alert('Permiso denegado', 'Se necesita acceso a la cámara para escanear códigos de barras');
+      }
+    } else {
+      setCameraScannerVisible(true);
+    }
+  };
+
+  // Manejar escaneo desde cámara
+  const handleCameraScan = ({ type, data }: { type: string; data: string }) => {
+    // Prevenir escaneos duplicados
+    if (isScanning) return;
+
+    setIsScanning(true);
+    setCameraScannerVisible(false);
+    setCodigoBarras(data);
+
+    // Resetear el flag después de 1.5 segundos
+    setTimeout(() => setIsScanning(false), 1500);
+  };
+
   const handleGuardar = async () => {
     const esValido = await validarFormulario();
     if (!esValido) return;
@@ -146,14 +213,26 @@ export default function EditarProductoScreen() {
       <Card style={styles.card}>
         <Card.Title title="Información Básica" />
         <Card.Content>
-          <TextInput
-            label="Código de Barras"
-            value={codigoBarras}
-            mode="outlined"
-            style={styles.input}
-            disabled
-            editable={false}
-          />
+          {/* Código de Barras con botón de escanear */}
+          <View style={styles.fieldWithButton}>
+            <TextInput
+              label="Código de Barras"
+              value={codigoBarras}
+              onChangeText={setCodigoBarras}
+              mode="outlined"
+              style={[styles.input, styles.inputFlex]}
+              keyboardType="numeric"
+            />
+            <IconButton
+              icon="camera"
+              mode="contained"
+              size={28}
+              onPress={requestCameraPermission}
+              style={styles.scanButton}
+              containerColor="#4caf50"
+              iconColor="#fff"
+            />
+          </View>
 
           <TextInput
             label="Nombre del Producto *"
@@ -173,13 +252,18 @@ export default function EditarProductoScreen() {
             style={styles.input}
           />
 
-          <TextInput
-            label="Categoría"
-            value={categoria}
-            onChangeText={setCategoria}
-            mode="outlined"
-            style={styles.input}
-          />
+          <TouchableOpacity onPress={() => setCategoriaSelectorVisible(true)}>
+            <View pointerEvents="none">
+              <TextInput
+                label="Categoría"
+                value={categoria}
+                mode="outlined"
+                style={styles.input}
+                right={<TextInput.Icon icon="chevron-down" />}
+                editable={false}
+              />
+            </View>
+          </TouchableOpacity>
         </Card.Content>
       </Card>
 
@@ -321,6 +405,78 @@ export default function EditarProductoScreen() {
       </Card>
 
       <View style={styles.spacer} />
+
+      {/* Modal de Selección de Categoría */}
+      <Portal>
+        <Modal
+          visible={categoriaSelectorVisible}
+          onDismiss={() => setCategoriaSelectorVisible(false)}
+          contentContainerStyle={styles.modalContainer}
+        >
+          <Card>
+            <Card.Title title="Seleccionar Categoría" />
+            <Card.Content>
+              <ScrollView style={styles.modalScrollView}>
+                {CATEGORIAS.map((cat) => (
+                  <List.Item
+                    key={cat}
+                    title={cat}
+                    onPress={() => {
+                      setCategoria(cat);
+                      setCategoriaSelectorVisible(false);
+                    }}
+                    left={(props) => (
+                      <List.Icon
+                        {...props}
+                        icon={categoria === cat ? 'check-circle' : 'circle-outline'}
+                        color={categoria === cat ? '#4caf50' : '#999'}
+                      />
+                    )}
+                    style={categoria === cat ? styles.selectedItem : undefined}
+                  />
+                ))}
+              </ScrollView>
+            </Card.Content>
+            <Card.Actions>
+              <Button onPress={() => setCategoriaSelectorVisible(false)}>
+                Cerrar
+              </Button>
+            </Card.Actions>
+          </Card>
+        </Modal>
+      </Portal>
+
+      {/* Modal de escáner de cámara */}
+      <Portal>
+        <Modal
+          visible={cameraScannerVisible}
+          onDismiss={() => setCameraScannerVisible(false)}
+          contentContainerStyle={styles.cameraModalContainer}
+        >
+          <View style={styles.cameraContainer}>
+            <CameraView
+              onBarcodeScanned={handleCameraScan}
+              barcodeScannerSettings={{
+                barcodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e', 'code128', 'code39', 'qr'],
+              }}
+              style={StyleSheet.absoluteFillObject}
+            />
+            <View style={styles.cameraOverlay}>
+              <Text variant="headlineSmall" style={styles.cameraTitle}>
+                Escanea el nuevo código de barras
+              </Text>
+              <Button
+                mode="contained"
+                onPress={() => setCameraScannerVisible(false)}
+                style={styles.cameraCancelButton}
+                icon="close"
+              >
+                Cancelar
+              </Button>
+            </View>
+          </View>
+        </Modal>
+      </Portal>
     </ScrollView>
   );
 }
@@ -372,5 +528,55 @@ const styles = StyleSheet.create({
   },
   spacer: {
     height: 20,
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    margin: 20,
+    borderRadius: 12,
+    maxHeight: '80%',
+  },
+  modalScrollView: {
+    maxHeight: 400,
+  },
+  selectedItem: {
+    backgroundColor: '#e8f5e9',
+  },
+  fieldWithButton: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+    marginBottom: 15,
+  },
+  inputFlex: {
+    flex: 1,
+    marginBottom: 0,
+  },
+  scanButton: {
+    marginTop: 8,
+  },
+  cameraModalContainer: {
+    flex: 1,
+    backgroundColor: 'black'
+  },
+  cameraContainer: {
+    flex: 1
+  },
+  cameraOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    padding: 20,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center'
+  },
+  cameraTitle: {
+    color: 'white',
+    marginBottom: 16,
+    textAlign: 'center'
+  },
+  cameraCancelButton: {
+    backgroundColor: '#d32f2f'
   },
 });

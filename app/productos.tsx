@@ -31,6 +31,7 @@ export default function ProductosScreen() {
   // Scanner de cámara
   const [cameraScannerVisible, setCameraScannerVisible] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
+  const [isScanning, setIsScanning] = useState(false);
 
   useEffect(() => {
     cargarProductos();
@@ -202,8 +203,15 @@ export default function ProductosScreen() {
 
   // Manejar escaneo desde cámara
   const handleCameraScan = ({ type, data }: { type: string; data: string }) => {
-    setCameraScannerVisible(false);
+    // Prevenir escaneos duplicados
+    if (isScanning) return;
+
+    setIsScanning(true);
+    // NO cerrar la cámara, mantenerla abierta
     handleBarcodeScanned(data);
+
+    // Resetear el flag después de 1.5 segundos para permitir siguiente escaneo
+    setTimeout(() => setIsScanning(false), 1500);
   };
 
   // Manejar escaneo de código de barras
@@ -489,37 +497,6 @@ export default function ProductosScreen() {
         />
       </View>
 
-      {/* Modal de escáner de cámara */}
-      <Portal>
-        <Modal
-          visible={cameraScannerVisible}
-          onDismiss={() => setCameraScannerVisible(false)}
-          contentContainerStyle={styles.cameraModalContainer}
-        >
-          <View style={styles.cameraContainer}>
-            <CameraView
-              onBarcodeScanned={handleCameraScan}
-              barcodeScannerSettings={{
-                barcodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e', 'code128', 'code39', 'qr'],
-              }}
-              style={StyleSheet.absoluteFillObject}
-            />
-            <View style={styles.cameraOverlay}>
-              <Text variant="headlineSmall" style={styles.cameraTitle}>
-                Escanea el código de barras
-              </Text>
-              <Button
-                mode="contained"
-                onPress={() => setCameraScannerVisible(false)}
-                style={styles.cameraCancelButton}
-                icon="close"
-              >
-                Cancelar
-              </Button>
-            </View>
-          </View>
-        </Modal>
-      </Portal>
 
       {/* Modal de filtros */}
       <Portal>
@@ -655,6 +632,33 @@ export default function ProductosScreen() {
           </ScrollView>
         </Modal>
       </Portal>
+
+      {/* Vista de cámara cuando está activa */}
+      {cameraScannerVisible && (
+        <View style={styles.cameraViewContainer}>
+          <CameraView
+            onBarcodeScanned={handleCameraScan}
+            barcodeScannerSettings={{
+              barcodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e', 'code128', 'code39', 'qr'],
+            }}
+            style={styles.cameraView}
+          />
+          <View style={styles.cameraOverlayInline}>
+            <Text variant="titleMedium" style={styles.cameraTitleInline}>
+              Escanea códigos de barras
+            </Text>
+            <Button
+              mode="contained"
+              onPress={() => setCameraScannerVisible(false)}
+              icon="close"
+              compact
+              buttonColor="rgba(0,0,0,0.7)"
+            >
+              Cerrar Cámara
+            </Button>
+          </View>
+        </View>
+      )}
 
       {/* Resumen */}
       <View style={styles.summary}>
@@ -1114,28 +1118,27 @@ const styles = StyleSheet.create({
     margin: 0,
     backgroundColor: 'rgba(255,255,255,0.15)',
   },
-  cameraModalContainer: {
-    flex: 1,
-    backgroundColor: 'black'
+  cameraViewContainer: {
+    height: 250,
+    backgroundColor: 'black',
+    position: 'relative'
   },
-  cameraContainer: {
+  cameraView: {
     flex: 1
   },
-  cameraOverlay: {
+  cameraOverlayInline: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    padding: 20,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 16,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center'
   },
-  cameraTitle: {
+  cameraTitleInline: {
     color: 'white',
-    marginBottom: 16,
-    textAlign: 'center'
-  },
-  cameraCancelButton: {
-    backgroundColor: '#d32f2f'
+    fontWeight: 'bold'
   }
 });

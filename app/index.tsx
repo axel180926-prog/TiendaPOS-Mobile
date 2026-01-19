@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, FlatList, TextInput as RNTextInput, Alert, KeyboardAvoidingView, Platform } from 'react-native';
-import { Button, Card, Text, TextInput, IconButton, Portal, Modal, FAB } from 'react-native-paper';
+import { StyleSheet, View, FlatList, TextInput as RNTextInput, Alert, KeyboardAvoidingView, Platform, Animated } from 'react-native';
+import { Button, Card, Text, TextInput, IconButton, Portal, Modal, FAB, Chip, Badge } from 'react-native-paper';
 
 // Importación de expo-camera
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -8,6 +8,8 @@ import { useCartStore } from '@/lib/store/useCartStore';
 import { useProductStore } from '@/lib/store/useProductStore';
 import { useConfigStore } from '@/lib/store/useConfigStore';
 import { useCajaStore } from '@/lib/store/useCajaStore';
+import { useScannerConfigStore } from '@/lib/store/useScannerConfigStore';
+import { useScannerFeedback } from '@/lib/hooks/useScannerFeedback';
 import { useBarcodeScannerInput } from '@/lib/bluetooth/scanner';
 import { formatearMoneda, generarFolio } from '@/lib/utils/formatters';
 import { imprimirTicket } from '@/lib/bluetooth/printer';
@@ -45,6 +47,16 @@ export default function VentasScreen() {
   // Scanner de cámara
   const [cameraScannerVisible, setCameraScannerVisible] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
+  const [isScanning, setIsScanning] = useState(false);
+  const [torchOn, setTorchOn] = useState(false);
+  const [scannedCount, setScannedCount] = useState(0);
+  const [scanHistory, setScanHistory] = useState<Array<{code: string, time: Date}>>([]);
+  const [showQuickQuantity, setShowQuickQuantity] = useState(false);
+  const [lastScannedProduct, setLastScannedProduct] = useState<any>(null);
+
+  // Configuración y feedback del escáner
+  const scannerConfig = useScannerConfigStore();
+  const { triggerScanSuccess, triggerScanError, showSuccessFlash, flashOpacity } = useScannerFeedback();
 
   // Cargar caja activa y configuración al iniciar (con delay para esperar DB)
   useEffect(() => {
@@ -100,8 +112,29 @@ export default function VentasScreen() {
 
   // Manejar escaneo desde cámara
   const handleCameraScan = ({ type, data }: { type: string; data: string }) => {
-    setCameraScannerVisible(false);
+    // Prevenir escaneos duplicados
+    if (isScanning) return;
+
+    setIsScanning(true);
+
+    // Agregar al historial si está habilitado
+    if (scannerConfig.mostrarHistorial) {
+      setScanHistory(prev => [
+        { code: data, time: new Date() },
+        ...prev.slice(0, scannerConfig.historialTamano - 1)
+      ]);
+    }
+
+    // Incrementar contador
+    if (scannerConfig.mostrarContador) {
+      setScannedCount(prev => prev + 1);
+    }
+
+    // NO cerrar la cámara, mantenerla abierta
     handleBarcodeScanned(data);
+
+    // Resetear el flag después de 1.5 segundos para permitir siguiente escaneo
+    setTimeout(() => setIsScanning(false), 1500);
   };
 
   // Buscar producto por código de barras
@@ -120,11 +153,25 @@ export default function VentasScreen() {
         console.log(`📊 Stock: ${producto.stock}, En carrito: ${cantidadEnCarrito}, Disponible: ${stockDisponible}`);
 
         if (stockDisponible > 0) {
-          agregarProducto(producto, 1);
-          console.log('✅ Producto agregado al carrito');
-          Alert.alert('Producto agregado', `${producto.nombre} - ${formatearMoneda(producto.precioVenta)}`);
+          // Si ya existe en el carrito y el modo rápido está habilitado, mostrar opciones
+          if (itemEnCarrito && scannerConfig.modoRapidoHabilitado && cameraScannerVisible) {
+            setLastScannedProduct(producto);
+            setShowQuickQuantity(true);
+            triggerScanSuccess();
+          } else {
+            // Agregar 1 unidad normalmente
+            agregarProducto(producto, 1);
+            console.log('✅ Producto agregado al carrito');
+            triggerScanSuccess();
+
+            // Solo mostrar alert si no está la cámara abierta
+            if (!cameraScannerVisible) {
+              Alert.alert('Producto agregado', `${producto.nombre} - ${formatearMoneda(producto.precioVenta)}`);
+            }
+          }
         } else {
           console.log('❌ Sin stock disponible');
+          triggerScanError();
           Alert.alert(
             'Sin stock disponible',
             `El producto "${producto.nombre}" no tiene más unidades disponibles.\nStock total: ${producto.stock || 0}\nEn carrito: ${cantidadEnCarrito}`
@@ -132,11 +179,39 @@ export default function VentasScreen() {
         }
       } else {
         console.log('❌ Producto NO encontrado');
+        triggerScanError();
         Alert.alert('Producto no encontrado', `No se encontró un producto con el código: ${codigo}`);
       }
     } catch (error) {
       console.error('❌ Error al buscar producto:', error);
+      triggerScanError();
       Alert.alert('Error', 'No se pudo buscar el producto');
+    }
+  };
+
+  // Funciones del modo rápido de cantidad
+  const handleQuickAdd = (cantidad: number) => {
+    if (lastScannedProduct) {
+      agregarProducto(lastScannedProduct, cantidad);
+      setShowQuickQuantity(false);
+      setLastScannedProduct(null);
+    }
+  };
+
+  const handleQuickCancel = () => {
+    setShowQuickQuantity(false);
+    setLastScannedProduct(null);
+  };
+
+  // Resetear contador cuando se cierra la cámara
+  const handleCloseCamera = () => {
+    setCameraScannerVisible(false);
+    setTorchOn(false);
+    if (scannerConfig.mostrarContador) {
+      setScannedCount(0);
+    }
+    if (scannerConfig.mostrarHistorial) {
+      setScanHistory([]);
     }
   };
 
@@ -455,6 +530,86 @@ export default function VentasScreen() {
         </View>
       )}
 
+      {/* Vista de cámara cuando está activa */}
+      {cameraScannerVisible && (
+        <View style={styles.cameraViewContainer}>
+          <CameraView
+            onBarcodeScanned={handleCameraScan}
+            barcodeScannerSettings={{
+              barcodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e', 'code128', 'code39', 'qr'],
+            }}
+            enableTorch={torchOn}
+            style={styles.cameraView}
+          />
+
+          {/* Marco de escaneo (si está habilitado) */}
+          {scannerConfig.marcoEscaneoVisible && (
+            <View style={styles.scanFrame}>
+              <View style={styles.scanCorner} />
+              <Text style={styles.scanFrameText}>Coloca el código aquí</Text>
+            </View>
+          )}
+
+          {/* Flash de éxito */}
+          {showSuccessFlash && (
+            <Animated.View style={[styles.successFlash, { opacity: flashOpacity }]} />
+          )}
+
+          {/* Overlay superior con controles */}
+          <View style={styles.cameraOverlayInline}>
+            <View style={styles.cameraInfo}>
+              <Text variant="titleMedium" style={styles.cameraTitleInline}>
+                Escanea códigos
+              </Text>
+              {scannerConfig.mostrarContador && scannedCount > 0 && (
+                <Badge style={styles.scanBadge}>{scannedCount}</Badge>
+              )}
+            </View>
+
+            <View style={styles.cameraControls}>
+              {/* Botón de linterna */}
+              {scannerConfig.linternaHabilitada && (
+                <IconButton
+                  icon={torchOn ? "flashlight" : "flashlight-off"}
+                  size={24}
+                  iconColor="#fff"
+                  onPress={() => setTorchOn(!torchOn)}
+                  style={styles.torchButton}
+                />
+              )}
+
+              <Button
+                mode="contained"
+                onPress={handleCloseCamera}
+                icon="close"
+                compact
+                buttonColor="rgba(0,0,0,0.7)"
+              >
+                Cerrar
+              </Button>
+            </View>
+          </View>
+
+          {/* Historial de códigos escaneados */}
+          {scannerConfig.mostrarHistorial && scanHistory.length > 0 && (
+            <View style={styles.scanHistoryContainer}>
+              <Text style={styles.scanHistoryTitle}>Últimos escaneados:</Text>
+              {scanHistory.slice(0, 3).map((item, index) => (
+                <Chip
+                  key={index}
+                  style={styles.scanHistoryChip}
+                  textStyle={styles.scanHistoryText}
+                  compact
+                  onPress={() => handleBarcodeScanned(item.code)}
+                >
+                  {item.code}
+                </Chip>
+              ))}
+            </View>
+          )}
+        </View>
+      )}
+
       {/* Lista de productos en el carrito */}
       <FlatList
         data={items}
@@ -524,35 +679,63 @@ export default function VentasScreen() {
         </Button>
       </View>
 
-      {/* Modal de escáner de cámara */}
+
+      {/* Modal de modo rápido de cantidad */}
       <Portal>
         <Modal
-          visible={cameraScannerVisible}
-          onDismiss={() => setCameraScannerVisible(false)}
-          contentContainerStyle={styles.cameraModalContainer}
+          visible={showQuickQuantity}
+          onDismiss={handleQuickCancel}
+          contentContainerStyle={styles.quickQuantityModal}
         >
-          <View style={styles.cameraContainer}>
-            <CameraView
-              onBarcodeScanned={handleCameraScan}
-              barcodeScannerSettings={{
-                barcodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e', 'code128', 'code39', 'qr'],
-              }}
-              style={StyleSheet.absoluteFillObject}
-            />
-            <View style={styles.cameraOverlay}>
-              <Text variant="headlineSmall" style={styles.cameraTitle}>
-                Escanea el código de barras
-              </Text>
-              <Button
-                mode="contained"
-                onPress={() => setCameraScannerVisible(false)}
-                style={styles.cameraCancelButton}
-                icon="close"
-              >
-                Cancelar
-              </Button>
-            </View>
+          <Text variant="headlineSmall" style={styles.quickQuantityTitle}>
+            {lastScannedProduct?.nombre}
+          </Text>
+          <Text variant="bodyMedium" style={styles.quickQuantitySubtitle}>
+            Ya está en el carrito. ¿Cuántas unidades más agregar?
+          </Text>
+
+          <View style={styles.quickQuantityButtons}>
+            <Button
+              mode="contained"
+              onPress={() => handleQuickAdd(1)}
+              style={styles.quickButton}
+              buttonColor="#4caf50"
+            >
+              +1
+            </Button>
+            <Button
+              mode="contained"
+              onPress={() => handleQuickAdd(2)}
+              style={styles.quickButton}
+              buttonColor="#4caf50"
+            >
+              +2
+            </Button>
+            <Button
+              mode="contained"
+              onPress={() => handleQuickAdd(5)}
+              style={styles.quickButton}
+              buttonColor="#4caf50"
+            >
+              +5
+            </Button>
+            <Button
+              mode="contained"
+              onPress={() => handleQuickAdd(10)}
+              style={styles.quickButton}
+              buttonColor="#4caf50"
+            >
+              +10
+            </Button>
           </View>
+
+          <Button
+            mode="outlined"
+            onPress={handleQuickCancel}
+            style={styles.quickCancelButton}
+          >
+            Cancelar
+          </Button>
         </Modal>
       </Portal>
 
@@ -1141,29 +1324,138 @@ const styles = StyleSheet.create({
   confirmButton: {
     elevation: 4
   },
-  cameraModalContainer: {
-    flex: 1,
-    backgroundColor: 'black'
+  cameraViewContainer: {
+    height: '40%',
+    backgroundColor: 'black',
+    position: 'relative'
   },
-  cameraContainer: {
+  cameraView: {
     flex: 1
   },
-  cameraOverlay: {
+  cameraOverlayInline: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    padding: 20,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 16,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center'
   },
-  cameraTitle: {
-    color: 'white',
-    marginBottom: 16,
-    textAlign: 'center'
+  cameraInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
-  cameraCancelButton: {
-    backgroundColor: '#d32f2f'
+  cameraTitleInline: {
+    color: 'white',
+    fontWeight: 'bold'
+  },
+  cameraControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  torchButton: {
+    margin: 0,
+  },
+  scanBadge: {
+    backgroundColor: '#4caf50',
+  },
+  scanFrame: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -125 }, { translateY: -75 }],
+    width: 250,
+    height: 150,
+    borderWidth: 2,
+    borderColor: '#4caf50',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scanCorner: {
+    position: 'absolute',
+    top: -2,
+    left: -2,
+    width: 30,
+    height: 30,
+    borderTopWidth: 4,
+    borderLeftWidth: 4,
+    borderColor: '#4caf50',
+    borderTopLeftRadius: 12,
+  },
+  scanFrameText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  successFlash: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#4caf50',
+  },
+  scanHistoryContainer: {
+    position: 'absolute',
+    bottom: 16,
+    left: 16,
+    right: 16,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    padding: 12,
+    borderRadius: 12,
+  },
+  scanHistoryTitle: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  scanHistoryChip: {
+    marginVertical: 2,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+  },
+  scanHistoryText: {
+    color: 'white',
+    fontSize: 11,
+  },
+  quickQuantityModal: {
+    backgroundColor: 'white',
+    margin: 20,
+    borderRadius: 16,
+    padding: 24,
+    elevation: 8,
+  },
+  quickQuantityTitle: {
+    textAlign: 'center',
+    marginBottom: 8,
+    fontWeight: 'bold',
+    color: '#1a1a1a',
+  },
+  quickQuantitySubtitle: {
+    textAlign: 'center',
+    marginBottom: 24,
+    color: '#666',
+  },
+  quickQuantityButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  quickButton: {
+    flex: 1,
+  },
+  quickCancelButton: {
+    marginTop: 8,
   },
   ventaExitosaModal: {
     backgroundColor: 'white',
