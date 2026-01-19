@@ -352,39 +352,20 @@ export default function ProductosScreen() {
             {item.codigoBarras}
           </Text>
 
-          {/* Sección de Precios en Grid */}
-          <View style={styles.preciosGrid}>
-            {/* Precio Compra */}
-            <View style={styles.precioCard}>
-              <Text variant="labelSmall" style={styles.precioLabel}>COMPRA</Text>
-              <Text variant="bodyLarge" style={styles.precioCompraValue}>
-                {formatearMoneda(precioCompra)}
-              </Text>
-            </View>
-
-            {/* Precio Venta */}
-            <View style={styles.precioCard}>
-              <Text variant="labelSmall" style={styles.precioLabel}>VENTA</Text>
-              <Text variant="bodyLarge" style={styles.precioVentaValue}>
-                {formatearMoneda(precioVenta)}
-              </Text>
-            </View>
-
-            {/* Ganancia */}
-            <View style={[styles.precioCard, styles.gananciaCard]}>
-              <Text variant="labelSmall" style={styles.precioLabel}>GANANCIA</Text>
-              <Text
-                variant="bodyMedium"
-                style={[styles.gananciaValue, ganancia < 0 && styles.gananciaNegativaValue]}
-              >
-                {formatearMoneda(ganancia)}
+          {/* Sección de Precios en una línea compacta */}
+          <View style={styles.preciosInline}>
+            <Text style={styles.precioInlineText}>
+              💰 <Text style={styles.precioCompraInline}>{formatearMoneda(precioCompra)}</Text>
+              {' → '}
+              <Text style={styles.precioVentaInline}>{formatearMoneda(precioVenta)}</Text>
+              {' | '}
+              <Text style={[styles.gananciaInline, ganancia < 0 && styles.gananciaNegativaInline]}>
+                +{formatearMoneda(ganancia)}
               </Text>
               {precioCompra > 0 && (
-                <Text variant="bodySmall" style={styles.porcentajeNew}>
-                  {porcentajeGanancia.toFixed(1)}%
-                </Text>
+                <Text style={styles.porcentajeInline}> ({porcentajeGanancia.toFixed(1)}%)</Text>
               )}
-            </View>
+            </Text>
           </View>
 
           {/* Stock + Detalles adicionales */}
@@ -644,8 +625,8 @@ export default function ProductosScreen() {
             style={styles.cameraView}
           />
           <View style={styles.cameraOverlayInline}>
-            <Text variant="titleMedium" style={styles.cameraTitleInline}>
-              Escanea códigos de barras
+            <Text variant="titleSmall" style={styles.cameraTitleInline}>
+              Escanear
             </Text>
             <Button
               mode="contained"
@@ -654,7 +635,7 @@ export default function ProductosScreen() {
               compact
               buttonColor="rgba(0,0,0,0.7)"
             >
-              Cerrar Cámara
+              Cerrar
             </Button>
           </View>
         </View>
@@ -723,8 +704,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 16,
+    paddingTop: 12,
+    paddingBottom: 12,
     position: 'relative',
     backgroundColor: '#2c5f7c',
     elevation: 8,
@@ -737,8 +718,9 @@ const styles = StyleSheet.create({
     flex: 1,
     elevation: 0,
     backgroundColor: '#ffffff',
-    fontSize: 15,
-    borderRadius: 12,
+    fontSize: 14,
+    borderRadius: 10,
+    height: 44,
   },
   filterButton: {
     margin: 0,
@@ -958,7 +940,7 @@ const styles = StyleSheet.create({
   },
   // Nuevos estilos mejorados
   cardContent: {
-    padding: 18,
+    padding: 12,
   },
   cardHeaderNew: {
     flexDirection: 'row',
@@ -1027,11 +1009,11 @@ const styles = StyleSheet.create({
   precioCard: {
     flex: 1,
     backgroundColor: '#f8f9fa',
-    borderRadius: 10,
-    padding: 14,
+    borderRadius: 8,
+    padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 76,
+    minHeight: 64,
     elevation: 1,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -1051,20 +1033,20 @@ const styles = StyleSheet.create({
   precioCompraValue: {
     color: '#e65100',
     fontWeight: '800',
-    fontSize: 19,
-    letterSpacing: 0.3,
+    fontSize: 16,
+    letterSpacing: 0.2,
   },
   precioVentaValue: {
     color: '#1976d2',
     fontWeight: '800',
-    fontSize: 19,
-    letterSpacing: 0.3,
+    fontSize: 16,
+    letterSpacing: 0.2,
   },
   gananciaValue: {
     color: '#2e7d32',
     fontWeight: '800',
-    fontSize: 18,
-    letterSpacing: 0.3,
+    fontSize: 15,
+    letterSpacing: 0.2,
   },
   gananciaNegativaValue: {
     color: '#d32f2f',
@@ -1119,7 +1101,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.15)',
   },
   cameraViewContainer: {
-    height: 250,
+    height: 150,
     backgroundColor: 'black',
     position: 'relative'
   },
@@ -1140,5 +1122,39 @@ const styles = StyleSheet.create({
   cameraTitleInline: {
     color: 'white',
     fontWeight: 'bold'
-  }
+  },
+  // Estilos para precios inline (más compactos)
+  preciosInline: {
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 12,
+  },
+  precioInlineText: {
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  precioCompraInline: {
+    color: '#e65100',
+    fontWeight: '800',
+    fontSize: 15,
+  },
+  precioVentaInline: {
+    color: '#1976d2',
+    fontWeight: '800',
+    fontSize: 15,
+  },
+  gananciaInline: {
+    color: '#2e7d32',
+    fontWeight: '800',
+    fontSize: 15,
+  },
+  gananciaNegativaInline: {
+    color: '#d32f2f',
+  },
+  porcentajeInline: {
+    color: '#4caf50',
+    fontWeight: '700',
+    fontSize: 13,
+  },
 });
