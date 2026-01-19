@@ -76,6 +76,14 @@ export function DrawerContent(props: DrawerContentComponentProps) {
       gradient: ['#FFB74D', '#FF9800']
     },
     {
+      title: 'Dashboard Ganancias',
+      icon: 'chart-line',
+      route: '/dashboard',
+      group: 'reportes',
+      color: '#9C27B0',
+      gradient: ['#AB47BC', '#9C27B0']
+    },
+    {
       title: 'Reportes',
       icon: 'chart-bar',
       route: '/reportes',

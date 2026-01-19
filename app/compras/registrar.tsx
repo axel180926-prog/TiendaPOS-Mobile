@@ -3,21 +3,13 @@ import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { TextInput, Button, Card, Menu, List, IconButton, Text, Divider } from 'react-native-paper';
 import { router } from 'expo-router';
 import { db } from '@/lib/database';
-import { compras, compraItems, proveedores, productos } from '@/lib/database/schema';
+import { compras, compraItems, proveedores, productos, type Producto } from '@/lib/database/schema';
 import { eq } from 'drizzle-orm';
 
 type Proveedor = {
   id: number;
   nombre: string;
   formaPago: string | null;
-};
-
-type Producto = {
-  id: number;
-  nombre: string;
-  codigoBarras: string | null;
-  precio: number;
-  stock: number;
 };
 
 type ItemCompra = {
@@ -68,13 +60,7 @@ export default function RegistrarCompraScreen() {
         formaPago: p.formaPago
       })));
 
-      setProductosList(prods.map(p => ({
-        id: p.id,
-        nombre: p.nombre,
-        codigoBarras: p.codigoBarras,
-        precio: p.precioVenta,
-        stock: p.stock || 0
-      })));
+      setProductosList(prods);
     } catch (error) {
       console.error('Error al cargar datos:', error);
       Alert.alert('Error', 'No se pudieron cargar los datos');

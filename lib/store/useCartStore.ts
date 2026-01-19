@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { Producto } from '../database/schema';
+import { useConfigStore } from './useConfigStore';
 
 export interface ProductoCarrito extends Producto {
   cantidad: number;
@@ -100,8 +101,14 @@ export const useCartStore = create<CartState>((set, get) => ({
   calcularTotales: () => {
     const items = get().items;
     const subtotal = items.reduce((acc, item) => acc + item.subtotal, 0);
-    const iva = subtotal * 0.16; // 16% de IVA
-    const total = subtotal + iva;
+
+    console.log('💰 Calculando totales del carrito:');
+    console.log('  - Subtotal:', subtotal);
+    console.log('  - Total:', subtotal);
+
+    // Sin IVA - el total es igual al subtotal
+    const iva = 0;
+    const total = subtotal;
 
     set({ subtotal, iva, total });
   }

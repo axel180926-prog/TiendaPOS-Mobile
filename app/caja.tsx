@@ -28,6 +28,7 @@ export default function CajaScreen() {
   const [modalCierre, setModalCierre] = useState(false);
   const [montoFinal, setMontoFinal] = useState('');
   const [notasCierre, setNotasCierre] = useState('');
+  const [resumenCaja, setResumenCaja] = useState<any>(null);
 
   // Modal de movimiento
   const [modalMovimiento, setModalMovimiento] = useState(false);
@@ -65,6 +66,20 @@ export default function CajaScreen() {
     }
   };
 
+  const handleAbrirModalCierre = async () => {
+    if (!cajaActiva) return;
+
+    try {
+      // Obtener resumen completo con movimientos y ventas
+      const resumen = await queries.obtenerResumenCompletoCaja(cajaActiva.id);
+      setResumenCaja(resumen);
+      setModalCierre(true);
+    } catch (error) {
+      console.error('Error al obtener resumen:', error);
+      Alert.alert('Error', 'No se pudo cargar el resumen de caja');
+    }
+  };
+
   const handleCerrarCaja = async () => {
     if (!cajaActiva) return;
     const monto = parseFloat(montoFinal);
@@ -92,6 +107,7 @@ export default function CajaScreen() {
     setModalCierre(false);
     setMontoFinal('');
     setNotasCierre('');
+    setResumenCaja(null);
     cargarDatos();
   };
 
@@ -114,23 +130,26 @@ export default function CajaScreen() {
       <ScrollView style={styles.scrollView}>
         {/* Estado actual */}
         <Card style={styles.card}>
-          <Card.Title title="Estado de Caja" />
+          <Card.Title
+            title="Estado de Caja"
+            titleStyle={styles.cardTitle}
+          />
           <Card.Content>
             {cajaActiva ? (
               <View>
                 <View style={styles.row}>
-                  <Text variant="labelLarge">Estado:</Text>
+                  <Text variant="titleMedium" style={styles.labelText}>Estado:</Text>
                   <Text variant="bodyLarge" style={styles.statusOpen}>ABIERTA</Text>
                 </View>
                 <View style={styles.row}>
-                  <Text variant="labelLarge">Apertura:</Text>
-                  <Text variant="bodyLarge">
-                    {cajaActiva.fechaApertura ? formatearFecha(new Date(cajaActiva.fechaApertura)) : 'N/A'}
+                  <Text variant="titleMedium" style={styles.labelText}>Apertura:</Text>
+                  <Text variant="titleMedium" style={styles.valueText}>
+                    {formatearFecha(cajaActiva.fechaApertura).split(' ')[0]}
                   </Text>
                 </View>
                 <View style={styles.row}>
-                  <Text variant="labelLarge">Monto Inicial:</Text>
-                  <Text variant="bodyLarge">{formatearMoneda(cajaActiva.montoInicial || 0)}</Text>
+                  <Text variant="titleMedium" style={styles.labelText}>Monto Inicial:</Text>
+                  <Text variant="titleLarge" style={styles.moneyHighlight}>{formatearMoneda(cajaActiva.montoInicial || 0)}</Text>
                 </View>
 
                 <Divider style={styles.divider} />
@@ -146,7 +165,7 @@ export default function CajaScreen() {
                   </Button>
                   <Button
                     mode="contained"
-                    onPress={() => setModalCierre(true)}
+                    onPress={handleAbrirModalCierre}
                     style={[styles.button, styles.closeButton]}
                     icon="lock"
                   >
@@ -174,7 +193,10 @@ export default function CajaScreen() {
 
         {/* Historial */}
         <Card style={styles.card}>
-          <Card.Title title="Historial de Cierres" />
+          <Card.Title
+            title="Historial de Cierres"
+            titleStyle={styles.cardTitle}
+          />
           <Card.Content>
             <DataTable>
               <DataTable.Header>
@@ -187,7 +209,7 @@ export default function CajaScreen() {
               {historial.map((item) => (
                 <DataTable.Row key={item.id}>
                   <DataTable.Cell>
-                    {item.fechaCierre ? formatearFecha(new Date(item.fechaCierre)) : 'Abierta'}
+                    {item.fechaCierre ? formatearFecha(item.fechaCierre) : 'Abierta'}
                   </DataTable.Cell>
                   <DataTable.Cell numeric>
                     {formatearMoneda(item.montoInicial || 0)}
@@ -235,34 +257,94 @@ export default function CajaScreen() {
 
       {/* Modal de Cierre */}
       <Portal>
-        <Modal visible={modalCierre} onDismiss={() => setModalCierre(false)} contentContainerStyle={styles.modal}>
-          <Text variant="titleLarge" style={styles.modalTitle}>Cerrar Caja</Text>
-          <TextInput
-            label="Monto Final en Caja"
-            value={montoFinal}
-            onChangeText={setMontoFinal}
-            keyboardType="numeric"
-            mode="outlined"
-            style={styles.input}
-            left={<TextInput.Affix text="$" />}
-          />
-          <TextInput
-            label="Notas (opcional)"
-            value={notasCierre}
-            onChangeText={setNotasCierre}
-            mode="outlined"
-            multiline
-            numberOfLines={3}
-            style={styles.input}
-          />
-          <View style={styles.modalButtons}>
-            <Button onPress={() => setModalCierre(false)} style={styles.modalButton}>
-              Cancelar
-            </Button>
-            <Button mode="contained" onPress={handleCerrarCaja} style={styles.modalButton} loading={loading}>
-              Cerrar
-            </Button>
-          </View>
+        <Modal visible={modalCierre} onDismiss={() => { setModalCierre(false); setResumenCaja(null); }} contentContainerStyle={styles.modal}>
+          <ScrollView>
+            <Text variant="titleLarge" style={styles.modalTitle}>Cerrar Caja</Text>
+
+            {/* Resumen de Ventas y Movimientos */}
+            {resumenCaja && (
+              <View style={styles.resumenContainer}>
+                <Text variant="titleMedium" style={styles.resumenTitle}>Resumen del Día</Text>
+
+                <View style={styles.resumenRow}>
+                  <Text variant="bodyMedium">Monto Inicial:</Text>
+                  <Text variant="bodyMedium" style={styles.moneyText}>
+                    {formatearMoneda(resumenCaja.caja.montoInicial)}
+                  </Text>
+                </View>
+
+                <Divider style={styles.divider} />
+
+                <Text variant="labelLarge" style={styles.sectionLabel}>Ventas</Text>
+                <View style={styles.resumenRow}>
+                  <Text variant="bodySmall">Efectivo:</Text>
+                  <Text variant="bodySmall" style={styles.positiveText}>
+                    +{formatearMoneda(resumenCaja.ventas.totalEfectivo)}
+                  </Text>
+                </View>
+                <View style={styles.resumenRow}>
+                  <Text variant="bodySmall">Tarjeta:</Text>
+                  <Text variant="bodySmall">{formatearMoneda(resumenCaja.ventas.totalTarjeta)}</Text>
+                </View>
+                <View style={styles.resumenRow}>
+                  <Text variant="bodySmall">Transferencia:</Text>
+                  <Text variant="bodySmall">{formatearMoneda(resumenCaja.ventas.totalTransferencia)}</Text>
+                </View>
+
+                <Divider style={styles.divider} />
+
+                <Text variant="labelLarge" style={styles.sectionLabel}>Movimientos de Caja</Text>
+                <View style={styles.resumenRow}>
+                  <Text variant="bodySmall">Depósitos:</Text>
+                  <Text variant="bodySmall" style={styles.positiveText}>
+                    +{formatearMoneda(resumenCaja.movimientos.totalDepositos)}
+                  </Text>
+                </View>
+                <View style={styles.resumenRow}>
+                  <Text variant="bodySmall">Retiros:</Text>
+                  <Text variant="bodySmall" style={styles.negativeText}>
+                    -{formatearMoneda(resumenCaja.movimientos.totalRetiros)}
+                  </Text>
+                </View>
+
+                <Divider style={styles.divider} />
+
+                <View style={styles.resumenRow}>
+                  <Text variant="titleMedium" style={{ fontWeight: 'bold' }}>Monto Esperado:</Text>
+                  <Text variant="titleMedium" style={[styles.moneyText, { fontWeight: 'bold' }]}>
+                    {formatearMoneda(resumenCaja.montoEsperado)}
+                  </Text>
+                </View>
+              </View>
+            )}
+
+            <TextInput
+              label="Monto Final en Caja"
+              value={montoFinal}
+              onChangeText={setMontoFinal}
+              keyboardType="numeric"
+              mode="outlined"
+              style={styles.input}
+              left={<TextInput.Affix text="$" />}
+            />
+            <TextInput
+              label="Notas (opcional)"
+              value={notasCierre}
+              onChangeText={setNotasCierre}
+              mode="outlined"
+              multiline
+              numberOfLines={3}
+              style={styles.input}
+            />
+            <View style={styles.modalButtons}>
+              <Button onPress={() => { setModalCierre(false); setResumenCaja(null); }} style={styles.modalButton}>
+                Cancelar
+              </Button>
+              <Button mode="contained" onPress={handleCerrarCaja} style={styles.modalButton} loading={loading}>
+                Cerrar
+              </Button>
+            </View>
+          </ScrollView>
         </Modal>
       </Portal>
 
@@ -342,86 +424,202 @@ export default function CajaScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#e8eff5',
   },
   scrollView: {
     flex: 1,
   },
   card: {
-    margin: 10,
+    margin: 16,
+    marginBottom: 12,
+    borderRadius: 16,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#1a1a1a',
+    letterSpacing: 0.3,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 4,
+  },
+  labelText: {
+    fontWeight: '700',
+    color: '#555',
+    fontSize: 16,
+  },
+  valueText: {
+    fontWeight: '700',
+    color: '#1a1a1a',
+    fontSize: 16,
+  },
+  moneyHighlight: {
+    fontWeight: '900',
+    color: '#2c5f7c',
+    fontSize: 22,
+    letterSpacing: 0.3,
   },
   statusOpen: {
     color: '#4caf50',
-    fontWeight: 'bold',
+    fontWeight: '900',
+    fontSize: 20,
+    letterSpacing: 0.5,
+    textShadowColor: 'rgba(76, 175, 80, 0.2)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
   statusClosed: {
     color: '#f44336',
-    fontWeight: 'bold',
+    fontWeight: '900',
+    fontSize: 20,
+    letterSpacing: 0.5,
   },
   divider: {
-    marginVertical: 15,
+    marginVertical: 20,
+    height: 2,
+    backgroundColor: '#e0e0e0',
   },
   buttonRow: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 12,
+    marginTop: 8,
   },
   button: {
     flex: 1,
+    borderRadius: 12,
+    elevation: 3,
   },
   closeButton: {
-    backgroundColor: '#f44336',
+    backgroundColor: '#e53935',
+    elevation: 4,
   },
   noCaja: {
     textAlign: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
+    marginTop: 8,
     color: '#666',
+    fontSize: 17,
+    fontWeight: '600',
+    lineHeight: 24,
   },
   openButton: {
-    marginTop: 10,
+    marginTop: 12,
     backgroundColor: '#4caf50',
+    borderRadius: 12,
+    elevation: 4,
+    shadowColor: '#4caf50',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
   positive: {
     color: '#4caf50',
+    fontWeight: '800',
+    fontSize: 15,
   },
   negative: {
     color: '#f44336',
+    fontWeight: '800',
+    fontSize: 15,
   },
   neutral: {
     color: '#666',
+    fontWeight: '700',
+    fontSize: 15,
   },
   modal: {
     backgroundColor: 'white',
-    padding: 20,
+    padding: 24,
     margin: 20,
-    borderRadius: 8,
+    borderRadius: 20,
+    elevation: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
   },
   modalTitle: {
-    marginBottom: 20,
-    fontWeight: 'bold',
+    marginBottom: 24,
+    fontWeight: '900',
+    fontSize: 24,
+    color: '#1a1a1a',
+    textAlign: 'center',
+    letterSpacing: 0.3,
   },
   input: {
-    marginBottom: 15,
+    marginBottom: 16,
   },
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    gap: 10,
-    marginTop: 10,
+    gap: 12,
+    marginTop: 16,
   },
   modalButton: {
-    minWidth: 100,
+    minWidth: 110,
+    borderRadius: 10,
   },
   tipoButtons: {
     flexDirection: 'row',
-    gap: 8,
-    marginBottom: 15,
+    gap: 10,
+    marginBottom: 20,
   },
   tipoButton: {
     flex: 1,
+    borderRadius: 10,
+    borderWidth: 2,
+  },
+  resumenContainer: {
+    backgroundColor: '#e3f2fd',
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 24,
+    borderWidth: 2,
+    borderColor: '#2196F3',
+  },
+  resumenTitle: {
+    fontWeight: '900',
+    marginBottom: 16,
+    textAlign: 'center',
+    fontSize: 20,
+    color: '#1a1a1a',
+    letterSpacing: 0.3,
+  },
+  resumenRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 6,
+  },
+  sectionLabel: {
+    fontWeight: '800',
+    marginTop: 12,
+    marginBottom: 8,
+    color: '#2c5f7c',
+    fontSize: 16,
+    letterSpacing: 0.3,
+  },
+  moneyText: {
+    color: '#2c5f7c',
+    fontWeight: '800',
+    fontSize: 16,
+  },
+  positiveText: {
+    color: '#2e7d32',
+    fontWeight: '800',
+    fontSize: 16,
+  },
+  negativeText: {
+    color: '#c62828',
+    fontWeight: '800',
+    fontSize: 16,
   },
 });

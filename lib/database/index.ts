@@ -59,19 +59,62 @@ export async function initDatabase() {
         await expo.execAsync('ALTER TABLE productos ADD COLUMN precio_compra REAL DEFAULT 0');
       }
 
-      // Agregar precio_venta si no existe (renombrar desde precio si existe)
-      if (!hasColumnas.precio_venta) {
-        const hasPrecio = tableInfo.some((col: any) => col.name === 'precio');
-        if (hasPrecio) {
-          console.log('📝 Renombrando columna precio a precio_venta...');
-          // SQLite no soporta RENAME COLUMN directamente en versiones antiguas
-          // Necesitamos copiar los datos
-          await expo.execAsync('ALTER TABLE productos ADD COLUMN precio_venta REAL DEFAULT 0');
-          await expo.execAsync('UPDATE productos SET precio_venta = precio WHERE precio IS NOT NULL');
-        } else {
-          console.log('📝 Agregando columna precio_venta...');
-          await expo.execAsync('ALTER TABLE productos ADD COLUMN precio_venta REAL DEFAULT 0');
-        }
+      // Migración completa: eliminar campo 'precio' viejo y usar solo 'precio_venta'
+      const hasPrecio = tableInfo.some((col: any) => col.name === 'precio');
+      const hasPrecioVenta = tableInfo.some((col: any) => col.name === 'precio_venta');
+
+      if (hasPrecio && !hasPrecioVenta) {
+        console.log('📝 Migrando de "precio" a "precio_venta"...');
+        // Crear tabla temporal con estructura nueva
+        await expo.execAsync(`
+          CREATE TABLE productos_new (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            codigo_barras TEXT UNIQUE NOT NULL,
+            nombre TEXT NOT NULL,
+            precio_compra REAL DEFAULT 0,
+            precio_venta REAL NOT NULL,
+            stock INTEGER DEFAULT 0,
+            stock_minimo INTEGER DEFAULT 5,
+            categoria TEXT,
+            marca TEXT,
+            presentacion TEXT,
+            descripcion TEXT,
+            sku TEXT,
+            unidad_medida TEXT DEFAULT 'Pieza',
+            activo INTEGER DEFAULT 1,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+          )
+        `);
+
+        // Copiar datos de tabla vieja a nueva
+        await expo.execAsync(`
+          INSERT INTO productos_new (
+            id, codigo_barras, nombre, precio_compra, precio_venta, stock, stock_minimo,
+            categoria, marca, presentacion, descripcion, sku, unidad_medida, activo, created_at
+          )
+          SELECT
+            id, codigo_barras, nombre,
+            COALESCE(precio_compra, 0),
+            precio,
+            COALESCE(stock, 0),
+            COALESCE(stock_minimo, 5),
+            categoria, marca, presentacion, descripcion, sku,
+            COALESCE(unidad_medida, 'Pieza'),
+            COALESCE(activo, 1),
+            COALESCE(created_at, CURRENT_TIMESTAMP)
+          FROM productos
+        `);
+
+        // Eliminar tabla vieja
+        await expo.execAsync('DROP TABLE productos');
+
+        // Renombrar tabla nueva
+        await expo.execAsync('ALTER TABLE productos_new RENAME TO productos');
+
+        console.log('✅ Migración completada: tabla productos actualizada');
+      } else if (!hasPrecioVenta) {
+        console.log('📝 Agregando columna precio_venta...');
+        await expo.execAsync('ALTER TABLE productos ADD COLUMN precio_venta REAL NOT NULL DEFAULT 0');
       }
 
       // Agregar marca si no existe

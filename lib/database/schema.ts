@@ -167,6 +167,7 @@ export const configuracion = sqliteTable('configuracion', {
   descuentoMaximo: real('descuento_maximo').default(50),
   controlStock: integer('control_stock', { mode: 'boolean' }).default(true),
   alertaStockBajo: integer('alerta_stock_bajo', { mode: 'boolean' }).default(true),
+  imprimirTicketAutomatico: integer('imprimir_ticket_automatico', { mode: 'boolean' }).default(true),
 
   // Configuración de caja
   montoInicialRequerido: integer('monto_inicial_requerido', { mode: 'boolean' }).default(true),

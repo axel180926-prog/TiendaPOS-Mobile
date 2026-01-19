@@ -21,31 +21,37 @@ export function formatearNumero(cantidad: number, decimales: number = 2): string
 /**
  * Formatea una fecha en formato corto (dd/MM/yyyy)
  */
-export function formatearFechaCorta(fecha: Date | string): string {
+export function formatearFechaCorta(fecha: Date | string | null | undefined): string {
+  if (!fecha) return '-';
   const fechaObj = typeof fecha === 'string' ? new Date(fecha) : fecha;
+  if (isNaN(fechaObj.getTime())) return '-';
   return format(fechaObj, 'dd/MM/yyyy', { locale: es });
 }
 
 /**
  * Formatea una fecha con hora (dd/MM/yyyy HH:mm)
  */
-export function formatearFechaHora(fecha: Date | string): string {
+export function formatearFechaHora(fecha: Date | string | null | undefined): string {
+  if (!fecha) return '-';
   const fechaObj = typeof fecha === 'string' ? new Date(fecha) : fecha;
+  if (isNaN(fechaObj.getTime())) return '-';
   return format(fechaObj, 'dd/MM/yyyy HH:mm', { locale: es });
 }
 
 /**
  * Alias de formatearFechaHora para compatibilidad
  */
-export function formatearFecha(fecha: Date | string): string {
+export function formatearFecha(fecha: Date | string | null | undefined): string {
   return formatearFechaHora(fecha);
 }
 
 /**
  * Formatea una fecha de forma relativa (hace 5 minutos, ayer, etc.)
  */
-export function formatearFechaRelativa(fecha: Date | string): string {
+export function formatearFechaRelativa(fecha: Date | string | null | undefined): string {
+  if (!fecha) return '-';
   const fechaObj = typeof fecha === 'string' ? new Date(fecha) : fecha;
+  if (isNaN(fechaObj.getTime())) return '-';
   const ahora = new Date();
   const diferencia = ahora.getTime() - fechaObj.getTime();
 

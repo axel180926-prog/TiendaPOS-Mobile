@@ -347,10 +347,34 @@ export default function ProductosScreen() {
             {item.nombre}
           </Text>
 
-          {/* Código de barras */}
-          <Text variant="bodySmall" style={styles.codigoBarras}>
-            {item.codigoBarras}
-          </Text>
+          {/* Código de barras + Marca + Presentación + Stock inline */}
+          <View style={styles.codigoStockRow}>
+            <View style={styles.codigoYDetalles}>
+              <Text variant="bodySmall" style={styles.codigoBarras}>
+                {item.codigoBarras}
+              </Text>
+              {(item.marca?.trim() || item.presentacion?.trim()) && (
+                <View style={styles.detallesInline}>
+                  {item.marca?.trim() && (
+                    <Text variant="bodySmall" style={styles.detalleInlineText} numberOfLines={1}>
+                      🏷️ {item.marca.trim()}
+                    </Text>
+                  )}
+                  {item.presentacion?.trim() && (
+                    <Text variant="bodySmall" style={styles.detalleInlineText} numberOfLines={1}>
+                      📏 {item.presentacion.trim()}
+                    </Text>
+                  )}
+                </View>
+              )}
+            </View>
+            <Text
+              variant="bodySmall"
+              style={[styles.stockInline, stockBajo && styles.stockInlineBajo]}
+            >
+              📦 {item.stock || 0}
+            </Text>
+          </View>
 
           {/* Sección de Precios en una línea compacta */}
           <View style={styles.preciosInline}>
@@ -366,34 +390,6 @@ export default function ProductosScreen() {
                 <Text style={styles.porcentajeInline}> ({porcentajeGanancia.toFixed(1)}%)</Text>
               )}
             </Text>
-          </View>
-
-          {/* Stock + Detalles adicionales */}
-          <View style={styles.footerInfo}>
-            <View style={styles.stockContainer}>
-              <Text variant="labelSmall" style={styles.stockLabel}>STOCK</Text>
-              <Text
-                variant="titleSmall"
-                style={[styles.stockValue, stockBajo && styles.stockBajoValue]}
-              >
-                {item.stock || 0} {item.unidadMedida || 'pzas'}
-              </Text>
-            </View>
-
-            {(item.marca?.trim() || item.presentacion?.trim()) && (
-              <View style={styles.detallesAdicionales}>
-                {item.marca?.trim() && (
-                  <Text variant="bodySmall" style={styles.detalleText} numberOfLines={1}>
-                    {item.marca.trim()}
-                  </Text>
-                )}
-                {item.presentacion?.trim() && (
-                  <Text variant="bodySmall" style={styles.detalleText} numberOfLines={1}>
-                    {item.presentacion.trim()}
-                  </Text>
-                )}
-              </View>
-            )}
           </View>
         </Card.Content>
       </Card>
@@ -994,12 +990,41 @@ const styles = StyleSheet.create({
     fontSize: 20,
     letterSpacing: 0.2,
   },
+  codigoStockRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  codigoYDetalles: {
+    flex: 1,
+    marginRight: 8,
+  },
   codigoBarras: {
     color: '#888',
     fontSize: 13,
-    marginBottom: 14,
     fontWeight: '600',
     letterSpacing: 0.5,
+    marginBottom: 4,
+  },
+  detallesInline: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  detalleInlineText: {
+    color: '#666',
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  stockInline: {
+    color: '#2c5f7c',
+    fontSize: 13,
+    fontWeight: '800',
+    letterSpacing: 0.3,
+  },
+  stockInlineBajo: {
+    color: '#f44336',
   },
   preciosGrid: {
     flexDirection: 'row',
@@ -1059,42 +1084,19 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   footerInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: 12,
-    borderTopWidth: 2,
+    paddingTop: 10,
+    borderTopWidth: 1,
     borderTopColor: '#e8eff5',
   },
-  stockContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  stockLabel: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: '#555',
-    letterSpacing: 1,
-  },
-  stockValue: {
-    fontWeight: '800',
-    color: '#2c5f7c',
-    fontSize: 18,
-    letterSpacing: 0.3,
-  },
-  stockBajoValue: {
-    color: '#f44336',
-  },
   detallesAdicionales: {
-    flex: 1,
-    alignItems: 'flex-end',
-    gap: 3,
+    flexDirection: 'row',
+    gap: 12,
+    flexWrap: 'wrap',
   },
   detalleText: {
-    color: '#999',
+    color: '#666',
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   cameraButton: {
     margin: 0,

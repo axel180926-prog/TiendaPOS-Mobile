@@ -241,6 +241,18 @@ export async function obtenerTotalVentasDelDia() {
   return result[0]?.total || 0;
 }
 
+export async function obtenerVentasPorRango(fechaInicio: Date, fechaFin: Date) {
+  return await db.select()
+    .from(schema.ventas)
+    .where(
+      and(
+        sql`${schema.ventas.fecha} >= ${fechaInicio.toISOString()}`,
+        sql`${schema.ventas.fecha} <= ${fechaFin.toISOString()}`
+      )
+    )
+    .orderBy(desc(schema.ventas.fecha));
+}
+
 /**
  * Revierte una venta (cancela y devuelve stock)
  * IMPORTANTE: Solo debe usarse para cancelaciones autorizadas
@@ -361,11 +373,18 @@ export async function obtenerResumenCompletoCaja(cajaId: number) {
   const caja = await db.select().from(schema.cajas).where(eq(schema.cajas.id, cajaId));
   if (!caja[0]) throw new Error('Caja no encontrada');
 
-  // Ventas en efectivo del periodo
-  const resumen = await obtenerResumenVentas(
-    caja[0].fechaApertura!.split('T')[0],
-    new Date().toISOString().split('T')[0]
-  );
+  // Ventas de esta caja específica (filtrado por cajaId)
+  const ventasCaja = await db.select({
+    totalVentas: sql<number>`COUNT(*)`,
+    totalIngresos: sql<number>`COALESCE(SUM(${schema.ventas.total}), 0)`,
+    totalEfectivo: sql<number>`COALESCE(SUM(CASE WHEN ${schema.ventas.metodoPago} = 'efectivo' THEN ${schema.ventas.total} ELSE 0 END), 0)`,
+    totalTarjeta: sql<number>`COALESCE(SUM(CASE WHEN ${schema.ventas.metodoPago} = 'tarjeta' THEN ${schema.ventas.total} ELSE 0 END), 0)`,
+    totalTransferencia: sql<number>`COALESCE(SUM(CASE WHEN ${schema.ventas.metodoPago} = 'transferencia' THEN ${schema.ventas.total} ELSE 0 END), 0)`
+  })
+  .from(schema.ventas)
+  .where(eq(schema.ventas.cajaId, cajaId));
+
+  const resumen = ventasCaja[0];
 
   // Movimientos de caja (retiros y depósitos)
   const movimientos = await db.select({

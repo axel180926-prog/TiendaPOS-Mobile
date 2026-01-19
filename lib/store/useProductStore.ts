@@ -12,7 +12,7 @@ interface ProductState {
   cargarProductos: () => Promise<void>;
   cargarProductosBajoStock: () => Promise<void>;
   buscarProductos: (query: string) => Promise<Producto[]>;
-  obtenerProductoPorCodigo: (codigoBarras: string) => Promise<Producto | null>;
+  obtenerProductoPorCodigoBarras: (codigoBarras: string) => Promise<Producto | null>;
   crearProducto: (producto: NuevoProducto) => Promise<Producto | null>;
   actualizarProducto: (id: number, datos: Partial<NuevoProducto>) => Promise<Producto | null>;
   eliminarProducto: (id: number) => Promise<void>;
@@ -61,7 +61,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
     }
   },
 
-  obtenerProductoPorCodigo: async (codigoBarras: string) => {
+  obtenerProductoPorCodigoBarras: async (codigoBarras: string) => {
     try {
       const producto = await queries.obtenerProductoPorCodigoBarras(codigoBarras);
       return producto;

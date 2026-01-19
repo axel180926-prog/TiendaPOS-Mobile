@@ -59,34 +59,50 @@ export default function InventarioScreen() {
 
     return (
       <Card style={styles.card}>
-        <Card.Content>
+        <Card.Content style={styles.cardContent}>
           <View style={styles.header}>
             <View style={styles.info}>
-              <Text variant="titleMedium">{item.nombre}</Text>
-              <Text variant="bodySmall" style={styles.codigo}>{item.codigoBarras}</Text>
+              <Text style={styles.nombreProducto}>{item.nombre}</Text>
+              <Text style={styles.codigo}>{item.codigoBarras}</Text>
             </View>
-            {agotado && <Chip mode="flat" textStyle={styles.agotadoText}>AGOTADO</Chip>}
-            {!agotado && stockBajo && <Chip mode="flat" textStyle={styles.bajoText}>BAJO</Chip>}
+            {agotado && (
+              <Chip
+                mode="flat"
+                textStyle={styles.agotadoText}
+                style={styles.chipAgotado}
+              >
+                AGOTADO
+              </Chip>
+            )}
+            {!agotado && stockBajo && (
+              <Chip
+                mode="flat"
+                textStyle={styles.bajoText}
+                style={styles.chipBajo}
+              >
+                BAJO
+              </Chip>
+            )}
           </View>
 
           <View style={styles.details}>
             <View style={styles.row}>
-              <Text variant="labelMedium">Stock Actual:</Text>
-              <Text variant="bodyLarge" style={[styles.stock, agotado && styles.stockAgotado]}>
+              <Text style={styles.label}>Stock Actual:</Text>
+              <Text style={[styles.stock, agotado && styles.stockAgotado]}>
                 {item.stock || 0}
               </Text>
             </View>
             <View style={styles.row}>
-              <Text variant="labelMedium">Stock Mínimo:</Text>
-              <Text variant="bodyMedium">{item.stockMinimo || 5}</Text>
+              <Text style={styles.label}>Stock Mínimo:</Text>
+              <Text style={styles.labelValue}>{item.stockMinimo || 5}</Text>
             </View>
             <View style={styles.row}>
-              <Text variant="labelMedium">Precio:</Text>
-              <Text variant="bodyMedium">{formatearMoneda(item.precioVenta || 0)}</Text>
+              <Text style={styles.label}>Precio Venta:</Text>
+              <Text style={styles.precioValue}>{formatearMoneda(item.precioVenta || 0)}</Text>
             </View>
-            <View style={styles.row}>
-              <Text variant="labelMedium">Valor en Inventario:</Text>
-              <Text variant="bodyLarge" style={styles.valor}>
+            <View style={styles.rowDestacado}>
+              <Text style={styles.labelDestacado}>Valor en Inventario:</Text>
+              <Text style={styles.valor}>
                 {formatearMoneda((item.stock || 0) * (item.precioVenta || 0))}
               </Text>
             </View>
@@ -151,70 +167,170 @@ export default function InventarioScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#e8eff5',
   },
   searchbar: {
-    margin: 10,
+    marginHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 12,
+    backgroundColor: '#ffffff',
+    elevation: 4,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
   },
   segmented: {
-    marginHorizontal: 10,
-    marginBottom: 10,
+    marginHorizontal: 16,
+    marginBottom: 12,
+    backgroundColor: '#ffffff',
+    elevation: 2,
+    borderRadius: 12,
   },
   summaryCard: {
-    margin: 10,
+    marginHorizontal: 16,
+    marginBottom: 16,
     backgroundColor: '#2c5f7c',
+    elevation: 8,
+    borderRadius: 16,
+    shadowColor: '#2c5f7c',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   summaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 4,
+    paddingVertical: 6,
   },
   totalValor: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontWeight: '900',
+    fontSize: 20,
+    letterSpacing: 0.3,
   },
   list: {
-    padding: 10,
+    padding: 16,
   },
   card: {
-    marginBottom: 10,
+    marginBottom: 16,
+    backgroundColor: '#ffffff',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    borderRadius: 16,
+    borderLeftWidth: 6,
+    borderLeftColor: '#4caf50',
+  },
+  cardContent: {
+    padding: 18,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginBottom: 10,
+    marginBottom: 16,
   },
   info: {
     flex: 1,
   },
+  nombreProducto: {
+    fontWeight: '800',
+    fontSize: 20,
+    color: '#1a1a1a',
+    letterSpacing: 0.2,
+    lineHeight: 26,
+  },
   codigo: {
-    color: '#666',
+    color: '#888',
     marginTop: 4,
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 0.5,
+  },
+  chipAgotado: {
+    backgroundColor: '#ffebee',
+    height: 30,
+    borderRadius: 15,
+    elevation: 1,
   },
   agotadoText: {
-    color: '#f44336',
-    fontWeight: 'bold',
+    color: '#c62828',
+    fontWeight: '800',
+    fontSize: 11,
+    letterSpacing: 0.5,
+  },
+  chipBajo: {
+    backgroundColor: '#fff3e0',
+    height: 30,
+    borderRadius: 15,
+    elevation: 1,
   },
   bajoText: {
-    color: '#ff9800',
-    fontWeight: 'bold',
+    color: '#e65100',
+    fontWeight: '800',
+    fontSize: 11,
+    letterSpacing: 0.5,
   },
   details: {
-    gap: 8,
+    gap: 10,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  rowDestacado: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    marginTop: 6,
+    paddingTop: 12,
+    borderTopWidth: 2,
+    borderTopColor: '#e8eff5',
+  },
+  label: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#555',
+    letterSpacing: 0.3,
+  },
+  labelDestacado: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#1a1a1a',
+    letterSpacing: 0.3,
+  },
+  labelValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#2c5f7c',
+    letterSpacing: 0.3,
+  },
+  precioValue: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#1976d2',
+    letterSpacing: 0.3,
   },
   stock: {
-    fontWeight: 'bold',
+    fontWeight: '800',
+    fontSize: 20,
+    color: '#2c5f7c',
+    letterSpacing: 0.3,
   },
   stockAgotado: {
     color: '#f44336',
   },
   valor: {
-    fontWeight: 'bold',
-    color: '#2c5f7c',
+    fontWeight: '900',
+    color: '#2e7d32',
+    fontSize: 22,
+    letterSpacing: 0.3,
   },
 });

@@ -35,6 +35,13 @@ export const useConfigStore = create<ConfigState>((set, get) => ({
     try {
       const configActualizada = await queries.actualizarConfiguracion(datos);
       set({ configuracion: configActualizada, isLoading: false });
+
+      // Si se actualizó el IVA, notificar al carrito para que recalcule
+      if (datos.aplicarIva !== undefined || datos.ivaTasa !== undefined) {
+        // Importar dinámicamente para evitar dependencia circular
+        const { useCartStore } = await import('./useCartStore');
+        useCartStore.getState().calcularTotales();
+      }
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : 'Error al actualizar configuración',
