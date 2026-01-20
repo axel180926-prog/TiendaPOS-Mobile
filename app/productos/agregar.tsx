@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Alert, TouchableOpacity, TextInput as RNTextInput } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, TouchableOpacity, TextInput as RNTextInput, Animated } from 'react-native';
 import { TextInput, Button, Card, SegmentedButtons, Text, Portal, Modal, List, IconButton } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
@@ -7,6 +7,9 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as queries from '@/lib/database/queries';
 import { formatearMoneda } from '@/lib/utils/formatters';
 import { useCallback } from 'react';
+import { useScannerFeedback } from '@/lib/hooks/useScannerFeedback';
+import { useScannerConfigStore } from '@/lib/store/useScannerConfigStore';
+import { buscarEnCatalogo, guardarEnCatalogo } from '@/lib/database/catalogoService';
 
 const CATEGORIAS = [
   'Abarrotes',
@@ -51,6 +54,11 @@ export default function AgregarProductoScreen() {
   const [cameraScannerVisible, setCameraScannerVisible] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
   const [isScanning, setIsScanning] = useState(false);
+  const [torchOn, setTorchOn] = useState(false);
+
+  // Configuración del escáner y feedback
+  const scannerConfig = useScannerConfigStore();
+  const { triggerScanSuccess, triggerScanError, showSuccessFlash, flashOpacity } = useScannerFeedback();
 
   // Campos del formulario
   const [codigoBarras, setCodigoBarras] = useState('');
@@ -67,9 +75,9 @@ export default function AgregarProductoScreen() {
   const [unidadMedida, setUnidadMedida] = useState('Pieza');
 
   const unidades = [
-    { value: 'Pieza', label: 'Pieza' },
+    { value: 'Pieza', label: 'Pza' },
     { value: 'Kg', label: 'Kg' },
-    { value: 'Litro', label: 'Litro' },
+    { value: 'Litro', label: 'Lt' },
   ];
 
   // Función para manejar el escáner
@@ -81,7 +89,7 @@ export default function AgregarProductoScreen() {
     setCodigoBarras(codigo);
     setScannerBuffer('');
 
-    // Verificar si el producto ya existe
+    // Verificar si el producto ya existe en productos
     try {
       const existe = await queries.obtenerProductoPorCodigoBarras(codigo);
       if (existe) {
@@ -96,9 +104,30 @@ export default function AgregarProductoScreen() {
             }
           ]
         );
+        return;
+      }
+
+      // Si no existe, buscar en catálogo para autocompletar
+      const catalogoData = await buscarEnCatalogo(codigo);
+      if (catalogoData) {
+        // Autocompletar campos desde el catálogo
+        setNombre(catalogoData.nombre);
+        if (catalogoData.categoria) setCategoria(catalogoData.categoria);
+        if (catalogoData.marca) setMarca(catalogoData.marca);
+        if (catalogoData.presentacion) setPresentacion(catalogoData.presentacion);
+        if (catalogoData.unidadMedida) setUnidadMedida(catalogoData.unidadMedida);
+
+        Alert.alert(
+          '✨ Datos Autocompletados',
+          `Se encontró "${catalogoData.nombre}" en el catálogo.\n\nSolo ajusta precio y stock.`,
+          [{ text: 'Entendido' }]
+        );
+        console.log(`📋 Campos autocompletados desde catálogo para: ${codigo}`);
+      } else {
+        console.log(`ℹ️ Código ${codigo} no está en catálogo. Usuario llenará manual.`);
       }
     } catch (error) {
-      // El producto no existe, continuar
+      console.error('Error al verificar producto o catálogo:', error);
     }
   };
 
@@ -129,17 +158,28 @@ export default function AgregarProductoScreen() {
     }
   };
 
+  // Función para cerrar cámara
+  const handleCloseCamera = () => {
+    setCameraScannerVisible(false);
+    setTorchOn(false);
+  };
+
   // Manejar escaneo desde cámara
   const handleCameraScan = ({ type, data }: { type: string; data: string }) => {
     // Prevenir escaneos duplicados
     if (isScanning) return;
 
     setIsScanning(true);
-    setCameraScannerVisible(false);
-    handleBarcodeScanned(data);
 
-    // Resetear el flag después de 1.5 segundos
-    setTimeout(() => setIsScanning(false), 1500);
+    // Trigger de feedback de éxito
+    triggerScanSuccess();
+
+    // Cerrar cámara y procesar código
+    setTimeout(() => {
+      handleCloseCamera();
+      handleBarcodeScanned(data);
+      setIsScanning(false);
+    }, 500);
   };
 
   // Función para aplicar margen de ganancia
@@ -356,6 +396,17 @@ export default function AgregarProductoScreen() {
       const productoGuardado = await queries.crearProducto(nuevoProducto);
       console.log('✅ Producto guardado con ID:', productoGuardado?.id);
 
+      // Guardar en catálogo para futuro autocompletado
+      await guardarEnCatalogo({
+        codigoBarras: codigoBarras.trim(),
+        nombre: nombre.trim(),
+        categoria: categoria,
+        marca: marca.trim() || undefined,
+        presentacion: presentacion.trim() || undefined,
+        unidadMedida: unidadMedida,
+      });
+      console.log('📚 Producto agregado/actualizado en catálogo');
+
       // Verificar que se guardó correctamente
       const verificacion = await queries.obtenerProductoPorCodigoBarras(codigoBarras.trim());
       console.log('🔍 Verificación:', verificacion);
@@ -414,9 +465,9 @@ export default function AgregarProductoScreen() {
       />
 
       <Card style={styles.card}>
-        <Card.Title title="📦 Información Básica" titleStyle={styles.cardTitleBold} />
+        <Card.Title title="📦 Datos Esenciales" titleStyle={styles.cardTitleBold} />
         <Card.Content>
-          {/* Código de Barras con botones de escanear */}
+          {/* Código de Barras con botones GRANDES de escanear */}
           <View style={styles.fieldWithButton}>
             <TextInput
               label="Código de Barras *"
@@ -430,18 +481,18 @@ export default function AgregarProductoScreen() {
             <IconButton
               icon="camera"
               mode="contained"
-              size={28}
+              size={32}
               onPress={requestCameraPermission}
-              style={styles.scanButton}
+              style={styles.scanButtonLarge}
               containerColor="#4caf50"
               iconColor="#fff"
             />
             <IconButton
               icon="barcode-scan"
               mode="contained"
-              size={28}
+              size={32}
               onPress={handleScanButton}
-              style={styles.scanButton}
+              style={styles.scanButtonLarge}
               containerColor="#2196f3"
               iconColor="#fff"
             />
@@ -454,17 +505,6 @@ export default function AgregarProductoScreen() {
             mode="outlined"
             style={styles.input}
             placeholder="Coca-Cola 600ml"
-          />
-
-          <TextInput
-            label="Descripción"
-            value={descripcion}
-            onChangeText={setDescripcion}
-            mode="outlined"
-            multiline
-            numberOfLines={2}
-            style={styles.input}
-            placeholder="Refresco de cola 600ml"
           />
 
           <TouchableOpacity onPress={() => setCategoriaSelectorVisible(true)}>
@@ -482,40 +522,8 @@ export default function AgregarProductoScreen() {
         </Card.Content>
       </Card>
 
-      <Card style={styles.card}>
-        <Card.Title title="Detalles del Producto" />
-        <Card.Content>
-          <TextInput
-            label="Marca"
-            value={marca}
-            onChangeText={setMarca}
-            mode="outlined"
-            style={styles.input}
-            placeholder="Coca-Cola"
-          />
-
-          <TextInput
-            label="Presentación"
-            value={presentacion}
-            onChangeText={setPresentacion}
-            mode="outlined"
-            style={styles.input}
-            placeholder="600ml"
-          />
-
-          <TextInput
-            label="SKU"
-            value={sku}
-            onChangeText={setSku}
-            mode="outlined"
-            style={styles.input}
-            placeholder="CC-600ML"
-          />
-        </Card.Content>
-      </Card>
-
       <Card style={[styles.card, styles.cardPrecios]}>
-        <Card.Title title="💰 Precios" titleStyle={styles.cardTitleBold} />
+        <Card.Title title="💰 Precios y Stock" titleStyle={styles.cardTitleBold} />
         <Card.Content>
           {/* Precio de Venta DESTACADO */}
           <TextInput
@@ -547,11 +555,11 @@ export default function AgregarProductoScreen() {
                 <View style={styles.gananciaRow}>
                   <MaterialCommunityIcons
                     name="cash-multiple"
-                    size={40}
+                    size={32}
                     color="#4caf50"
                   />
                   <View style={styles.gananciaInfo}>
-                    <Text variant="labelLarge" style={styles.gananciaLabel}>
+                    <Text variant="labelMedium" style={styles.gananciaLabel}>
                       💰 Ganancia por unidad
                     </Text>
                     <Text variant="displaySmall" style={[
@@ -602,48 +610,98 @@ export default function AgregarProductoScreen() {
             placeholder="50"
           />
 
-          <TextInput
-            label="Stock Mínimo"
-            value={stockMinimo}
-            onChangeText={setStockMinimo}
-            mode="outlined"
-            keyboardType="numeric"
-            style={styles.input}
-            placeholder="10"
-          />
-
-          <SegmentedButtons
-            value={unidadMedida}
-            onValueChange={setUnidadMedida}
-            buttons={unidades}
-            style={styles.segmented}
-          />
-        </Card.Content>
-      </Card>
-
-      <Card style={styles.card}>
-        <Card.Content>
-          <View style={styles.buttonRow}>
-            <Button
+          <View style={styles.stockRow}>
+            <TextInput
+              label="Stock Mínimo"
+              value={stockMinimo}
+              onChangeText={setStockMinimo}
               mode="outlined"
-              onPress={() => router.back()}
-              style={styles.button}
-              disabled={loading}
-            >
-              Cancelar
-            </Button>
-            <Button
-              mode="contained"
-              onPress={handleGuardar}
-              style={styles.button}
-              loading={loading}
-              icon="content-save"
-            >
-              Guardar
-            </Button>
+              keyboardType="numeric"
+              style={[styles.input, styles.stockMinInput]}
+              placeholder="10"
+            />
+            <View style={styles.unidadMedidaContainer}>
+              <Text variant="labelSmall" style={styles.unidadLabel}>Unidad</Text>
+              <SegmentedButtons
+                value={unidadMedida}
+                onValueChange={setUnidadMedida}
+                buttons={unidades}
+                style={styles.segmentedCompact}
+              />
+            </View>
           </View>
         </Card.Content>
       </Card>
+
+      {/* DETALLES OPCIONALES - Colapsables */}
+      <Card style={styles.card}>
+        <Card.Title
+          title="Detalles Opcionales"
+          subtitle="Marca, presentación, descripción..."
+          left={(props) => <List.Icon {...props} icon="dots-horizontal-circle-outline" />}
+        />
+        <Card.Content>
+          <TextInput
+            label="Marca"
+            value={marca}
+            onChangeText={setMarca}
+            mode="outlined"
+            style={styles.input}
+            placeholder="Coca-Cola"
+          />
+
+          <TextInput
+            label="Presentación"
+            value={presentacion}
+            onChangeText={setPresentacion}
+            mode="outlined"
+            style={styles.input}
+            placeholder="600ml"
+          />
+
+          <TextInput
+            label="Descripción"
+            value={descripcion}
+            onChangeText={setDescripcion}
+            mode="outlined"
+            multiline
+            numberOfLines={2}
+            style={styles.input}
+            placeholder="Refresco de cola 600ml"
+          />
+
+          <TextInput
+            label="SKU"
+            value={sku}
+            onChangeText={setSku}
+            mode="outlined"
+            style={styles.input}
+            placeholder="SKU-001"
+          />
+        </Card.Content>
+      </Card>
+
+      {/* Botones de acción - Sticky visual */}
+      <View style={styles.actionsContainer}>
+        <Button
+          mode="outlined"
+          onPress={() => router.back()}
+          style={styles.buttonAction}
+          disabled={loading}
+        >
+          Cancelar
+        </Button>
+        <Button
+          mode="contained"
+          onPress={handleGuardar}
+          style={styles.buttonAction}
+          loading={loading}
+          icon="content-save"
+          buttonColor="#4caf50"
+        >
+          Guardar Producto
+        </Button>
+      </View>
 
       <View style={styles.spacer} />
 
@@ -691,7 +749,7 @@ export default function AgregarProductoScreen() {
       <Portal>
         <Modal
           visible={cameraScannerVisible}
-          onDismiss={() => setCameraScannerVisible(false)}
+          onDismiss={handleCloseCamera}
           contentContainerStyle={styles.cameraModalContainer}
         >
           <View style={styles.cameraContainer}>
@@ -700,20 +758,59 @@ export default function AgregarProductoScreen() {
               barcodeScannerSettings={{
                 barcodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e', 'code128', 'code39', 'qr'],
               }}
+              enableTorch={torchOn}
               style={StyleSheet.absoluteFillObject}
-            />
+            >
+              {/* Marco de escaneo visual */}
+              {scannerConfig.marcoEscaneoVisible && (
+                <View style={styles.scanFrame}>
+                  <View style={styles.scanCornerTopLeft} />
+                  <View style={styles.scanCornerTopRight} />
+                  <View style={styles.scanCornerBottomLeft} />
+                  <View style={styles.scanCornerBottomRight} />
+                  <Text style={styles.scanFrameText}>Coloca el código aquí</Text>
+                </View>
+              )}
+
+              {/* Flash visual de éxito */}
+              {showSuccessFlash && (
+                <Animated.View
+                  style={[
+                    styles.successFlash,
+                    { opacity: flashOpacity }
+                  ]}
+                />
+              )}
+            </CameraView>
+
             <View style={styles.cameraOverlay}>
-              <Text variant="headlineSmall" style={styles.cameraTitle}>
-                Escanea el código de barras del producto
+              <Text variant="titleMedium" style={styles.cameraTitle}>
+                Escanea código
               </Text>
-              <Button
-                mode="contained"
-                onPress={() => setCameraScannerVisible(false)}
-                style={styles.cameraCancelButton}
-                icon="close"
-              >
-                Cancelar
-              </Button>
+
+              {/* Botones en fila horizontal */}
+              <View style={styles.cameraControlsRow}>
+                {/* Botón de linterna */}
+                {scannerConfig.linternaHabilitada && (
+                  <IconButton
+                    icon={torchOn ? "flashlight" : "flashlight-off"}
+                    iconColor="#fff"
+                    size={28}
+                    onPress={() => setTorchOn(!torchOn)}
+                    containerColor="rgba(0,0,0,0.6)"
+                  />
+                )}
+
+                <Button
+                  mode="contained"
+                  onPress={handleCloseCamera}
+                  style={styles.cameraCancelButton}
+                  icon="close"
+                  compact
+                >
+                  Cancelar
+                </Button>
+              </View>
             </View>
           </View>
         </Modal>
@@ -729,9 +826,10 @@ const styles = StyleSheet.create({
   },
   card: {
     margin: 10,
+    marginVertical: 6,
   },
   input: {
-    marginBottom: 15,
+    marginBottom: 12,
   },
   segmented: {
     marginTop: 10,
@@ -761,6 +859,20 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
+  },
+  actionsContainer: {
+    flexDirection: 'row',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+    marginTop: 8,
+  },
+  buttonAction: {
+    flex: 1,
+    elevation: 2,
   },
   spacer: {
     height: 20,
@@ -802,6 +914,36 @@ const styles = StyleSheet.create({
   scanButton: {
     marginTop: 8,
   },
+  scanButtonLarge: {
+    marginTop: 8,
+    width: 52,
+    height: 52,
+  },
+  stockRow: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  stockMinInput: {
+    flex: 0.5,
+    marginBottom: 0,
+    minWidth: 100,
+  },
+  unidadMedidaContainer: {
+    flex: 1.5,
+    paddingTop: 8,
+  },
+  unidadLabel: {
+    marginBottom: 6,
+    marginLeft: 4,
+    color: '#666',
+    fontSize: 12,
+  },
+  segmentedCompact: {
+    marginTop: 0,
+    height: 36,
+  },
   cardPrecios: {
     borderWidth: 2,
     borderColor: '#2196f3',
@@ -823,16 +965,16 @@ const styles = StyleSheet.create({
   },
   gananciaCardGrande: {
     backgroundColor: '#e8f5e9',
-    marginVertical: 16,
-    borderWidth: 3,
+    marginVertical: 12,
+    borderWidth: 2,
     borderColor: '#4caf50',
-    elevation: 4,
-    borderRadius: 12,
+    elevation: 3,
+    borderRadius: 10,
   },
   gananciaRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    gap: 12,
   },
   gananciaInfo: {
     flex: 1,
@@ -843,10 +985,10 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   gananciaValorGrande: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: '700',
     color: '#2e7d32',
-    marginTop: 4,
+    marginTop: 2,
   },
   gananciaNegativaGrande: {
     color: '#d32f2f',
@@ -858,8 +1000,8 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   calculadoraQuick: {
-    marginTop: 16,
-    padding: 12,
+    marginTop: 10,
+    padding: 10,
     backgroundColor: '#fff3e0',
     borderRadius: 8,
     borderWidth: 1,
@@ -872,35 +1014,120 @@ const styles = StyleSheet.create({
   },
   margenButtons: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 6,
     flexWrap: 'wrap',
   },
   margenButton: {
     flex: 1,
-    minWidth: 70,
+    minWidth: 65,
   },
   cameraModalContainer: {
-    flex: 1,
-    backgroundColor: 'black'
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    margin: 20,
+    marginTop: 'auto',
+    marginBottom: 'auto',
+    borderRadius: 16,
+    overflow: 'hidden',
+    alignSelf: 'center',
+    width: '90%',
+    maxWidth: 400,
   },
   cameraContainer: {
-    flex: 1
+    height: 420,
+    borderRadius: 16,
+    overflow: 'hidden',
   },
   cameraOverlay: {
     position: 'absolute',
-    top: 0,
+    bottom: 0,
     left: 0,
     right: 0,
-    padding: 20,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 12,
+    backgroundColor: 'rgba(0,0,0,0.6)',
     alignItems: 'center'
   },
   cameraTitle: {
     color: 'white',
-    marginBottom: 16,
-    textAlign: 'center'
+    marginBottom: 8,
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  cameraControlsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
   cameraCancelButton: {
     backgroundColor: '#d32f2f'
+  },
+  // Estilos para marco de escaneo
+  scanFrame: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -140 }, { translateY: -70 }],
+    width: 280,
+    height: 140,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scanCornerTopLeft: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 40,
+    height: 40,
+    borderTopWidth: 5,
+    borderLeftWidth: 5,
+    borderColor: '#4caf50',
+    borderTopLeftRadius: 6,
+  },
+  scanCornerTopRight: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 40,
+    height: 40,
+    borderTopWidth: 5,
+    borderRightWidth: 5,
+    borderColor: '#4caf50',
+    borderTopRightRadius: 6,
+  },
+  scanCornerBottomLeft: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    width: 40,
+    height: 40,
+    borderBottomWidth: 5,
+    borderLeftWidth: 5,
+    borderColor: '#4caf50',
+    borderBottomLeftRadius: 6,
+  },
+  scanCornerBottomRight: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 40,
+    height: 40,
+    borderBottomWidth: 5,
+    borderRightWidth: 5,
+    borderColor: '#4caf50',
+    borderBottomRightRadius: 6,
+  },
+  scanFrameText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 4,
+    textAlign: 'center',
+  },
+  // Flash de éxito
+  successFlash: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#4caf50',
   },
 });

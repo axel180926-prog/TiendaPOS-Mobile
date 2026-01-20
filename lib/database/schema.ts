@@ -143,6 +143,23 @@ export const listaCompras = sqliteTable('lista_compras', {
 });
 
 // ============================================
+// CATÁLOGO DE CÓDIGOS DE BARRAS
+// ============================================
+
+export const catalogoCodigos = sqliteTable('catalogo_codigos', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  codigoBarras: text('codigo_barras').notNull().unique(),
+  nombre: text('nombre').notNull(),
+  categoria: text('categoria'),
+  marca: text('marca'),
+  presentacion: text('presentacion'),
+  unidadMedida: text('unidad_medida').default('Pieza'),
+  vecesUsado: integer('veces_usado').default(1),
+  ultimaActualizacion: text('ultima_actualizacion').default('CURRENT_TIMESTAMP'),
+  createdAt: text('created_at').default('CURRENT_TIMESTAMP')
+});
+
+// ============================================
 // CONFIGURACIÓN
 // ============================================
 
@@ -200,5 +217,7 @@ export type CompraItem = typeof compraItems.$inferSelect;
 export type NuevoCompraItem = typeof compraItems.$inferInsert;
 export type ItemListaCompras = typeof listaCompras.$inferSelect;
 export type NuevoItemListaCompras = typeof listaCompras.$inferInsert;
+export type CatalogoCodigo = typeof catalogoCodigos.$inferSelect;
+export type NuevoCatalogoCodigo = typeof catalogoCodigos.$inferInsert;
 export type Configuracion = typeof configuracion.$inferSelect;
 export type NuevaConfiguracion = typeof configuracion.$inferInsert;

@@ -291,6 +291,24 @@ export async function initDatabase() {
     `);
 
     // ============================================
+    // TABLA: CATÁLOGO DE CÓDIGOS DE BARRAS
+    // ============================================
+    await expo.execAsync(`
+      CREATE TABLE IF NOT EXISTS catalogo_codigos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        codigo_barras TEXT UNIQUE NOT NULL,
+        nombre TEXT NOT NULL,
+        categoria TEXT,
+        marca TEXT,
+        presentacion TEXT,
+        unidad_medida TEXT DEFAULT 'Pieza',
+        veces_usado INTEGER DEFAULT 1,
+        ultima_actualizacion TEXT DEFAULT CURRENT_TIMESTAMP,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // ============================================
     // TABLA: CONFIGURACIÓN
     // ============================================
     await expo.execAsync(`

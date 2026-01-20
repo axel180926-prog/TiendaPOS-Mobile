@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
-import { View, StyleSheet, FlatList, Alert, ScrollView, TextInput as RNTextInput } from 'react-native';
+import { View, StyleSheet, FlatList, Alert, ScrollView, TextInput as RNTextInput, Animated } from 'react-native';
 import { Searchbar, Card, Text, Button, FAB, IconButton, Chip, Portal, Modal, Badge, TextInput } from 'react-native-paper';
 
 // Importación de expo-camera
@@ -7,6 +7,8 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { formatearMoneda } from '@/lib/utils/formatters';
 import * as queries from '@/lib/database/queries';
 import { router } from 'expo-router';
+import { useScannerFeedback } from '@/lib/hooks/useScannerFeedback';
+import { useScannerConfigStore } from '@/lib/store/useScannerConfigStore';
 
 type OrdenType = 'nombre' | 'precio' | 'stock' | 'reciente' | 'ganancia';
 type FiltroStock = 'todos' | 'bajo' | 'sinStock';
@@ -32,6 +34,11 @@ export default function ProductosScreen() {
   const [cameraScannerVisible, setCameraScannerVisible] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
   const [isScanning, setIsScanning] = useState(false);
+  const [torchOn, setTorchOn] = useState(false);
+
+  // Configuración y feedback del escáner
+  const scannerConfig = useScannerConfigStore();
+  const { triggerScanSuccess, triggerScanError, showSuccessFlash, flashOpacity } = useScannerFeedback();
 
   useEffect(() => {
     cargarProductos();
@@ -214,12 +221,21 @@ export default function ProductosScreen() {
     setTimeout(() => setIsScanning(false), 1500);
   };
 
+  // Cerrar cámara y resetear estados
+  const handleCloseCamera = () => {
+    setCameraScannerVisible(false);
+    setTorchOn(false);
+  };
+
   // Manejar escaneo de código de barras
   const handleBarcodeScanned = async (codigo: string) => {
     try {
       const producto = await queries.obtenerProductoPorCodigoBarras(codigo);
 
       if (producto) {
+        // Trigger feedback de éxito
+        triggerScanSuccess();
+
         // Mostrar opciones: Ver o Editar
         Alert.alert(
           'Producto Encontrado',
@@ -251,6 +267,9 @@ export default function ProductosScreen() {
           ]
         );
       } else {
+        // Trigger feedback de error
+        triggerScanError();
+
         Alert.alert(
           'Producto No Encontrado',
           `No existe un producto con el código: ${codigo}`,
@@ -267,6 +286,7 @@ export default function ProductosScreen() {
       }
     } catch (error) {
       console.error('Error al buscar producto:', error);
+      triggerScanError();
       Alert.alert('Error', 'No se pudo buscar el producto');
       setScannerBuffer('');
       scannerInputRef.current?.focus();
@@ -349,21 +369,17 @@ export default function ProductosScreen() {
 
           {/* Código de barras + Marca + Presentación + Stock inline */}
           <View style={styles.codigoStockRow}>
-            <View style={styles.codigoYDetalles}>
-              <Text variant="bodySmall" style={styles.codigoBarras}>
+            <View style={styles.codigoYDetallesRow}>
+              <Text variant="bodySmall" style={styles.codigoBarrasCompact}>
                 {item.codigoBarras}
               </Text>
               {(item.marca?.trim() || item.presentacion?.trim()) && (
-                <View style={styles.detallesInline}>
+                <View style={styles.detallesCompactRow}>
                   {item.marca?.trim() && (
-                    <Text variant="bodySmall" style={styles.detalleInlineText} numberOfLines={1}>
-                      🏷️ {item.marca.trim()}
-                    </Text>
+                    <Text style={styles.detalleInlineText}>🏷️ {item.marca.trim()}</Text>
                   )}
                   {item.presentacion?.trim() && (
-                    <Text variant="bodySmall" style={styles.detalleInlineText} numberOfLines={1}>
-                      📏 {item.presentacion.trim()}
-                    </Text>
+                    <Text style={styles.detalleInlineText}>📏 {item.presentacion.trim()}</Text>
                   )}
                 </View>
               )}
@@ -425,54 +441,58 @@ export default function ProductosScreen() {
         style={styles.hiddenInput}
       />
 
-      {/* Barra de búsqueda con botón de filtros */}
-      <View style={styles.searchbarContainer}>
-        <Searchbar
-          placeholder="Buscar productos o escanear..."
-          onChangeText={setSearchQuery}
-          value={searchQuery}
-          style={styles.searchbarInput}
-          icon="barcode-scan"
-          placeholderTextColor="#888"
-        />
-        <IconButton
-          icon="camera"
-          size={24}
-          mode="contained"
-          onPress={requestCameraPermission}
-          style={styles.cameraButton}
-        />
-        <IconButton
-          icon="tune"
-          size={24}
-          onPress={() => setFiltrosVisible(true)}
-          style={styles.filterButton}
-        />
-        {hayFiltrosActivos && (
-          <Badge style={styles.filterBadge} size={8} />
-        )}
-      </View>
+      {/* Barra de búsqueda con botón de filtros - OCULTA cuando cámara está activa */}
+      {!cameraScannerVisible && (
+        <>
+          <View style={styles.searchbarContainer}>
+            <Searchbar
+              placeholder="Buscar productos o escanear..."
+              onChangeText={setSearchQuery}
+              value={searchQuery}
+              style={styles.searchbarInput}
+              icon="barcode-scan"
+              placeholderTextColor="#888"
+            />
+            <IconButton
+              icon="camera"
+              size={24}
+              mode="contained"
+              onPress={requestCameraPermission}
+              style={styles.cameraButton}
+            />
+            <IconButton
+              icon="tune"
+              size={24}
+              onPress={() => setFiltrosVisible(true)}
+              style={styles.filterButton}
+            />
+            {hayFiltrosActivos && (
+              <Badge style={styles.filterBadge} size={8} />
+            )}
+          </View>
 
-      {/* Filtros de categoría */}
-      <View style={styles.categoriesContainer}>
-        <FlatList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={categorias}
-          keyExtractor={(item) => item}
-          contentContainerStyle={styles.categories}
-          renderItem={({ item }) => (
-            <Chip
-              selected={filterCategoria === item}
-              onPress={() => setFilterCategoria(filterCategoria === item ? null : item)}
-              style={styles.categoryChip}
-              textStyle={styles.categoryChipText}
-            >
-              {item}
-            </Chip>
-          )}
-        />
-      </View>
+          {/* Filtros de categoría */}
+          <View style={styles.categoriesContainer}>
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={categorias}
+              keyExtractor={(item) => item}
+              contentContainerStyle={styles.categories}
+              renderItem={({ item }) => (
+                <Chip
+                  selected={filterCategoria === item}
+                  onPress={() => setFilterCategoria(filterCategoria === item ? null : item)}
+                  style={styles.categoryChip}
+                  textStyle={styles.categoryChipText}
+                >
+                  {item}
+                </Chip>
+              )}
+            />
+          </View>
+        </>
+      )}
 
 
       {/* Modal de filtros */}
@@ -618,44 +638,78 @@ export default function ProductosScreen() {
             barcodeScannerSettings={{
               barcodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e', 'code128', 'code39', 'qr'],
             }}
+            enableTorch={torchOn}
             style={styles.cameraView}
-          />
-          <View style={styles.cameraOverlayInline}>
-            <Text variant="titleSmall" style={styles.cameraTitleInline}>
-              Escanear
-            </Text>
-            <Button
-              mode="contained"
-              onPress={() => setCameraScannerVisible(false)}
-              icon="close"
-              compact
-              buttonColor="rgba(0,0,0,0.7)"
-            >
-              Cerrar
-            </Button>
-          </View>
+          >
+            {/* Marco de escaneo visual */}
+            {scannerConfig.marcoEscaneoVisible && (
+              <View style={styles.scanFrame}>
+                <View style={styles.scanCorner} />
+                <Text style={styles.scanFrameText}>Coloca el código aquí</Text>
+              </View>
+            )}
+
+            {/* Flash de éxito */}
+            {showSuccessFlash && (
+              <Animated.View style={[styles.successFlash, { opacity: flashOpacity }]} />
+            )}
+
+            {/* Overlay superior con controles */}
+            <View style={styles.cameraOverlayInline}>
+              <View style={styles.cameraInfo}>
+                <Text variant="titleSmall" style={styles.cameraTitleInline}>
+                  Escanear
+                </Text>
+              </View>
+
+              <View style={styles.cameraControls}>
+                {/* Botón de linterna */}
+                {scannerConfig.linternaHabilitada && (
+                  <IconButton
+                    icon={torchOn ? "flashlight" : "flashlight-off"}
+                    size={24}
+                    iconColor="#fff"
+                    onPress={() => setTorchOn(!torchOn)}
+                    style={styles.torchButton}
+                  />
+                )}
+
+                <Button
+                  mode="contained"
+                  onPress={handleCloseCamera}
+                  icon="close"
+                  compact
+                  buttonColor="rgba(0,0,0,0.7)"
+                >
+                  Cerrar
+                </Button>
+              </View>
+            </View>
+          </CameraView>
         </View>
       )}
 
-      {/* Resumen */}
-      <View style={styles.summary}>
-        <Text variant="bodyMedium" style={styles.summaryText}>
-          Mostrando {filteredProductos.length} de {productos.length} productos
-        </Text>
-        {filtroStock !== 'todos' && (
-          <Text variant="bodySmall" style={styles.summaryNote}>
-            {filtroStock === 'bajo' && '⚠️ Productos con stock bajo'}
-            {filtroStock === 'sinStock' && '❌ Productos sin stock'}
+      {/* Resumen - OCULTO cuando cámara está activa */}
+      {!cameraScannerVisible && (
+        <View style={styles.summary}>
+          <Text variant="bodyMedium" style={styles.summaryText}>
+            Mostrando {filteredProductos.length} de {productos.length} productos
           </Text>
-        )}
-        {filtroRentabilidad !== 'todos' && (
-          <Text variant="bodySmall" style={styles.summaryNote}>
-            {filtroRentabilidad === 'rentable' && '💰 Productos muy rentables (margen ≥30%)'}
-            {filtroRentabilidad === 'pocoRentable' && '📊 Productos rentabilidad media (margen 10-30%)'}
-            {filtroRentabilidad === 'noRentable' && '⚠️ Productos baja rentabilidad (margen <10%)'}
-          </Text>
-        )}
-      </View>
+          {filtroStock !== 'todos' && (
+            <Text variant="bodySmall" style={styles.summaryNote}>
+              {filtroStock === 'bajo' && '⚠️ Productos con stock bajo'}
+              {filtroStock === 'sinStock' && '❌ Productos sin stock'}
+            </Text>
+          )}
+          {filtroRentabilidad !== 'todos' && (
+            <Text variant="bodySmall" style={styles.summaryNote}>
+              {filtroRentabilidad === 'rentable' && '💰 Productos muy rentables (margen ≥30%)'}
+              {filtroRentabilidad === 'pocoRentable' && '📊 Productos rentabilidad media (margen 10-30%)'}
+              {filtroRentabilidad === 'noRentable' && '⚠️ Productos baja rentabilidad (margen <10%)'}
+            </Text>
+          )}
+        </View>
+      )}
 
       {/* Lista de productos */}
       <FlatList
@@ -832,7 +886,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   card: {
-    marginBottom: 16,
+    marginBottom: 10,
     backgroundColor: '#ffffff',
     elevation: 4,
     shadowColor: '#000',
@@ -936,13 +990,13 @@ const styles = StyleSheet.create({
   },
   // Nuevos estilos mejorados
   cardContent: {
-    padding: 12,
+    padding: 10,
   },
   cardHeaderNew: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 6,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -950,15 +1004,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   chipCategoria: {
-    height: 34,
+    height: 28,
     backgroundColor: '#e3f2fd',
     borderColor: '#2196f3',
-    paddingHorizontal: 14,
-    borderRadius: 18,
+    paddingHorizontal: 12,
+    borderRadius: 14,
     elevation: 1,
   },
   chipCategoriaText: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#1976d2',
     fontWeight: '800',
     letterSpacing: 0.3,
@@ -984,33 +1038,34 @@ const styles = StyleSheet.create({
   },
   nombreProducto: {
     fontWeight: '800',
-    marginBottom: 8,
-    lineHeight: 26,
+    marginBottom: 6,
+    lineHeight: 22,
     color: '#1a1a1a',
-    fontSize: 20,
+    fontSize: 17,
     letterSpacing: 0.2,
   },
   codigoStockRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
+    alignItems: 'center',
+    marginBottom: 10,
   },
-  codigoYDetalles: {
-    flex: 1,
-    marginRight: 8,
-  },
-  codigoBarras: {
-    color: '#888',
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.5,
-    marginBottom: 4,
-  },
-  detallesInline: {
+  codigoYDetallesRow: {
     flexDirection: 'row',
-    gap: 8,
-    flexWrap: 'wrap',
+    alignItems: 'center',
+    flex: 1,
+    gap: 12,
+  },
+  codigoBarrasCompact: {
+    color: '#888',
+    fontSize: 12,
+    fontWeight: '600',
+    letterSpacing: 0.3,
+  },
+  detallesCompactRow: {
+    flexDirection: 'row',
+    gap: 6,
+    flex: 1,
   },
   detalleInlineText: {
     color: '#666',
@@ -1103,7 +1158,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.15)',
   },
   cameraViewContainer: {
-    height: 150,
+    height: 120,
     backgroundColor: 'black',
     position: 'relative'
   },
@@ -1121,9 +1176,62 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center'
   },
+  cameraInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  cameraControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  torchButton: {
+    margin: 0,
+  },
   cameraTitleInline: {
     color: 'white',
     fontWeight: 'bold'
+  },
+  scanFrame: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -75 }, { translateY: -40 }],
+    width: 150,
+    height: 80,
+    borderWidth: 2,
+    borderColor: '#4caf50',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scanCorner: {
+    position: 'absolute',
+    top: -4,
+    left: -4,
+    width: 20,
+    height: 20,
+    borderTopWidth: 4,
+    borderLeftWidth: 4,
+    borderColor: '#4caf50',
+  },
+  scanFrameText: {
+    color: 'white',
+    fontSize: 11,
+    fontWeight: 'bold',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  successFlash: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#4caf50',
   },
   // Estilos para precios inline (más compactos)
   preciosInline: {
