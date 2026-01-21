@@ -47,6 +47,7 @@ const CATEGORIAS = [
 export default function AgregarProductoScreen() {
   const [loading, setLoading] = useState(false);
   const [categoriaSelectorVisible, setCategoriaSelectorVisible] = useState(false);
+  const [nuevaCategoria, setNuevaCategoria] = useState('');
   const scannerInputRef = useRef<any>(null);
   const [scannerBuffer, setScannerBuffer] = useState('');
 
@@ -700,12 +701,48 @@ export default function AgregarProductoScreen() {
       <Portal>
         <Modal
           visible={categoriaSelectorVisible}
-          onDismiss={() => setCategoriaSelectorVisible(false)}
+          onDismiss={() => {
+            setCategoriaSelectorVisible(false);
+            setNuevaCategoria('');
+          }}
           contentContainerStyle={styles.modalContainer}
         >
           <Card>
             <Card.Title title="Seleccionar Categoría" />
             <Card.Content>
+              {/* Campo para crear nueva categoría */}
+              <View style={styles.nuevaCategoriaContainer}>
+                <TextInput
+                  label="Crear Nueva Categoría"
+                  value={nuevaCategoria}
+                  onChangeText={setNuevaCategoria}
+                  mode="outlined"
+                  placeholder="Ej: Pan Bimbo, Galletas Marinela..."
+                  style={styles.nuevaCategoriaInput}
+                  right={
+                    nuevaCategoria.trim() ? (
+                      <TextInput.Icon
+                        icon="plus-circle"
+                        onPress={() => {
+                          if (nuevaCategoria.trim()) {
+                            setCategoria(nuevaCategoria.trim());
+                            setCategoriaSelectorVisible(false);
+                            setNuevaCategoria('');
+                          }
+                        }}
+                      />
+                    ) : null
+                  }
+                />
+                <Text variant="bodySmall" style={styles.nuevaCategoriaHint}>
+                  💡 Escribe cualquier categoría que necesites
+                </Text>
+              </View>
+
+              {/* Lista de categorías predefinidas */}
+              <Text variant="labelMedium" style={styles.categoriasSectionTitle}>
+                Categorías sugeridas:
+              </Text>
               <ScrollView style={styles.modalScrollView}>
                 {CATEGORIAS.map((cat) => (
                   <List.Item
@@ -714,6 +751,7 @@ export default function AgregarProductoScreen() {
                     onPress={() => {
                       setCategoria(cat);
                       setCategoriaSelectorVisible(false);
+                      setNuevaCategoria('');
                     }}
                     left={(props) => (
                       <List.Icon
@@ -728,7 +766,10 @@ export default function AgregarProductoScreen() {
               </ScrollView>
             </Card.Content>
             <Card.Actions>
-              <Button onPress={() => setCategoriaSelectorVisible(false)}>
+              <Button onPress={() => {
+                setCategoriaSelectorVisible(false);
+                setNuevaCategoria('');
+              }}>
                 Cerrar
               </Button>
             </Card.Actions>
@@ -881,6 +922,30 @@ const styles = StyleSheet.create({
   },
   selectedItem: {
     backgroundColor: '#e8f5e9',
+  },
+  nuevaCategoriaContainer: {
+    marginBottom: 16,
+    padding: 12,
+    backgroundColor: '#f0f7ff',
+    borderRadius: 8,
+    borderLeftWidth: 3,
+    borderLeftColor: '#2196f3',
+  },
+  nuevaCategoriaInput: {
+    marginBottom: 4,
+  },
+  nuevaCategoriaHint: {
+    color: '#666',
+    fontStyle: 'italic',
+    marginTop: 4,
+    marginLeft: 4,
+  },
+  categoriasSectionTitle: {
+    marginTop: 8,
+    marginBottom: 8,
+    marginLeft: 4,
+    color: '#666',
+    fontWeight: '700',
   },
   // Nuevos estilos para mejoras
   hiddenInput: {
