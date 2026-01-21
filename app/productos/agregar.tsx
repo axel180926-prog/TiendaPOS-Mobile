@@ -467,7 +467,7 @@ export default function AgregarProductoScreen() {
       <Card style={styles.card}>
         <Card.Title title="📦 Datos Esenciales" titleStyle={styles.cardTitleBold} />
         <Card.Content>
-          {/* Código de Barras con botones GRANDES de escanear */}
+          {/* Código de Barras con botón de cámara */}
           <View style={styles.fieldWithButton}>
             <TextInput
               label="Código de Barras *"
@@ -481,19 +481,10 @@ export default function AgregarProductoScreen() {
             <IconButton
               icon="camera"
               mode="contained"
-              size={32}
+              size={28}
               onPress={requestCameraPermission}
-              style={styles.scanButtonLarge}
+              style={styles.scanButtonSingle}
               containerColor="#4caf50"
-              iconColor="#fff"
-            />
-            <IconButton
-              icon="barcode-scan"
-              mode="contained"
-              size={32}
-              onPress={handleScanButton}
-              style={styles.scanButtonLarge}
-              containerColor="#2196f3"
               iconColor="#fff"
             />
           </View>
@@ -919,6 +910,11 @@ const styles = StyleSheet.create({
     marginTop: 8,
     width: 52,
     height: 52,
+  },
+  scanButtonSingle: {
+    marginTop: 8,
+    width: 48,
+    height: 48,
   },
   stockRow: {
     flexDirection: 'row',
