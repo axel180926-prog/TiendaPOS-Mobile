@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Alert, TouchableOpacity, TextInput as RNTextInput, Animated } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, TouchableOpacity, TextInput as RNTextInput, Animated, KeyboardAvoidingView, Platform } from 'react-native';
 import { TextInput, Button, Card, SegmentedButtons, Text, Portal, Modal, List, IconButton } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
@@ -450,7 +450,16 @@ export default function AgregarProductoScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={0}
+    >
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollViewContent}
+        keyboardShouldPersistTaps="handled"
+      >
       {/* Input oculto para escáner bluetooth */}
       <RNTextInput
         ref={scannerInputRef}
@@ -847,7 +856,8 @@ export default function AgregarProductoScreen() {
           </View>
         </Modal>
       </Portal>
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -855,6 +865,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    paddingBottom: Platform.OS === 'android' ? 100 : 20,
   },
   card: {
     margin: 10,
@@ -898,6 +914,7 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingHorizontal: 14,
     paddingVertical: 10,
+    paddingBottom: Platform.OS === 'android' ? 16 : 10,
     backgroundColor: '#fff',
     borderTopWidth: 2,
     borderTopColor: '#e0e0e0',
@@ -908,7 +925,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   spacer: {
-    height: 20,
+    height: Platform.OS === 'android' ? 80 : 20,
   },
   modalContainer: {
     backgroundColor: 'white',
