@@ -922,17 +922,17 @@ const styles = StyleSheet.create({
   },
   stockRow: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 12,
     alignItems: 'flex-start',
     marginTop: 0,
   },
   stockMinInput: {
-    flex: 1,
+    flex: 0.6,
     marginBottom: 0,
-    minWidth: 120,
+    maxWidth: 100,
   },
   unidadMedidaContainer: {
-    flex: 1,
+    flex: 1.4,
     paddingTop: 0,
   },
   unidadLabel: {
