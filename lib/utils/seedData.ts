@@ -18,12 +18,15 @@ export async function cargarProductosIniciales(): Promise<boolean> {
       const nuevoProducto: NuevoProducto = {
         codigoBarras: producto.codigo_barras,
         nombre: producto.nombre,
-        descripcion: producto.descripcion || null,
+        descripcion: null,
         categoria: producto.categoria || null,
-        precioCompra: producto.precio_compra || 0,
-        precioVenta: producto.precio_venta,
+        marca: producto.marca || null,
+        presentacion: producto.presentacion || null,
+        unidadMedida: producto.unidad_medida || 'Pieza',
+        precioCompra: 0,
+        precioVenta: producto.precio,
         stock: producto.stock || 0,
-        stockMinimo: producto.stock_minimo || 5,
+        stockMinimo: 5,
         activo: true
       };
 
@@ -53,12 +56,15 @@ export async function recargarProductosForzado(): Promise<boolean> {
       const nuevoProducto: NuevoProducto = {
         codigoBarras: producto.codigo_barras,
         nombre: producto.nombre,
-        descripcion: producto.descripcion || null,
+        descripcion: null,
         categoria: producto.categoria || null,
-        precioCompra: producto.precio_compra || 0,
-        precioVenta: producto.precio_venta,
+        marca: producto.marca || null,
+        presentacion: producto.presentacion || null,
+        unidadMedida: producto.unidad_medida || 'Pieza',
+        precioCompra: 0,
+        precioVenta: producto.precio,
         stock: producto.stock || 0,
-        stockMinimo: producto.stock_minimo || 5,
+        stockMinimo: 5,
         activo: true
       };
 

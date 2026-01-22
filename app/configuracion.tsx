@@ -175,7 +175,7 @@ export default function ConfiguracionScreen() {
   const handleResetearProductos = async () => {
     Alert.alert(
       '⚠️ Resetear Productos',
-      '¿Estás seguro de que deseas eliminar TODOS los productos y recargarlos desde el archivo JSON?\n\nEsta acción eliminará:\n• Todos los productos actuales\n• Los cambios que hayas hecho manualmente\n\nSe recargarán 90 productos desde el archivo base.\n\nEsta acción NO se puede deshacer.',
+      '¿Estás seguro de que deseas eliminar TODOS los productos y recargarlos desde el archivo JSON?\n\nEsta acción eliminará:\n• Todos los productos actuales\n• Los cambios que hayas hecho manualmente\n\nSe recargarán 234 productos verificados desde el catálogo actualizado.\n\nEsta acción NO se puede deshacer.',
       [
         { text: 'Cancelar', style: 'cancel' },
         {
@@ -189,7 +189,7 @@ export default function ConfiguracionScreen() {
               setLoading(false);
               Alert.alert(
                 '✅ Éxito',
-                'Los productos han sido reseteados correctamente.\n\n90 productos cargados desde el archivo JSON.'
+                'Los productos han sido reseteados correctamente.\n\n234 productos cargados desde el catálogo verificado.'
               );
             } catch (error) {
               setLoading(false);
