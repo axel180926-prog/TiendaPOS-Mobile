@@ -655,10 +655,10 @@ export default function ProductosScreen() {
             )}
 
             {/* Overlay superior con controles */}
-            <View style={styles.cameraOverlayInline}>
+            <View style={styles.cameraOverlay}>
               <View style={styles.cameraInfo}>
-                <Text variant="titleSmall" style={styles.cameraTitleInline}>
-                  Escanear
+                <Text variant="titleSmall" style={styles.cameraTitle}>
+                  Escanear Código de Barras
                 </Text>
               </View>
 
@@ -1158,14 +1158,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.15)',
   },
   cameraViewContainer: {
-    height: 320,
+    height: 280,
     backgroundColor: 'black',
-    position: 'relative'
+    position: 'relative',
+    marginHorizontal: 16,
+    marginTop: 8,
+    marginBottom: 12,
+    borderRadius: 12,
+    overflow: 'hidden',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   cameraView: {
     flex: 1
   },
-  cameraOverlayInline: {
+  cameraOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
@@ -1189,7 +1199,7 @@ const styles = StyleSheet.create({
   torchButton: {
     margin: 0,
   },
-  cameraTitleInline: {
+  cameraTitle: {
     color: 'white',
     fontWeight: 'bold'
   },
@@ -1197,9 +1207,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '50%',
     left: '50%',
-    transform: [{ translateX: -120 }, { translateY: -80 }],
-    width: 240,
-    height: 160,
+    transform: [{ translateX: -100 }, { translateY: -60 }],
+    width: 200,
+    height: 120,
     borderWidth: 3,
     borderColor: '#4caf50',
     borderRadius: 12,

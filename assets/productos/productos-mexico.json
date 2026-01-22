@@ -125,7 +125,7 @@
     "descripcion": "Pan de caja integral 680g",
     "categoria": "Panadería",
     "precio_compra": 27.9,
-    "precio_venta": 45,
+    "precio_venta": 52,
     "stock": 12,
     "stock_minimo": 5
   },
@@ -315,7 +315,7 @@
     "descripcion": "Pastelito con crema sabor vainilla",
     "categoria": "Dulces",
     "precio_compra": 8.06,
-    "precio_venta": 13,
+    "precio_venta": 20,
     "stock": 50,
     "stock_minimo": 15
   },
@@ -396,6 +396,1956 @@
     "categoria": "Lácteos y Huevos",
     "precio_compra": 29.76,
     "precio_venta": 48,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810032985",
+    "nombre": "Pan Blanco 300g Bimbo",
+    "descripcion": "Pan de caja blanco 300g",
+    "categoria": "Panadería",
+    "precio_compra": 15.5,
+    "precio_venta": 25,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000111503",
+    "nombre": "Mediasnoche 8 piezas",
+    "descripcion": "Pan para mediasnoche",
+    "categoria": "Panadería",
+    "precio_compra": 23,
+    "precio_venta": 38,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501000112388",
+    "nombre": "Panquecito Chocolate 2pz",
+    "descripcion": "Panqué de chocolate 2 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 10,
+    "precio_venta": 17,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000112203",
+    "nombre": "Colchón 6 piezas 130g",
+    "descripcion": "Pan colchón 6 piezas",
+    "categoria": "Panadería",
+    "precio_compra": 23,
+    "precio_venta": 37,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7503030199995",
+    "nombre": "Roles Canela 180g",
+    "descripcion": "Roles de canela",
+    "categoria": "Panadería",
+    "precio_compra": 11.5,
+    "precio_venta": 19,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7503030374002",
+    "nombre": "Roles Glaseados 205g",
+    "descripcion": "Roles glaseados",
+    "categoria": "Panadería",
+    "precio_compra": 11.5,
+    "precio_venta": 19,
+    "stock": 30,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030420859",
+    "nombre": "Muffin Chispas Chocolate 190g",
+    "descripcion": "Muffin con chispas de chocolate",
+    "categoria": "Dulces",
+    "precio_compra": 14.8,
+    "precio_venta": 25,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810014752",
+    "nombre": "Mantecadas Bimbo 6pz",
+    "descripcion": "Mantecadas 6 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 14.8,
+    "precio_venta": 25,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030477488",
+    "nombre": "Madalenas 3 piezas 93g",
+    "descripcion": "Magdalenas 3 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 10,
+    "precio_venta": 17,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030474227",
+    "nombre": "Donas 158g con Azúcar",
+    "descripcion": "Donas azucaradas",
+    "categoria": "Dulces",
+    "precio_compra": 10,
+    "precio_venta": 22,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030418399",
+    "nombre": "Donas Polvo 2 piezas",
+    "descripcion": "Donas en polvo 2 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 10,
+    "precio_venta": 17,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000112784",
+    "nombre": "Nito 62g",
+    "descripcion": "Pastelito Nito",
+    "categoria": "Dulces",
+    "precio_compra": 7.8,
+    "precio_venta": 13,
+    "stock": 50,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030409854",
+    "nombre": "Duo Nito 124g",
+    "descripcion": "Duo de pastelitos Nito",
+    "categoria": "Dulces",
+    "precio_compra": 11.5,
+    "precio_venta": 19,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030472698",
+    "nombre": "Bimbuñuelos 6 piezas 99g",
+    "descripcion": "Buñuelos Bimbo 6 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 10,
+    "precio_venta": 17,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000112845",
+    "nombre": "Rebanadas 2 piezas",
+    "descripcion": "Rebanadas de pastel 2 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 7.8,
+    "precio_venta": 13,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "658480001262",
+    "nombre": "Tostadas Clásicas 216g",
+    "descripcion": "Tostadas de maíz clásicas",
+    "categoria": "Botanas",
+    "precio_compra": 17.5,
+    "precio_venta": 36,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810026014",
+    "nombre": "Tortillas 300g 2 paquetes",
+    "descripcion": "Tortillas de harina 2 paquetes",
+    "categoria": "Tortillas",
+    "precio_compra": 23,
+    "precio_venta": 38,
+    "stock": 40,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030475132",
+    "nombre": "Leche Gansito 23",
+    "descripcion": "Gansito sabor leche",
+    "categoria": "Dulces",
+    "precio_compra": 7.5,
+    "precio_venta": 12,
+    "stock": 60,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7500810037881",
+    "nombre": "Gansito Príncipe Crema 50g",
+    "descripcion": "Gansito príncipe con crema",
+    "categoria": "Dulces",
+    "precio_compra": 9.2,
+    "precio_venta": 15,
+    "stock": 55,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501000153800",
+    "nombre": "Pingüinos 80g",
+    "descripcion": "Pastelitos Pingüinos 80g",
+    "categoria": "Dulces",
+    "precio_compra": 10,
+    "precio_venta": 17,
+    "stock": 50,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030426912",
+    "nombre": "Duo Polvorones Nuez 96g",
+    "descripcion": "Duo de polvorones de nuez",
+    "categoria": "Dulces",
+    "precio_compra": 11.5,
+    "precio_venta": 19,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030419020",
+    "nombre": "Minirollo 28g",
+    "descripcion": "Minirollo pequeño",
+    "categoria": "Dulces",
+    "precio_compra": 6.2,
+    "precio_venta": 10,
+    "stock": 70,
+    "stock_minimo": 20
+  },
+  {
+    "codigo_barras": "7501000153763",
+    "nombre": "Rockaleta 10 piezas 44g",
+    "descripcion": "Paletas Rockaleta 10 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 23,
+    "precio_venta": 39,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810014738",
+    "nombre": "Barritas Piña",
+    "descripcion": "Barritas rellenas de piña",
+    "categoria": "Dulces",
+    "precio_compra": 7.5,
+    "precio_venta": 12,
+    "stock": 50,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7500810028032",
+    "nombre": "Polvorones Naranja 48g",
+    "descripcion": "Polvorones sabor naranja",
+    "categoria": "Dulces",
+    "precio_compra": 10.2,
+    "precio_venta": 17,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030457190",
+    "nombre": "Mini Barritas Fresa 222g",
+    "descripcion": "Mini barritas de fresa",
+    "categoria": "Dulces",
+    "precio_compra": 15,
+    "precio_venta": 25,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030457183",
+    "nombre": "Mini Barritas Piña 222g",
+    "descripcion": "Mini barritas de piña",
+    "categoria": "Dulces",
+    "precio_compra": 15,
+    "precio_venta": 25,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030418559",
+    "nombre": "Max Polvorones 310g",
+    "descripcion": "Polvorones tamaño máximo",
+    "categoria": "Dulces",
+    "precio_compra": 15,
+    "precio_venta": 25,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030418542",
+    "nombre": "Max Canela 224g",
+    "descripcion": "Galletas de canela tamaño max",
+    "categoria": "Dulces",
+    "precio_compra": 15,
+    "precio_venta": 25,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030418504",
+    "nombre": "Max Príncipe 210g",
+    "descripcion": "Príncipe tamaño máximo",
+    "categoria": "Dulces",
+    "precio_compra": 15,
+    "precio_venta": 25,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030418528",
+    "nombre": "Max Trikis 215g",
+    "descripcion": "Trikis tamaño máximo",
+    "categoria": "Dulces",
+    "precio_compra": 15,
+    "precio_venta": 25,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7503030374842",
+    "nombre": "Maxiesponjitas 180g",
+    "descripcion": "Esponjitas tamaño grande",
+    "categoria": "Dulces",
+    "precio_compra": 15,
+    "precio_venta": 25,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810016206",
+    "nombre": "Tarzán 8 piezas 133g",
+    "descripcion": "Galletas Tarzán 8 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 9.3,
+    "precio_venta": 16,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000142453",
+    "nombre": "Conchas 2 piezas 120g",
+    "descripcion": "Pan conchas 2 piezas",
+    "categoria": "Panadería",
+    "precio_compra": 10,
+    "precio_venta": 17,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000142705",
+    "nombre": "Cuernos 2 piezas 100g",
+    "descripcion": "Pan cuerno 2 piezas",
+    "categoria": "Panadería",
+    "precio_compra": 9.2,
+    "precio_venta": 15,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030456124",
+    "nombre": "Mantecada Chocolate 3pz",
+    "descripcion": "Mantecadas de chocolate 3 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 12,
+    "precio_venta": 20,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810029206",
+    "nombre": "Bigote de Cajeta 80g",
+    "descripcion": "Galletas bigote sabor cajeta",
+    "categoria": "Dulces",
+    "precio_compra": 7.4,
+    "precio_venta": 12,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7503031287998",
+    "nombre": "Empacadas Cajeta 40g",
+    "descripcion": "Galletas empacadas sabor cajeta",
+    "categoria": "Dulces",
+    "precio_compra": 4.5,
+    "precio_venta": 8,
+    "stock": 60,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7500810016008",
+    "nombre": "Deliciosas Chocolate 230g",
+    "descripcion": "Galletas deliciosas de chocolate",
+    "categoria": "Dulces",
+    "precio_compra": 13,
+    "precio_venta": 22,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810027707",
+    "nombre": "Cacahuates Salados 110g",
+    "descripcion": "Cacahuates japoneses salados",
+    "categoria": "Botanas",
+    "precio_compra": 11.6,
+    "precio_venta": 19,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810008874",
+    "nombre": "Hot Nuts Original 75g",
+    "descripcion": "Cacahuates Hot Nuts original",
+    "categoria": "Botanas",
+    "precio_compra": 9.3,
+    "precio_venta": 16,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7500810013199",
+    "nombre": "Bimix Fuego 80g",
+    "descripcion": "Mezcla de botanas sabor fuego",
+    "categoria": "Botanas",
+    "precio_compra": 8.8,
+    "precio_venta": 15,
+    "stock": 50,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7575280382205",
+    "nombre": "Takis Fuego 200g",
+    "descripcion": "Totopos enrollados sabor fuego",
+    "categoria": "Botanas",
+    "precio_compra": 21,
+    "precio_venta": 35,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810024553",
+    "nombre": "Chips Jalapeño 52g 57",
+    "descripcion": "Chips sabor jalapeño",
+    "categoria": "Botanas",
+    "precio_compra": 9.3,
+    "precio_venta": 16,
+    "stock": 55,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7500810024546",
+    "nombre": "Chips Fuego 52g 57",
+    "descripcion": "Chips sabor fuego",
+    "categoria": "Botanas",
+    "precio_compra": 9.3,
+    "precio_venta": 16,
+    "stock": 60,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7500810003671",
+    "nombre": "Takis Fuego 2 piezas más",
+    "descripcion": "Takis fuego 2 piezas",
+    "categoria": "Botanas",
+    "precio_compra": 9.3,
+    "precio_venta": 16,
+    "stock": 50,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7500810027790",
+    "nombre": "Papas Barcel Sal 45g",
+    "descripcion": "Papas fritas Barcel con sal",
+    "categoria": "Botanas",
+    "precio_compra": 7.5,
+    "precio_venta": 12,
+    "stock": 60,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7500810027820",
+    "nombre": "Runners Fuego 72g",
+    "descripcion": "Palitos Runners sabor fuego",
+    "categoria": "Botanas",
+    "precio_compra": 8.4,
+    "precio_venta": 14,
+    "stock": 50,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7500810027837",
+    "nombre": "Runners Original 72g",
+    "descripcion": "Palitos Runners sabor original",
+    "categoria": "Botanas",
+    "precio_compra": 8.4,
+    "precio_venta": 14,
+    "stock": 50,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7500810032992",
+    "nombre": "Bimbollos Súper 6p",
+    "descripcion": "Pan Bimbollos 6 piezas",
+    "categoria": "Panadería",
+    "precio_compra": 44.82,
+    "precio_venta": 54,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033005",
+    "nombre": "Bimbollos 8p",
+    "descripcion": "Pan Bimbollos 8 piezas",
+    "categoria": "Panadería",
+    "precio_compra": 43.16,
+    "precio_venta": 52,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033012",
+    "nombre": "Bimbollos Parrillero 6p",
+    "descripcion": "Pan Bimbollos para parrilla 6 piezas",
+    "categoria": "Panadería",
+    "precio_compra": 46.44,
+    "precio_venta": 56,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033029",
+    "nombre": "Bollo Brioche 6p",
+    "descripcion": "Pan Bollo Brioche 6 piezas",
+    "categoria": "Panadería",
+    "precio_compra": 53.12,
+    "precio_venta": 64,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033036",
+    "nombre": "Empanizador Crujiente",
+    "descripcion": "Empanizador estilo crujiente",
+    "categoria": "Abarrotes",
+    "precio_compra": 23.24,
+    "precio_venta": 28,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810033043",
+    "nombre": "Medias Noches 8p",
+    "descripcion": "Pan medias noches 8 piezas",
+    "categoria": "Panadería",
+    "precio_compra": 38.38,
+    "precio_venta": 46,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033050",
+    "nombre": "Pan Artesano",
+    "descripcion": "Pan artesano tradicional",
+    "categoria": "Panadería",
+    "precio_compra": 43.16,
+    "precio_venta": 52,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033067",
+    "nombre": "Pan Blanco Chico",
+    "descripcion": "Pan blanco tamaño chico",
+    "categoria": "Panadería",
+    "precio_compra": 20.75,
+    "precio_venta": 25,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810033074",
+    "nombre": "Pan Blanco Grande",
+    "descripcion": "Pan blanco tamaño grande",
+    "categoria": "Panadería",
+    "precio_compra": 40.67,
+    "precio_venta": 49,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033081",
+    "nombre": "Pan Cero Cero",
+    "descripcion": "Pan Cero Cero bajo en calorías",
+    "categoria": "Panadería",
+    "precio_compra": 53.12,
+    "precio_venta": 64,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033098",
+    "nombre": "Pan Cero Cero Multigrano",
+    "descripcion": "Pan Cero Cero multigrano",
+    "categoria": "Panadería",
+    "precio_compra": 53.12,
+    "precio_venta": 64,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033104",
+    "nombre": "Pan Integral Chico",
+    "descripcion": "Pan integral tamaño chico",
+    "categoria": "Panadería",
+    "precio_compra": 23.24,
+    "precio_venta": 28,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033111",
+    "nombre": "Pan Integral Grande",
+    "descripcion": "Pan integral tamaño grande",
+    "categoria": "Panadería",
+    "precio_compra": 43.16,
+    "precio_venta": 52,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033128",
+    "nombre": "Pan Multigrano Linaza",
+    "descripcion": "Pan multigrano con linaza",
+    "categoria": "Panadería",
+    "precio_compra": 51.46,
+    "precio_venta": 62,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033135",
+    "nombre": "Pan Molido Clásico",
+    "descripcion": "Pan molido estilo clásico",
+    "categoria": "Abarrotes",
+    "precio_compra": 23.24,
+    "precio_venta": 28,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810033142",
+    "nombre": "Pan Tostado",
+    "descripcion": "Pan tostado tradicional",
+    "categoria": "Panadería",
+    "precio_compra": 28.22,
+    "precio_venta": 34,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810033159",
+    "nombre": "Pan Tostado Doble Fibra",
+    "descripcion": "Pan tostado con doble fibra",
+    "categoria": "Panadería",
+    "precio_compra": 29.88,
+    "precio_venta": 36,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810033166",
+    "nombre": "Pan Tostado Integral",
+    "descripcion": "Pan tostado integral",
+    "categoria": "Panadería",
+    "precio_compra": 29.88,
+    "precio_venta": 36,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810033173",
+    "nombre": "Pan Mini Tostado Mantequilla",
+    "descripcion": "Mini pan tostado sabor mantequilla",
+    "categoria": "Dulces",
+    "precio_compra": 20.75,
+    "precio_venta": 25,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810033180",
+    "nombre": "Pan Tostado Brioche",
+    "descripcion": "Pan tostado estilo brioche",
+    "categoria": "Panadería",
+    "precio_compra": 29.88,
+    "precio_venta": 36,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500017",
+    "nombre": "Leche Nito",
+    "descripcion": "Leche Nito",
+    "categoria": "Bebidas",
+    "precio_compra": 12.45,
+    "precio_venta": 15,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500024",
+    "nombre": "Tortilla 15p DH",
+    "descripcion": "Tortillas de harina 15 piezas doble hoja",
+    "categoria": "Tortillas",
+    "precio_compra": 15.12,
+    "precio_venta": 18,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500031",
+    "nombre": "Tortillinas 15p TR",
+    "descripcion": "Tortillinas Tía Rosa 15 piezas",
+    "categoria": "Tortillas",
+    "precio_compra": 20.75,
+    "precio_venta": 25,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500048",
+    "nombre": "Tortillinas 22p TR",
+    "descripcion": "Tortillinas Tía Rosa 22 piezas",
+    "categoria": "Tortillas",
+    "precio_compra": 31.54,
+    "precio_venta": 38,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500055",
+    "nombre": "Totopos Chilaquiles 280g MR",
+    "descripcion": "Totopos para chilaquiles Milpa Real 280g",
+    "categoria": "Botanas",
+    "precio_compra": 26.24,
+    "precio_venta": 32,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500062",
+    "nombre": "Totopos 320g",
+    "descripcion": "Totopos naturales 320g",
+    "categoria": "Botanas",
+    "precio_compra": 27.06,
+    "precio_venta": 33,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500079",
+    "nombre": "Totopos 500g",
+    "descripcion": "Totopos naturales 500g",
+    "categoria": "Botanas",
+    "precio_compra": 39.36,
+    "precio_venta": 48,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500086",
+    "nombre": "Totopos Horneados Santissimo",
+    "descripcion": "Totopos horneados Santissimo",
+    "categoria": "Botanas",
+    "precio_compra": 25.92,
+    "precio_venta": 32,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500093",
+    "nombre": "Salsas Tatemadas",
+    "descripcion": "Salsas tatemadas tradicionales",
+    "categoria": "Salsas",
+    "precio_compra": 16.8,
+    "precio_venta": 20,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500109",
+    "nombre": "Pan 100pct Integral 680g Oroweat",
+    "descripcion": "Pan 100% integral Oroweat 680g",
+    "categoria": "Panadería",
+    "precio_compra": 65.6,
+    "precio_venta": 80,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501000500116",
+    "nombre": "Pan 12 Granos 680g Oroweat",
+    "descripcion": "Pan 12 granos Oroweat 680g",
+    "categoria": "Panadería",
+    "precio_compra": 65.6,
+    "precio_venta": 80,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501000500123",
+    "nombre": "Pan Multigrano 680g Oroweat",
+    "descripcion": "Pan multigrano Oroweat 680g",
+    "categoria": "Panadería",
+    "precio_compra": 65.6,
+    "precio_venta": 80,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501000500130",
+    "nombre": "Pan Mantequilla Buttermilk 680g Oroweat",
+    "descripcion": "Pan mantequilla buttermilk Oroweat 680g",
+    "categoria": "Panadería",
+    "precio_compra": 65.6,
+    "precio_venta": 80,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501000500147",
+    "nombre": "Flow Pack Salmas",
+    "descripcion": "Salmas flow pack",
+    "categoria": "Botanas",
+    "precio_compra": 25.11,
+    "precio_venta": 31,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500154",
+    "nombre": "Salmas 90g",
+    "descripcion": "Salmas 90g",
+    "categoria": "Botanas",
+    "precio_compra": 17.82,
+    "precio_venta": 22,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500161",
+    "nombre": "Tostada Clásica 216g Sanissimo",
+    "descripcion": "Tostada clásica Sanissimo 216g",
+    "categoria": "Botanas",
+    "precio_compra": 29.16,
+    "precio_venta": 36,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500178",
+    "nombre": "Tostada Ondulada 30p MR",
+    "descripcion": "Tostada ondulada Milpa Real 30 piezas",
+    "categoria": "Botanas",
+    "precio_compra": 30.34,
+    "precio_venta": 37,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500185",
+    "nombre": "Tostada Plana 15p MR",
+    "descripcion": "Tostada plana Milpa Real 15 piezas",
+    "categoria": "Botanas",
+    "precio_compra": 21.32,
+    "precio_venta": 26,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500192",
+    "nombre": "Tostadita 20p Sanissimo",
+    "descripcion": "Tostaditas Sanissimo 20 piezas",
+    "categoria": "Botanas",
+    "precio_compra": 21.87,
+    "precio_venta": 27,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500208",
+    "nombre": "Hot Dogs 8p Wonder",
+    "descripcion": "Pan para hot dogs Wonder 8 piezas",
+    "categoria": "Panadería",
+    "precio_compra": 39.84,
+    "precio_venta": 48,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500215",
+    "nombre": "Mini Chocotorro Wonder",
+    "descripcion": "Mini chocotorro Wonder",
+    "categoria": "Dulces",
+    "precio_compra": 5.81,
+    "precio_venta": 7,
+    "stock": 60,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501000500222",
+    "nombre": "Pan Integral 100% con Ajonjolí Wonder",
+    "descripcion": "Pan integral 100% con ajonjolí Wonder",
+    "categoria": "Panadería",
+    "precio_compra": 46.48,
+    "precio_venta": 56,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501000500239",
+    "nombre": "Pan Blanco con Ajonjolí Wonder",
+    "descripcion": "Pan blanco con ajonjolí Wonder",
+    "categoria": "Panadería",
+    "precio_compra": 44.82,
+    "precio_venta": 54,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501000500246",
+    "nombre": "Súper Bollos 8p Wonder",
+    "descripcion": "Súper bollos Wonder 8 piezas",
+    "categoria": "Panadería",
+    "precio_compra": 53.95,
+    "precio_venta": 65,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501000500253",
+    "nombre": "Súper Hot Dogs 8p Wonder",
+    "descripcion": "Súper hot dogs Wonder 8 piezas",
+    "categoria": "Panadería",
+    "precio_compra": 48.14,
+    "precio_venta": 58,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030500017",
+    "nombre": "Bimbuñuelos 6p Marinela",
+    "descripcion": "Bimbuñuelos Marinela 6 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 18.26,
+    "precio_venta": 22,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500024",
+    "nombre": "Bimbunuelos Canela Marinela",
+    "descripcion": "Bimbunuelos sabor canela Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 18.26,
+    "precio_venta": 22,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500031",
+    "nombre": "Colchones 6p Marinela",
+    "descripcion": "Colchones Marinela 6 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 13.28,
+    "precio_venta": 16,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500048",
+    "nombre": "Conchas 2p Marinela",
+    "descripcion": "Conchas Marinela 2 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 18.26,
+    "precio_venta": 22,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500055",
+    "nombre": "Crossantines Chocolate 1p Marinela",
+    "descripcion": "Crossantines chocolate Marinela 1 pieza",
+    "categoria": "Dulces",
+    "precio_compra": 6.64,
+    "precio_venta": 8,
+    "stock": 50,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030500062",
+    "nombre": "Crossantines 3p Marinela",
+    "descripcion": "Crossantines Marinela 3 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 16.6,
+    "precio_venta": 20,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500079",
+    "nombre": "Donas Azucaradas 6p Marinela",
+    "descripcion": "Donas azucaradas Marinela 6 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 18.26,
+    "precio_venta": 22,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500086",
+    "nombre": "Donitas Espolvoredas 3p Marinela",
+    "descripcion": "Donitas espolvoredas Marinela 3 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 8.3,
+    "precio_venta": 10,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030500093",
+    "nombre": "Donitas Espolvoredas 8p Marinela",
+    "descripcion": "Donitas espolvoredas Marinela 8 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 18.26,
+    "precio_venta": 22,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500109",
+    "nombre": "Duo Nito Marinela",
+    "descripcion": "Duo Nito Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 13.52,
+    "precio_venta": 17,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030500116",
+    "nombre": "Hotcks con Cajeta Marinela",
+    "descripcion": "Hotcks sabor cajeta Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 6.64,
+    "precio_venta": 8,
+    "stock": 50,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030500123",
+    "nombre": "Little Bites Chispas Marinela",
+    "descripcion": "Little Bites con chispas Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 12.45,
+    "precio_venta": 15,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500130",
+    "nombre": "Madalenas 3p Marinela",
+    "descripcion": "Madalenas Marinela 3 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 18.26,
+    "precio_venta": 22,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500147",
+    "nombre": "Mantecadas 6p Marinela",
+    "descripcion": "Mantecadas Marinela 6 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 9.96,
+    "precio_venta": 12,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030500154",
+    "nombre": "Mantecadas 6p Marinela",
+    "descripcion": "Mantecadas Marinela 6 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 26.56,
+    "precio_venta": 32,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500161",
+    "nombre": "Mantechox Hershey's 2p Marinela",
+    "descripcion": "Mantechox Hershey's Marinela 2 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 12.45,
+    "precio_venta": 15,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500178",
+    "nombre": "Nito 1p Marinela",
+    "descripcion": "Nito Marinela 1 pieza",
+    "categoria": "Dulces",
+    "precio_compra": 10.11,
+    "precio_venta": 13,
+    "stock": 50,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030500185",
+    "nombre": "Panqué Nuez Mármol, Pasas y Nuez Marinela",
+    "descripcion": "Panqué nuez mármol, pasas y nuez Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 34.86,
+    "precio_venta": 42,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030500192",
+    "nombre": "Panquecitos c/Gotas Chocolate 2p Marinela",
+    "descripcion": "Panquecitos con gotas de chocolate Marinela 2 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 18.26,
+    "precio_venta": 22,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500208",
+    "nombre": "Rebanadas Marinela",
+    "descripcion": "Rebanadas Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 8.3,
+    "precio_venta": 10,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030500215",
+    "nombre": "Roles 3p Marinela",
+    "descripcion": "Roles Marinela 3 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 20.75,
+    "precio_venta": 25,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500222",
+    "nombre": "Roles Canela Familiares 6p Marinela",
+    "descripcion": "Roles canela familiares Marinela 6 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 34.86,
+    "precio_venta": 42,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030500239",
+    "nombre": "Choco Roles Marinela",
+    "descripcion": "Choco roles Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 18.26,
+    "precio_venta": 22,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500246",
+    "nombre": "Chocotorro Marinela",
+    "descripcion": "Chocotorro Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 12.45,
+    "precio_venta": 15,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030500253",
+    "nombre": "Dálmata Marinela",
+    "descripcion": "Dálmata Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 12.45,
+    "precio_venta": 15,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030500260",
+    "nombre": "Gansito Marinela",
+    "descripcion": "Gansito Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 16.94,
+    "precio_venta": 20,
+    "stock": 55,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030500277",
+    "nombre": "Mini Pastelitos Marinela",
+    "descripcion": "Mini pastelitos Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 6.64,
+    "precio_venta": 8,
+    "stock": 60,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030500284",
+    "nombre": "Napolitano x2 Marinela",
+    "descripcion": "Napolitano Marinela 2 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 20.75,
+    "precio_venta": 25,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500291",
+    "nombre": "Mini Pay x2 Marinela",
+    "descripcion": "Mini Pay Marinela 2 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 20.75,
+    "precio_venta": 25,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500307",
+    "nombre": "Pastelito Bocadín Marinela",
+    "descripcion": "Pastelito Bocadín Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 6.64,
+    "precio_venta": 8,
+    "stock": 60,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030500314",
+    "nombre": "Pastelito Canelitas Marinela",
+    "descripcion": "Pastelito Canelitas Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 11.62,
+    "precio_venta": 14,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030500321",
+    "nombre": "Pastelito Hershey's Marinela",
+    "descripcion": "Pastelito Hershey's Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 11.62,
+    "precio_venta": 14,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030500338",
+    "nombre": "Pingüinos 2p Marinela",
+    "descripcion": "Pingüinos Marinela 2 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 18.26,
+    "precio_venta": 22,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500345",
+    "nombre": "Pingüinos 3p Marinela",
+    "descripcion": "Pingüinos Marinela 3 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 23.24,
+    "precio_venta": 28,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500352",
+    "nombre": "Pingüinos Hershey's Marinela",
+    "descripcion": "Pingüinos Hershey's Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 18.26,
+    "precio_venta": 22,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500369",
+    "nombre": "Rollo Fresa Marinela",
+    "descripcion": "Rollo fresa Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 14.94,
+    "precio_venta": 18,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500376",
+    "nombre": "Submarinos Marinela",
+    "descripcion": "Submarinos Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 16.6,
+    "precio_venta": 20,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000600017",
+    "nombre": "Besos de Nuez Gamesa",
+    "descripcion": "Besos de nuez Gamesa",
+    "categoria": "Galletas",
+    "precio_compra": 8.3,
+    "precio_venta": 10,
+    "stock": 50,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501000600024",
+    "nombre": "Mías Arándano Gamesa",
+    "descripcion": "Mías arándano Gamesa",
+    "categoria": "Galletas",
+    "precio_compra": 13.28,
+    "precio_venta": 16,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000600031",
+    "nombre": "Surtido Fina Variedad 200g Gamesa",
+    "descripcion": "Surtido fina variedad Gamesa 200g",
+    "categoria": "Galletas",
+    "precio_compra": 31.54,
+    "precio_venta": 38,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000600048",
+    "nombre": "Qé Chox Gamesa",
+    "descripcion": "Qé Chox Gamesa",
+    "categoria": "Galletas",
+    "precio_compra": 10.08,
+    "precio_venta": 12,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501000600055",
+    "nombre": "Qé Kremas Gamesa",
+    "descripcion": "Qé Kremas Gamesa",
+    "categoria": "Galletas",
+    "precio_compra": 8.4,
+    "precio_venta": 10,
+    "stock": 50,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030500383",
+    "nombre": "Bimbunuelos Canela Marinela",
+    "descripcion": "Bimbunuelos sabor canela Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 14.87,
+    "precio_venta": 22,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500390",
+    "nombre": "Crossantines Chocolate 1p Marinela",
+    "descripcion": "Crossantines chocolate Marinela 1 pieza",
+    "categoria": "Dulces",
+    "precio_compra": 5.4,
+    "precio_venta": 8,
+    "stock": 50,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030500406",
+    "nombre": "Crossantines 3p Marinela",
+    "descripcion": "Crossantines Marinela 3 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 13.51,
+    "precio_venta": 20,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500413",
+    "nombre": "Donitas Espolvoredas 3p Marinela",
+    "descripcion": "Donitas espolvoredas Marinela 3 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 6.75,
+    "precio_venta": 10,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030500420",
+    "nombre": "Donitas Espolvoredas 8p Marinela",
+    "descripcion": "Donitas espolvoredas Marinela 8 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 14.87,
+    "precio_venta": 22,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500437",
+    "nombre": "Hotcks Cajeta Marinela",
+    "descripcion": "Hotcks sabor cajeta Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 5.4,
+    "precio_venta": 8,
+    "stock": 50,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030500444",
+    "nombre": "Little Bites Chispas Marinela",
+    "descripcion": "Little Bites con chispas Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 10.13,
+    "precio_venta": 15,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500451",
+    "nombre": "Mantechox Hershey's 2p Marinela",
+    "descripcion": "Mantechox Hershey's Marinela 2 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 10.13,
+    "precio_venta": 15,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500468",
+    "nombre": "Napolitano 2p Marinela",
+    "descripcion": "Napolitano Marinela 2 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 16.89,
+    "precio_venta": 25,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500475",
+    "nombre": "Mini Pay 2p Marinela",
+    "descripcion": "Mini Pay Marinela 2 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 16.89,
+    "precio_venta": 25,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500482",
+    "nombre": "Pastelito Bocadín Marinela",
+    "descripcion": "Pastelito Bocadín Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 5.4,
+    "precio_venta": 8,
+    "stock": 60,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030500499",
+    "nombre": "Pastelito Canelitas Marinela",
+    "descripcion": "Pastelito Canelitas Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 9.46,
+    "precio_venta": 14,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030500505",
+    "nombre": "Pastelito Hershey's Marinela",
+    "descripcion": "Pastelito Hershey's Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 9.46,
+    "precio_venta": 14,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030500512",
+    "nombre": "Pingüinos Hershey's Marinela",
+    "descripcion": "Pingüinos Hershey's Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 14.87,
+    "precio_venta": 22,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500529",
+    "nombre": "Rollo Fresa Marinela",
+    "descripcion": "Rollo fresa Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 12.16,
+    "precio_venta": 18,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500536",
+    "nombre": "Chocotorro Marinela",
+    "descripcion": "Chocotorro Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 10.13,
+    "precio_venta": 15,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030500543",
+    "nombre": "Dálmata Marinela",
+    "descripcion": "Dálmata Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 10.13,
+    "precio_venta": 15,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501030500550",
+    "nombre": "Mini Pastelitos Marinela",
+    "descripcion": "Mini pastelitos Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 5.4,
+    "precio_venta": 8,
+    "stock": 60,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030500567",
+    "nombre": "Choco Roles Marinela",
+    "descripcion": "Choco roles Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 14.87,
+    "precio_venta": 22,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030500574",
+    "nombre": "Roles Canela Familiares 6p Marinela",
+    "descripcion": "Roles canela familiares Marinela 6 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 28.38,
+    "precio_venta": 42,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030500581",
+    "nombre": "Panqué Nuez Mármol Marinela",
+    "descripcion": "Panqué nuez mármol Marinela",
+    "categoria": "Dulces",
+    "precio_compra": 28.38,
+    "precio_venta": 42,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030500598",
+    "nombre": "Panquecitos Gotas Chocolate 2p Marinela",
+    "descripcion": "Panquecitos con gotas de chocolate Marinela 2 piezas",
+    "categoria": "Dulces",
+    "precio_compra": 14.87,
+    "precio_venta": 22,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810033197",
+    "nombre": "Pan Tostado Clásico Bimbo",
+    "descripcion": "Pan tostado tradicional Bimbo",
+    "categoria": "Panadería",
+    "precio_compra": 22.97,
+    "precio_venta": 34,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810033203",
+    "nombre": "Pan Tostado Doble Fibra Bimbo",
+    "descripcion": "Pan tostado con doble fibra Bimbo",
+    "categoria": "Panadería",
+    "precio_compra": 24.32,
+    "precio_venta": 36,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810033210",
+    "nombre": "Pan Tostado Integral Bimbo",
+    "descripcion": "Pan tostado integral Bimbo",
+    "categoria": "Panadería",
+    "precio_compra": 24.32,
+    "precio_venta": 36,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810033227",
+    "nombre": "Pan Mini Tostado Mantequilla Bimbo",
+    "descripcion": "Mini pan tostado sabor mantequilla Bimbo",
+    "categoria": "Dulces",
+    "precio_compra": 16.89,
+    "precio_venta": 25,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810033234",
+    "nombre": "Pan Tostado Brioche Bimbo",
+    "descripcion": "Pan tostado estilo brioche Bimbo",
+    "categoria": "Panadería",
+    "precio_compra": 24.32,
+    "precio_venta": 36,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810033241",
+    "nombre": "Bollo Brioche 6p Bimbo",
+    "descripcion": "Pan Bollo Brioche 6 piezas Bimbo",
+    "categoria": "Panadería",
+    "precio_compra": 43.24,
+    "precio_venta": 64,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033258",
+    "nombre": "Empanizador Crujiente Bimbo",
+    "descripcion": "Empanizador estilo crujiente Bimbo",
+    "categoria": "Abarrotes",
+    "precio_compra": 18.92,
+    "precio_venta": 28,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810033265",
+    "nombre": "Pan Artesano Bimbo",
+    "descripcion": "Pan artesano tradicional Bimbo",
+    "categoria": "Panadería",
+    "precio_compra": 35.14,
+    "precio_venta": 52,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033272",
+    "nombre": "Pan Cero Cero Bimbo",
+    "descripcion": "Pan Cero Cero bajo en calorías Bimbo",
+    "categoria": "Panadería",
+    "precio_compra": 43.24,
+    "precio_venta": 64,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033289",
+    "nombre": "Pan Cero Cero Multigrano Bimbo",
+    "descripcion": "Pan Cero Cero multigrano Bimbo",
+    "categoria": "Panadería",
+    "precio_compra": 43.24,
+    "precio_venta": 64,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033296",
+    "nombre": "Pan Multigrano Linaza Bimbo",
+    "descripcion": "Pan multigrano con linaza Bimbo",
+    "categoria": "Panadería",
+    "precio_compra": 41.89,
+    "precio_venta": 62,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810033302",
+    "nombre": "Pan Molido Clásico Bimbo",
+    "descripcion": "Pan molido estilo clásico Bimbo",
+    "categoria": "Abarrotes",
+    "precio_compra": 18.92,
+    "precio_venta": 28,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500260",
+    "nombre": "Leche Nito Chocolate 236ml",
+    "descripcion": "Leche Nito sabor chocolate 236ml",
+    "categoria": "Bebidas Lácteas",
+    "precio_compra": 10.13,
+    "precio_venta": 15,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500277",
+    "nombre": "Leche Nito Fresa 236ml",
+    "descripcion": "Leche Nito sabor fresa 236ml",
+    "categoria": "Bebidas Lácteas",
+    "precio_compra": 10.13,
+    "precio_venta": 15,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500284",
+    "nombre": "Leche Nito Vainilla 236ml",
+    "descripcion": "Leche Nito sabor vainilla 236ml",
+    "categoria": "Bebidas Lácteas",
+    "precio_compra": 10.13,
+    "precio_venta": 15,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500291",
+    "nombre": "Leche Nito Natural 1L",
+    "descripcion": "Leche Nito natural 1 litro",
+    "categoria": "Bebidas Lácteas",
+    "precio_compra": 18.92,
+    "precio_venta": 28,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500307",
+    "nombre": "Yogurt Nito Fresa 1L",
+    "descripcion": "Yogurt bebible Nito sabor fresa 1L",
+    "categoria": "Bebidas Lácteas",
+    "precio_compra": 20.27,
+    "precio_venta": 30,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000600062",
+    "nombre": "Besos de Nuez Gamesa",
+    "descripcion": "Besos de nuez Gamesa",
+    "categoria": "Galletas",
+    "precio_compra": 6.75,
+    "precio_venta": 10,
+    "stock": 50,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501000600079",
+    "nombre": "Mías Arándano Gamesa",
+    "descripcion": "Mías arándano Gamesa",
+    "categoria": "Galletas",
+    "precio_compra": 10.81,
+    "precio_venta": 16,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000600086",
+    "nombre": "Surtido Fina Variedad 200g Gamesa",
+    "descripcion": "Surtido fina variedad Gamesa 200g",
+    "categoria": "Galletas",
+    "precio_compra": 25.68,
+    "precio_venta": 38,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000600093",
+    "nombre": "Qé Chox Gamesa",
+    "descripcion": "Qé Chox Gamesa",
+    "categoria": "Galletas",
+    "precio_compra": 8.21,
+    "precio_venta": 12,
+    "stock": 45,
+    "stock_minimo": 12
+  },
+  {
+    "codigo_barras": "7501000500314",
+    "nombre": "Tortillinas 15p Tía Rosa",
+    "descripcion": "Tortillinas Tía Rosa 15 piezas",
+    "categoria": "Tortillas",
+    "precio_compra": 16.89,
+    "precio_venta": 25,
+    "stock": 40,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500321",
+    "nombre": "Tortillinas 22p Tía Rosa",
+    "descripcion": "Tortillinas Tía Rosa 22 piezas",
+    "categoria": "Tortillas",
+    "precio_compra": 25.68,
+    "precio_venta": 38,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500338",
+    "nombre": "Totopos Chilaquiles 280g Milpa Real",
+    "descripcion": "Totopos para chilaquiles Milpa Real 280g",
+    "categoria": "Botanas",
+    "precio_compra": 21.35,
+    "precio_venta": 32,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500345",
+    "nombre": "Totopos 320g Milpa Real",
+    "descripcion": "Totopos naturales Milpa Real 320g",
+    "categoria": "Botanas",
+    "precio_compra": 22.03,
+    "precio_venta": 33,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500352",
+    "nombre": "Totopos 500g Milpa Real",
+    "descripcion": "Totopos naturales Milpa Real 500g",
+    "categoria": "Botanas",
+    "precio_compra": 32.03,
+    "precio_venta": 48,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500369",
+    "nombre": "Totopos Horneados Santissimo",
+    "descripcion": "Totopos horneados Santissimo",
+    "categoria": "Botanas",
+    "precio_compra": 21.08,
+    "precio_venta": 32,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500376",
+    "nombre": "Salsas Tatemadas Milpa Real",
+    "descripcion": "Salsas tatemadas tradicionales Milpa Real",
+    "categoria": "Salsas",
+    "precio_compra": 13.51,
+    "precio_venta": 20,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500383",
+    "nombre": "Flow Pack Salmas Sanissimo",
+    "descripcion": "Salmas flow pack Sanissimo",
+    "categoria": "Botanas",
+    "precio_compra": 20.41,
+    "precio_venta": 31,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500390",
+    "nombre": "Salmas 90g Sanissimo",
+    "descripcion": "Salmas 90g Sanissimo",
+    "categoria": "Botanas",
+    "precio_compra": 14.52,
+    "precio_venta": 22,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500406",
+    "nombre": "Tostada Ondulada 30p Milpa Real",
+    "descripcion": "Tostada ondulada Milpa Real 30 piezas",
+    "categoria": "Botanas",
+    "precio_compra": 24.73,
+    "precio_venta": 37,
+    "stock": 30,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500413",
+    "nombre": "Tostada Plana 15p Milpa Real",
+    "descripcion": "Tostada plana Milpa Real 15 piezas",
+    "categoria": "Botanas",
+    "precio_compra": 17.36,
+    "precio_venta": 26,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500420",
+    "nombre": "Tostadita 20p Sanissimo",
+    "descripcion": "Tostaditas Sanissimo 20 piezas",
+    "categoria": "Botanas",
+    "precio_compra": 17.84,
+    "precio_venta": 27,
+    "stock": 35,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000500437",
+    "nombre": "Súper Bollos 8p Wonder",
+    "descripcion": "Súper bollos Wonder 8 piezas",
+    "categoria": "Panadería",
+    "precio_compra": 43.92,
+    "precio_venta": 65,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501000500444",
+    "nombre": "Súper Hot Dogs 8p Wonder",
+    "descripcion": "Súper hot dogs Wonder 8 piezas",
+    "categoria": "Panadería",
+    "precio_compra": 39.19,
+    "precio_venta": 58,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000500451",
+    "nombre": "Mini Chocotorro Wonder",
+    "descripcion": "Mini chocotorro Wonder",
+    "categoria": "Dulces",
+    "precio_compra": 4.73,
+    "precio_venta": 7,
+    "stock": 60,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501000500468",
+    "nombre": "Pan Integral 100% Ajonjolí Wonder",
+    "descripcion": "Pan integral 100% con ajonjolí Wonder",
+    "categoria": "Panadería",
+    "precio_compra": 37.84,
+    "precio_venta": 56,
     "stock": 20,
     "stock_minimo": 5
   }

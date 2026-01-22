@@ -805,10 +805,7 @@ export default function AgregarProductoScreen() {
               {/* Marco de escaneo visual */}
               {scannerConfig.marcoEscaneoVisible && (
                 <View style={styles.scanFrame}>
-                  <View style={styles.scanCornerTopLeft} />
-                  <View style={styles.scanCornerTopRight} />
-                  <View style={styles.scanCornerBottomLeft} />
-                  <View style={styles.scanCornerBottomRight} />
+                  <View style={styles.scanCorner} />
                   <Text style={styles.scanFrameText}>Coloca el código aquí</Text>
                 </View>
               )}
@@ -825,31 +822,32 @@ export default function AgregarProductoScreen() {
             </CameraView>
 
             <View style={styles.cameraOverlay}>
-              <Text variant="titleMedium" style={styles.cameraTitle}>
-                Escanea código
-              </Text>
+              <View style={styles.cameraInfo}>
+                <Text variant="titleSmall" style={styles.cameraTitle}>
+                  Escanear Código de Barras
+                </Text>
+              </View>
 
-              {/* Botones en fila horizontal */}
-              <View style={styles.cameraControlsRow}>
+              <View style={styles.cameraControls}>
                 {/* Botón de linterna */}
                 {scannerConfig.linternaHabilitada && (
                   <IconButton
                     icon={torchOn ? "flashlight" : "flashlight-off"}
+                    size={24}
                     iconColor="#fff"
-                    size={28}
                     onPress={() => setTorchOn(!torchOn)}
-                    containerColor="rgba(0,0,0,0.6)"
+                    style={styles.torchButton}
                   />
                 )}
 
                 <Button
                   mode="contained"
                   onPress={handleCloseCamera}
-                  style={styles.cameraCancelButton}
                   icon="close"
                   compact
+                  buttonColor="rgba(0,0,0,0.7)"
                 >
-                  Cancelar
+                  Cerrar
                 </Button>
               </View>
             </View>
@@ -1116,87 +1114,61 @@ const styles = StyleSheet.create({
     maxWidth: 400,
   },
   cameraContainer: {
-    height: 420,
+    height: 280,
     borderRadius: 16,
     overflow: 'hidden',
   },
   cameraOverlay: {
     position: 'absolute',
-    bottom: 0,
+    top: 0,
     left: 0,
     right: 0,
-    padding: 12,
+    padding: 16,
     backgroundColor: 'rgba(0,0,0,0.6)',
-    alignItems: 'center'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cameraInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  cameraControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  torchButton: {
+    margin: 0,
   },
   cameraTitle: {
     color: 'white',
-    marginBottom: 8,
-    textAlign: 'center',
-    fontSize: 16,
-  },
-  cameraControlsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  cameraCancelButton: {
-    backgroundColor: '#d32f2f'
+    fontWeight: 'bold',
   },
   // Estilos para marco de escaneo
   scanFrame: {
     position: 'absolute',
     top: '50%',
     left: '50%',
-    transform: [{ translateX: -140 }, { translateY: -70 }],
-    width: 280,
-    height: 140,
+    transform: [{ translateX: -100 }, { translateY: -60 }],
+    width: 200,
+    height: 120,
+    borderWidth: 3,
+    borderColor: '#4caf50',
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  scanCornerTopLeft: {
+  scanCorner: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    width: 40,
-    height: 40,
-    borderTopWidth: 5,
-    borderLeftWidth: 5,
+    top: -4,
+    left: -4,
+    width: 20,
+    height: 20,
+    borderTopWidth: 4,
+    borderLeftWidth: 4,
     borderColor: '#4caf50',
-    borderTopLeftRadius: 6,
-  },
-  scanCornerTopRight: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 40,
-    height: 40,
-    borderTopWidth: 5,
-    borderRightWidth: 5,
-    borderColor: '#4caf50',
-    borderTopRightRadius: 6,
-  },
-  scanCornerBottomLeft: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    width: 40,
-    height: 40,
-    borderBottomWidth: 5,
-    borderLeftWidth: 5,
-    borderColor: '#4caf50',
-    borderBottomLeftRadius: 6,
-  },
-  scanCornerBottomRight: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 40,
-    height: 40,
-    borderBottomWidth: 5,
-    borderRightWidth: 5,
-    borderColor: '#4caf50',
-    borderBottomRightRadius: 6,
   },
   scanFrameText: {
     color: 'white',

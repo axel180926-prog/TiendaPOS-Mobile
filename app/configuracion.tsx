@@ -11,6 +11,7 @@ import {
   formatearTamaño,
   obtenerUltimoBackup
 } from '@/lib/utils/backup';
+import { recargarProductosForzado } from '@/lib/utils/seedData';
 
 export default function ConfiguracionScreen() {
   const { configuracion, actualizarConfiguracion: actualizarConfig, cargarConfiguracion } = useConfigStore();
@@ -169,6 +170,36 @@ export default function ConfiguracionScreen() {
     const min = String(fecha.getMinutes()).padStart(2, '0');
 
     return `${dia}/${mes}/${año} ${hora}:${min}`;
+  };
+
+  const handleResetearProductos = async () => {
+    Alert.alert(
+      '⚠️ Resetear Productos',
+      '¿Estás seguro de que deseas eliminar TODOS los productos y recargarlos desde el archivo JSON?\n\nEsta acción eliminará:\n• Todos los productos actuales\n• Los cambios que hayas hecho manualmente\n\nSe recargarán 90 productos desde el archivo base.\n\nEsta acción NO se puede deshacer.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Resetear',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setLoading(true);
+              console.log('🔄 Iniciando reseteo de productos...');
+              await recargarProductosForzado();
+              setLoading(false);
+              Alert.alert(
+                '✅ Éxito',
+                'Los productos han sido reseteados correctamente.\n\n90 productos cargados desde el archivo JSON.'
+              );
+            } catch (error) {
+              setLoading(false);
+              console.error('❌ Error al resetear productos:', error);
+              Alert.alert('Error', 'No se pudieron resetear los productos. Intenta de nuevo.');
+            }
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -547,6 +578,37 @@ export default function ConfiguracionScreen() {
           </Card.Content>
         </Card>
 
+        {/* Sección de Mantenimiento */}
+        <Card style={styles.card}>
+          <Card.Title
+            title="🔧 Mantenimiento de Base de Datos"
+            subtitle="Operaciones avanzadas para administrar los datos"
+          />
+          <Card.Content>
+            <View style={styles.dangerZone}>
+              <Text variant="bodySmall" style={styles.dangerText}>
+                ⚠️ Zona de peligro: estas acciones no se pueden deshacer
+              </Text>
+            </View>
+
+            <Button
+              mode="outlined"
+              onPress={handleResetearProductos}
+              loading={loading}
+              icon="refresh"
+              style={styles.dangerButton}
+              textColor="#f44336"
+            >
+              Resetear Productos a Valores Iniciales
+            </Button>
+
+            <Text variant="bodySmall" style={styles.resetInfoText}>
+              Esta opción eliminará TODOS los productos y los recargará desde el archivo JSON base (90 productos).
+              Útil si necesitas restaurar el catálogo original.
+            </Text>
+          </Card.Content>
+        </Card>
+
         <Card style={styles.card}>
           <Card.Content style={styles.infoSection}>
             <Text variant="labelLarge" style={styles.infoTitle}>
@@ -702,5 +764,28 @@ const styles = StyleSheet.create({
   },
   segmentedButtons: {
     marginBottom: 12,
+  },
+  dangerZone: {
+    backgroundColor: '#ffebee',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 15,
+    borderLeftWidth: 4,
+    borderLeftColor: '#f44336',
+  },
+  dangerText: {
+    color: '#c62828',
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  dangerButton: {
+    marginBottom: 10,
+    borderColor: '#f44336',
+  },
+  resetInfoText: {
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 5,
+    lineHeight: 18,
   },
 });

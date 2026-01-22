@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, Alert, Animated } from 'react-native';
 import {
   Card,
   Text,
@@ -13,16 +13,16 @@ import {
   Switch,
   SegmentedButtons
 } from 'react-native-paper';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { formatearMoneda } from '@/lib/utils/formatters';
 import * as queries from '@/lib/database/queries';
-
-type FiltroEstado = 'todos' | 'activos' | 'inactivos';
+import { useScannerFeedback } from '@/lib/hooks/useScannerFeedback';
+import { useScannerConfigStore } from '@/lib/store/useScannerConfigStore';
 
 export default function CatalogoScreen() {
   const [productos, setProductos] = useState<any[]>([]);
   const [categorias, setCategorias] = useState<string[]>([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(null);
-  const [filtroEstado, setFiltroEstado] = useState<FiltroEstado>('todos');
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -34,6 +34,22 @@ export default function CatalogoScreen() {
   const [precioVenta, setPrecioVenta] = useState('');
   const [stockInicial, setStockInicial] = useState('');
 
+  // Estados para el escáner de cámara
+  const [cameraScannerVisible, setCameraScannerVisible] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+  const [isScanning, setIsScanning] = useState(false);
+  const [torchOn, setTorchOn] = useState(false);
+
+  // Estados para el escáner de cámara del modal
+  const [modalCameraScannerVisible, setModalCameraScannerVisible] = useState(false);
+  const [modalPermission, requestModalPermission] = useCameraPermissions();
+  const [modalIsScanning, setModalIsScanning] = useState(false);
+  const [modalTorchOn, setModalTorchOn] = useState(false);
+
+  // Configuración y feedback del escáner
+  const scannerConfig = useScannerConfigStore();
+  const { triggerScanSuccess, triggerScanError, showSuccessFlash, flashOpacity } = useScannerFeedback();
+
   useEffect(() => {
     cargarProductos();
   }, []);
@@ -41,7 +57,7 @@ export default function CatalogoScreen() {
   const cargarProductos = async () => {
     try {
       setLoading(true);
-      const data = await queries.obtenerProductos();
+      const data = await queries.obtenerTodosLosProductos();
       setProductos(data);
 
       // Extraer categorías únicas
@@ -58,10 +74,12 @@ export default function CatalogoScreen() {
   const obtenerProductosPorCategoria = () => {
     let filtered = productos;
 
-    // Búsqueda por nombre
+    // Búsqueda por nombre o código de barras
     if (searchQuery.length > 0) {
+      const query = searchQuery.toLowerCase();
       filtered = filtered.filter(p =>
-        p.nombre.toLowerCase().includes(searchQuery.toLowerCase())
+        p.nombre.toLowerCase().includes(query) ||
+        p.codigoBarras?.toLowerCase().includes(query)
       );
     }
 
@@ -70,22 +88,11 @@ export default function CatalogoScreen() {
       filtered = filtered.filter(p => p.categoria === categoriaSeleccionada);
     }
 
-    // Filtro de estado
-    if (filtroEstado === 'activos') {
-      filtered = filtered.filter(p => p.activo === true || p.activo === 1);
-    } else if (filtroEstado === 'inactivos') {
-      filtered = filtered.filter(p => p.activo === false || p.activo === 0);
-    }
-
     return filtered;
   };
 
   const contarProductosCategoria = (categoria: string) => {
-    const total = productos.filter(p => p.categoria === categoria).length;
-    const activos = productos.filter(p =>
-      p.categoria === categoria && (p.activo === true || p.activo === 1)
-    ).length;
-    return { activos, total };
+    return productos.filter(p => p.categoria === categoria).length;
   };
 
   const calcularGanancia = (compra: number, venta: number) => {
@@ -94,30 +101,6 @@ export default function CatalogoScreen() {
     return { ganancia, porcentaje };
   };
 
-  const obtenerEstadoStock = (stock: number, minimo: number = 10) => {
-    if (stock === 0) return { tipo: 'agotado', color: '#d32f2f', texto: '🔴 AGOTADO', colorTexto: '#fff' };
-    if (stock <= minimo) return { tipo: 'bajo', color: '#ff9800', texto: '⚠️ BAJO', colorTexto: '#fff' };
-    return { tipo: 'ok', color: '#4caf50', texto: '✓ OK', colorTexto: '#fff' };
-  };
-
-  const handleToggleActivo = async (producto: any) => {
-    try {
-      const nuevoEstado = !producto.activo;
-      await queries.actualizarProducto(producto.id, {
-        activo: nuevoEstado
-      });
-
-      Alert.alert(
-        'Producto ' + (nuevoEstado ? 'Activado' : 'Desactivado'),
-        `"${producto.nombre}" ahora está ${nuevoEstado ? 'disponible' : 'no disponible'} para venta`
-      );
-
-      cargarProductos();
-    } catch (error) {
-      console.error('Error:', error);
-      Alert.alert('Error', 'No se pudo cambiar el estado del producto');
-    }
-  };
 
   const handleAbrirConfiguracion = (producto: any) => {
     setProductoEditando(producto);
@@ -155,6 +138,141 @@ export default function CatalogoScreen() {
     await guardarCambios();
   };
 
+  // Solicitar permisos de cámara
+  const requestCameraPermission = async () => {
+    if (!permission) {
+      return;
+    }
+
+    if (!permission.granted) {
+      const result = await requestPermission();
+      if (result.granted) {
+        setCameraScannerVisible(true);
+      } else {
+        Alert.alert('Permiso denegado', 'Se necesita acceso a la cámara para escanear códigos de barras');
+      }
+    } else {
+      setCameraScannerVisible(true);
+    }
+  };
+
+  // Manejar escaneo desde cámara
+  const handleCameraScan = ({ type, data }: { type: string; data: string }) => {
+    if (isScanning) return;
+
+    setIsScanning(true);
+    handleBarcodeScanned(data);
+
+    setTimeout(() => setIsScanning(false), 1500);
+  };
+
+  // Manejar escaneo desde cámara del modal
+  const handleModalCameraScan = ({ type, data }: { type: string; data: string }) => {
+    if (modalIsScanning) return;
+
+    setModalIsScanning(true);
+
+    // Actualizar el campo de código de barras
+    setCodigoBarras(data);
+
+    // Feedback visual/sonoro
+    triggerScanSuccess();
+
+    // Cerrar cámara después de escanear
+    setTimeout(() => {
+      setModalCameraScannerVisible(false);
+      setModalIsScanning(false);
+    }, 500);
+  };
+
+  // Abrir cámara para modal
+  const handleOpenModalCamera = async () => {
+    if (!modalPermission) {
+      const { granted } = await requestModalPermission();
+      if (granted) {
+        setModalCameraScannerVisible(true);
+      } else {
+        Alert.alert('Permiso denegado', 'Se necesita acceso a la cámara para escanear códigos de barras');
+      }
+    } else if (!modalPermission.granted) {
+      const { granted } = await requestModalPermission();
+      if (granted) {
+        setModalCameraScannerVisible(true);
+      } else {
+        Alert.alert('Permiso denegado', 'Se necesita acceso a la cámara para escanear códigos de barras');
+      }
+    } else {
+      setModalCameraScannerVisible(true);
+    }
+  };
+
+  // Cerrar cámara del modal
+  const handleCloseModalCamera = () => {
+    setModalCameraScannerVisible(false);
+    setModalIsScanning(false);
+    setModalTorchOn(false);
+  };
+
+  // Cerrar cámara y resetear estados
+  const handleCloseCamera = () => {
+    setCameraScannerVisible(false);
+    setTorchOn(false);
+  };
+
+  // Manejar escaneo de código de barras
+  const handleBarcodeScanned = async (codigo: string) => {
+    try {
+      const producto = await queries.obtenerProductoPorCodigoBarras(codigo);
+
+      if (producto) {
+        triggerScanSuccess();
+
+        Alert.alert(
+          'Producto Encontrado',
+          `${producto.nombre}\n${formatearMoneda(producto.precioVenta)}\nStock: ${producto.stock || 0}`,
+          [
+            {
+              text: 'Cerrar',
+              style: 'cancel',
+              onPress: () => {}
+            },
+            {
+              text: 'Configurar',
+              onPress: () => {
+                handleCloseCamera();
+                handleAbrirConfiguracion(producto);
+              }
+            },
+            {
+              text: 'Buscar',
+              onPress: () => {
+                handleCloseCamera();
+                setSearchQuery(codigo);
+              }
+            }
+          ]
+        );
+      } else {
+        triggerScanError();
+
+        Alert.alert(
+          'Producto No Encontrado',
+          `No existe un producto con el código: ${codigo}`,
+          [
+            {
+              text: 'OK',
+              onPress: () => {}
+            }
+          ]
+        );
+      }
+    } catch (error) {
+      console.error('Error al buscar producto:', error);
+      triggerScanError();
+      Alert.alert('Error', 'No se pudo buscar el producto');
+    }
+  };
+
   const guardarCambios = async () => {
     if (!productoEditando) return;
 
@@ -162,8 +280,7 @@ export default function CatalogoScreen() {
       const datosActualizar: any = {
         precioCompra: parseFloat(precioCompra) || 0,
         precioVenta: parseFloat(precioVenta),
-        stock: parseInt(stockInicial) || 0,
-        activo: true // Activar automáticamente al configurar
+        stock: parseInt(stockInicial) || 0
       };
 
       // Solo actualizar código de barras si se modificó
@@ -190,79 +307,123 @@ export default function CatalogoScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header con instrucciones */}
-      <Card style={styles.headerCard}>
-        <Card.Content>
-          <Text variant="titleMedium" style={styles.headerTitle}>
-            📦 Catálogo de Productos
-          </Text>
-          <Text variant="bodySmall" style={styles.headerSubtitle}>
-            Selecciona una categoría, configura precios y activa los productos que vendes
-          </Text>
-        </Card.Content>
-      </Card>
+      {/* Campo de búsqueda con botón de cámara */}
+      {!cameraScannerVisible && (
+        <View style={styles.searchContainer}>
+          <TextInput
+            label="Buscar producto por nombre"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            mode="outlined"
+            style={styles.searchInput}
+            left={<TextInput.Icon icon="magnify" />}
+            right={searchQuery.length > 0 ? (
+              <TextInput.Icon
+                icon="close"
+                onPress={() => setSearchQuery('')}
+              />
+            ) : undefined}
+          />
+          <IconButton
+            icon="camera"
+            size={24}
+            mode="contained"
+            onPress={requestCameraPermission}
+            style={styles.cameraButton}
+            containerColor="#2c5f7c"
+            iconColor="#fff"
+          />
+        </View>
+      )}
 
-      {/* Campo de búsqueda */}
-      <View style={styles.searchContainer}>
-        <TextInput
-          label="Buscar producto por nombre"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          mode="outlined"
-          style={styles.searchInput}
-          left={<TextInput.Icon icon="magnify" />}
-          right={searchQuery.length > 0 ? (
-            <TextInput.Icon
-              icon="close"
-              onPress={() => setSearchQuery('')}
-            />
-          ) : undefined}
-        />
-      </View>
+      {/* Vista de cámara cuando está activa */}
+      {cameraScannerVisible && (
+        <View style={styles.cameraViewContainer}>
+          <CameraView
+            onBarcodeScanned={handleCameraScan}
+            barcodeScannerSettings={{
+              barcodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e', 'code128', 'code39', 'qr'],
+            }}
+            enableTorch={torchOn}
+            style={styles.cameraView}
+          >
+            {/* Marco de escaneo visual */}
+            {scannerConfig.marcoEscaneoVisible && (
+              <View style={styles.scanFrame}>
+                <View style={styles.scanCorner} />
+                <Text style={styles.scanFrameText}>Coloca el código aquí</Text>
+              </View>
+            )}
 
-      {/* Filtro de estado */}
-      <View style={styles.filtroContainer}>
-        <SegmentedButtons
-          value={filtroEstado}
-          onValueChange={(value) => setFiltroEstado(value as FiltroEstado)}
-          buttons={[
-            { value: 'todos', label: 'Todos' },
-            { value: 'activos', label: 'Activos' },
-            { value: 'inactivos', label: 'Inactivos' }
-          ]}
-        />
-      </View>
+            {/* Flash de éxito */}
+            {showSuccessFlash && (
+              <Animated.View style={[styles.successFlash, { opacity: flashOpacity }]} />
+            )}
+
+            {/* Overlay superior con controles */}
+            <View style={styles.cameraOverlay}>
+              <View style={styles.cameraInfo}>
+                <Text variant="titleSmall" style={styles.cameraTitle}>
+                  Escanear Código de Barras
+                </Text>
+              </View>
+
+              <View style={styles.cameraControls}>
+                {/* Botón de linterna */}
+                {scannerConfig.linternaHabilitada && (
+                  <IconButton
+                    icon={torchOn ? "flashlight" : "flashlight-off"}
+                    size={24}
+                    iconColor="#fff"
+                    onPress={() => setTorchOn(!torchOn)}
+                    style={styles.torchButton}
+                  />
+                )}
+
+                <Button
+                  mode="contained"
+                  onPress={handleCloseCamera}
+                  icon="close"
+                  compact
+                  buttonColor="rgba(0,0,0,0.7)"
+                >
+                  Cerrar
+                </Button>
+              </View>
+            </View>
+          </CameraView>
+        </View>
+      )}
 
       {/* Categorías */}
-      <View style={styles.categoriasContainer}>
-        <Text variant="labelLarge" style={styles.sectionTitle}>
-          Categorías
-        </Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={styles.categorias}>
-            <Chip
-              selected={categoriaSeleccionada === null}
-              onPress={() => setCategoriaSeleccionada(null)}
-              style={styles.categoriaChip}
-            >
-              Todas ({productos.length})
-            </Chip>
-            {categorias.map((cat) => {
-              const { activos, total } = contarProductosCategoria(cat);
-              return (
-                <Chip
-                  key={cat}
-                  selected={categoriaSeleccionada === cat}
-                  onPress={() => setCategoriaSeleccionada(cat)}
-                  style={styles.categoriaChip}
-                >
-                  {cat} ({activos}/{total})
-                </Chip>
-              );
-            })}
-          </View>
-        </ScrollView>
-      </View>
+      {!cameraScannerVisible && (
+        <View style={styles.categoriasContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View style={styles.categorias}>
+              <Chip
+                selected={categoriaSeleccionada === null}
+                onPress={() => setCategoriaSeleccionada(null)}
+                style={styles.categoriaChip}
+              >
+                Todas ({productos.length})
+              </Chip>
+              {categorias.map((cat) => {
+                const total = contarProductosCategoria(cat);
+                return (
+                  <Chip
+                    key={cat}
+                    selected={categoriaSeleccionada === cat}
+                    onPress={() => setCategoriaSeleccionada(cat)}
+                    style={styles.categoriaChip}
+                  >
+                    {cat} ({total})
+                  </Chip>
+                );
+              })}
+            </View>
+          </ScrollView>
+        </View>
+      )}
 
       {/* Lista de productos */}
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
@@ -270,42 +431,38 @@ export default function CatalogoScreen() {
           <View style={styles.emptyContainer}>
             <Text variant="bodyLarge" style={styles.emptyText}>
               {categoriaSeleccionada
-                ? `No hay productos ${filtroEstado === 'activos' ? 'activos' : filtroEstado === 'inactivos' ? 'inactivos' : ''} en esta categoría`
+                ? `No hay productos en esta categoría`
+                : searchQuery
+                ? 'No se encontraron productos'
                 : 'No hay productos'}
             </Text>
           </View>
         ) : (
           productosCategoria.map((producto) => {
-            const activo = producto.activo === true || producto.activo === 1;
             const compra = producto.precioCompra || 0;
             const venta = producto.precioVenta || 0;
             const { ganancia, porcentaje } = calcularGanancia(compra, venta);
 
-            const estadoStock = obtenerEstadoStock(producto.stock || 0, producto.stockMinimo);
+            // Determinar color del stock
+            const stock = producto.stock || 0;
+            const stockMinimo = producto.stockMinimo || 10;
+            const stockColor = stock === 0 ? '#d32f2f' : stock <= stockMinimo ? '#ff9800' : '#4caf50';
 
             return (
               <Card
                 key={producto.id}
                 style={[
                   styles.cardModerna,
-                  !activo && styles.cardInactivo,
-                  estadoStock.tipo === 'agotado' && styles.cardAgotado
+                  stock === 0 && styles.cardAgotado
                 ]}
-                elevation={activo ? 3 : 1}
+                elevation={3}
               >
                 <Card.Content style={styles.cardContent}>
-                  {/* Header: Nombre + Estado */}
+                  {/* Header: Nombre */}
                   <View style={styles.headerRow}>
                     <Text style={styles.nombreProducto}>
                       {producto.nombre}
                     </Text>
-                    <Chip
-                      mode="outlined"
-                      style={[styles.estadoChip, activo ? styles.estadoActivo : styles.estadoInactivo]}
-                      textStyle={activo ? styles.estadoActivoText : styles.estadoInactivoText}
-                    >
-                      {activo ? 'ACTIVO' : 'Inactivo'}
-                    </Chip>
                   </View>
 
                   {/* Detalles: Marca y Presentación */}
@@ -356,9 +513,9 @@ export default function CatalogoScreen() {
                       <Text style={styles.labelCompacto}>Stock</Text>
                       <Text style={[
                         styles.valorStockCompacto,
-                        { color: estadoStock.color }
+                        { color: stockColor }
                       ]}>
-                        {producto.stock || 0}
+                        {stock}
                       </Text>
                       <Text style={styles.unidadCompacta}>
                         {producto.unidadMedida || 'pzas'}
@@ -369,18 +526,9 @@ export default function CatalogoScreen() {
                       <IconButton
                         icon="pencil"
                         mode="contained"
-                        size={18}
+                        size={20}
                         onPress={() => handleAbrirConfiguracion(producto)}
                         containerColor="#2196f3"
-                        iconColor="#fff"
-                        style={styles.iconButtonCompacto}
-                      />
-                      <IconButton
-                        icon={activo ? 'close-circle' : 'check-circle'}
-                        mode="contained"
-                        size={18}
-                        onPress={() => handleToggleActivo(producto)}
-                        containerColor={activo ? '#f44336' : '#4caf50'}
                         iconColor="#fff"
                         style={styles.iconButtonCompacto}
                       />
@@ -411,22 +559,79 @@ export default function CatalogoScreen() {
                   {productoEditando.nombre}
                 </Text>
 
-                <TextInput
-                  label="Código de Barras"
-                  value={codigoBarras}
-                  onChangeText={setCodigoBarras}
-                  keyboardType="numeric"
-                  mode="outlined"
-                  style={styles.input}
-                  left={<TextInput.Icon icon="barcode" />}
-                  right={
-                    <TextInput.Icon
-                      icon="information"
-                      onPress={() => Alert.alert('Info', 'Código de barras único del producto para escaneo rápido')}
-                    />
-                  }
-                  placeholder="Escribe o escanea el código"
-                />
+                <View style={styles.barcodeInputContainer}>
+                  <TextInput
+                    label="Código de Barras"
+                    value={codigoBarras}
+                    onChangeText={setCodigoBarras}
+                    keyboardType="numeric"
+                    mode="outlined"
+                    style={[styles.input, styles.barcodeInput]}
+                    left={<TextInput.Icon icon="barcode" />}
+                    placeholder="Escribe o escanea el código"
+                  />
+                  <IconButton
+                    icon="camera"
+                    size={28}
+                    iconColor="#2c5f7c"
+                    style={styles.cameraButtonModal}
+                    onPress={handleOpenModalCamera}
+                  />
+                </View>
+
+                {/* Cámara de escaneo del modal */}
+                {modalCameraScannerVisible && (
+                  <View style={styles.modalCameraContainer}>
+                    <CameraView
+                      onBarcodeScanned={handleModalCameraScan}
+                      barcodeScannerSettings={{
+                        barcodeTypes: ['ean13', 'ean8', 'upc_a', 'upc_e', 'code128', 'code39', 'qr'],
+                      }}
+                      enableTorch={modalTorchOn}
+                      style={styles.modalCameraView}
+                    >
+                      {/* Marco de escaneo visual */}
+                      {scannerConfig.marcoEscaneoVisible && (
+                        <View style={styles.modalScanFrame}>
+                          <View style={styles.scanCorner} />
+                          <Text style={styles.scanFrameText}>Coloca el código aquí</Text>
+                        </View>
+                      )}
+
+                      {/* Overlay superior con controles */}
+                      <View style={styles.modalCameraControls}>
+                        <View style={styles.cameraInfo}>
+                          <Text variant="titleSmall" style={styles.cameraTitle}>
+                            Escanear Código
+                          </Text>
+                        </View>
+
+                        <View style={styles.cameraControls}>
+                          {/* Botón de linterna */}
+                          {scannerConfig.linternaHabilitada && (
+                            <IconButton
+                              icon={modalTorchOn ? "flashlight" : "flashlight-off"}
+                              size={24}
+                              iconColor="#fff"
+                              onPress={() => setModalTorchOn(!modalTorchOn)}
+                              style={styles.modalCameraButton}
+                            />
+                          )}
+
+                          <Button
+                            mode="contained"
+                            onPress={handleCloseModalCamera}
+                            icon="close"
+                            compact
+                            buttonColor="rgba(0,0,0,0.7)"
+                          >
+                            Cerrar
+                          </Button>
+                        </View>
+                      </View>
+                    </CameraView>
+                  </View>
+                )}
 
                 <TextInput
                   label="Precio de Compra (Proveedor)"
@@ -546,14 +751,27 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     paddingHorizontal: 16,
-    paddingTop: 8,
-    paddingBottom: 8,
-    backgroundColor: 'transparent',
+    paddingTop: 16,
+    paddingBottom: 12,
+    backgroundColor: '#2c5f7c',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
   },
   searchInput: {
+    flex: 1,
     backgroundColor: '#ffffff',
     elevation: 2,
     borderRadius: 12,
+  },
+  cameraButton: {
+    margin: 0,
+    elevation: 4,
   },
   filtroContainer: {
     paddingHorizontal: 16,
@@ -562,6 +780,8 @@ const styles = StyleSheet.create({
   categoriasContainer: {
     paddingHorizontal: 16,
     paddingVertical: 12,
+    backgroundColor: '#2c5f7c',
+    paddingBottom: 16,
   },
   sectionTitle: {
     marginBottom: 10,
@@ -804,5 +1024,144 @@ const styles = StyleSheet.create({
   modalButton: {
     minWidth: 110,
     borderRadius: 10,
+  },
+  cameraViewContainer: {
+    height: 280,
+    backgroundColor: 'black',
+    position: 'relative',
+    marginHorizontal: 16,
+    marginTop: 8,
+    marginBottom: 12,
+    borderRadius: 12,
+    overflow: 'hidden',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
+  cameraView: {
+    flex: 1,
+  },
+  cameraOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cameraInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  cameraControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  torchButton: {
+    margin: 0,
+  },
+  cameraTitle: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  scanFrame: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -100 }, { translateY: -60 }],
+    width: 200,
+    height: 120,
+    borderWidth: 3,
+    borderColor: '#4caf50',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scanCorner: {
+    position: 'absolute',
+    top: -4,
+    left: -4,
+    width: 20,
+    height: 20,
+    borderTopWidth: 4,
+    borderLeftWidth: 4,
+    borderColor: '#4caf50',
+  },
+  scanFrameText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  successFlash: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#4caf50',
+  },
+  barcodeInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  barcodeInput: {
+    flex: 1,
+  },
+  cameraButtonModal: {
+    marginTop: 8,
+    backgroundColor: '#e3f2fd',
+    borderRadius: 12,
+  },
+  modalCameraContainer: {
+    height: 280,
+    backgroundColor: 'black',
+    position: 'relative',
+    marginVertical: 12,
+    borderRadius: 12,
+    overflow: 'hidden',
+    elevation: 6,
+  },
+  modalCameraView: {
+    flex: 1,
+  },
+  modalScanFrame: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -100 }, { translateY: -60 }],
+    width: 200,
+    height: 120,
+    borderWidth: 3,
+    borderColor: '#4caf50',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalCameraControls: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    padding: 16,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  modalCameraButton: {
+    margin: 0,
   },
 });

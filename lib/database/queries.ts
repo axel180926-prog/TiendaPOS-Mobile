@@ -19,6 +19,10 @@ export async function obtenerProductos() {
   return await db.select().from(schema.productos).where(eq(schema.productos.activo, true));
 }
 
+export async function obtenerTodosLosProductos() {
+  return await db.select().from(schema.productos);
+}
+
 export async function obtenerProductoPorId(id: number) {
   const result = await db.select().from(schema.productos).where(eq(schema.productos.id, id));
   return result[0] || null;

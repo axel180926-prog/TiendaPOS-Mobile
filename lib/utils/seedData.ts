@@ -38,6 +38,41 @@ export async function cargarProductosIniciales(): Promise<boolean> {
   }
 }
 
+/**
+ * Elimina TODOS los productos y vuelve a cargarlos desde el JSON
+ * ⚠️ CUIDADO: Esta función borra todos los productos de la base de datos
+ */
+export async function recargarProductosForzado(): Promise<boolean> {
+  try {
+    console.log('🔄 Eliminando todos los productos...');
+    await db.delete(productos);
+
+    console.log('📦 Recargando productos desde JSON...');
+
+    for (const producto of productosIniciales) {
+      const nuevoProducto: NuevoProducto = {
+        codigoBarras: producto.codigo_barras,
+        nombre: producto.nombre,
+        descripcion: producto.descripcion || null,
+        categoria: producto.categoria || null,
+        precioCompra: producto.precio_compra || 0,
+        precioVenta: producto.precio_venta,
+        stock: producto.stock || 0,
+        stockMinimo: producto.stock_minimo || 5,
+        activo: true
+      };
+
+      await db.insert(productos).values(nuevoProducto);
+    }
+
+    console.log(`✅ ${productosIniciales.length} productos recargados exitosamente`);
+    return true;
+  } catch (error) {
+    console.error('❌ Error al recargar productos:', error);
+    throw error;
+  }
+}
+
 export const productosEjemplo: NuevoProducto[] = [
   {
     codigoBarras: '0000000000001',
