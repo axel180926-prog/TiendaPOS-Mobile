@@ -398,5 +398,495 @@
     "precio_venta": 48,
     "stock": 20,
     "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810032985",
+    "nombre": "Pan Blanco Bimbo 300g",
+    "descripcion": "Pan de caja blanco mediano",
+    "categoria": "Panadería",
+    "precio_compra": 12.82,
+    "precio_venta": 20.75,
+    "stock": 20,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501000111503",
+    "nombre": "Medias Noches Bimbo 8 piezas",
+    "descripcion": "Panecillos para hamburguesa",
+    "categoria": "Panadería",
+    "precio_compra": 23.55,
+    "precio_venta": 38.18,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501000112388",
+    "nombre": "Panqué Choco Bimbo 2 piezas",
+    "descripcion": "Panqué de chocolate",
+    "categoria": "Panadería",
+    "precio_compra": 10.46,
+    "precio_venta": 16.91,
+    "stock": 30,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000112203",
+    "nombre": "Colchones Bimbo 6 piezas 130g",
+    "descripcion": "Panecillos de chocolate",
+    "categoria": "Panadería",
+    "precio_compra": 7.61,
+    "precio_venta": 12.30,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030401995",
+    "nombre": "Roles de Canela Marinela 180g",
+    "descripcion": "Roles con canela",
+    "categoria": "Panadería",
+    "precio_compra": 11.87,
+    "precio_venta": 19.21,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030374002",
+    "nombre": "Roles Glaseados Marinela 205g",
+    "descripcion": "Roles con glaseado",
+    "categoria": "Panadería",
+    "precio_compra": 11.87,
+    "precio_venta": 19.21,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030420859",
+    "nombre": "Mini Chispas Chocolate Marinela 190g",
+    "descripcion": "Galletas con chispas de chocolate",
+    "categoria": "Galletas",
+    "precio_compra": 15.20,
+    "precio_venta": 24.59,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000114752",
+    "nombre": "Mantecadas Bimbo 6 piezas",
+    "descripcion": "Panqués individuales",
+    "categoria": "Panadería",
+    "precio_compra": 15.20,
+    "precio_venta": 24.59,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030477488",
+    "nombre": "Madalenas Marinela 3 piezas 93g",
+    "descripcion": "Panqués individuales",
+    "categoria": "Panadería",
+    "precio_compra": 10.46,
+    "precio_venta": 16.91,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030474227",
+    "nombre": "Donas Azucaradas Marinela 158g",
+    "descripcion": "Donas con azúcar",
+    "categoria": "Panadería",
+    "precio_compra": 10.46,
+    "precio_venta": 16.91,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030418399",
+    "nombre": "Donas Espolvoreadas Marinela 2 piezas",
+    "descripcion": "Donas con azúcar glass",
+    "categoria": "Panadería",
+    "precio_compra": 10.46,
+    "precio_venta": 16.91,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000112784",
+    "nombre": "Nito con Cajeta Marinela 62g",
+    "descripcion": "Panqué relleno de cajeta",
+    "categoria": "Panadería",
+    "precio_compra": 8.08,
+    "precio_venta": 13.06,
+    "stock": 30,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030409854",
+    "nombre": "Duo Nito Marinela 124g",
+    "descripcion": "Panqués rellenos duo pack",
+    "categoria": "Panadería",
+    "precio_compra": 11.87,
+    "precio_venta": 19.21,
+    "stock": 25,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030472698",
+    "nombre": "Bimbuñuelos 6 piezas 99g",
+    "descripcion": "Buñuelos azucarados",
+    "categoria": "Panadería",
+    "precio_compra": 10.46,
+    "precio_venta": 16.91,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000112845",
+    "nombre": "Rebanadas Bimbo 2 piezas",
+    "descripcion": "Pastel de vainilla rebanado",
+    "categoria": "Panadería",
+    "precio_compra": 3.80,
+    "precio_venta": 6.15,
+    "stock": 30,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "658480001262",
+    "nombre": "Tostadas Clásicas 16 piezas",
+    "descripcion": "Tostadas de maíz",
+    "categoria": "Tostadas",
+    "precio_compra": 18.03,
+    "precio_venta": 29.16,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810026014",
+    "nombre": "Tortillas Bimbo 300g",
+    "descripcion": "Tortillas de harina",
+    "categoria": "Tortillas",
+    "precio_compra": 23.12,
+    "precio_venta": 37.50,
+    "stock": 25,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810037881",
+    "nombre": "Gansito Crema Marinela 50g",
+    "descripcion": "Gansito sabor crema",
+    "categoria": "Dulces",
+    "precio_compra": 9.51,
+    "precio_venta": 15.37,
+    "stock": 40,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501000153800",
+    "nombre": "Pingüinos Marinela 80g",
+    "descripcion": "Pingüinos chocolate",
+    "categoria": "Dulces",
+    "precio_compra": 10.46,
+    "precio_venta": 16.91,
+    "stock": 40,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7501030426912",
+    "nombre": "Duo Panditas con Nuez 96g",
+    "descripcion": "Panditas con nuez",
+    "categoria": "Dulces",
+    "precio_compra": 11.87,
+    "precio_venta": 19.21,
+    "stock": 30,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030419020",
+    "nombre": "Mini Roles Marinela 28 piezas",
+    "descripcion": "Roles miniatura",
+    "categoria": "Panadería",
+    "precio_compra": 3.80,
+    "precio_venta": 6.15,
+    "stock": 25,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501000153763",
+    "nombre": "Rocko Tiroloco 10 piezas 44g",
+    "descripcion": "Barritas de chocolate",
+    "categoria": "Dulces",
+    "precio_compra": 4.81,
+    "precio_venta": 7.78,
+    "stock": 35,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7500810014738",
+    "nombre": "Barritas de Piña Marinela",
+    "descripcion": "Barritas rellenas de piña",
+    "categoria": "Dulces",
+    "precio_compra": 7.70,
+    "precio_venta": 12.44,
+    "stock": 30,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810028032",
+    "nombre": "Polvorones Naranja 48g",
+    "descripcion": "Galletas polvorón sabor naranja",
+    "categoria": "Galletas",
+    "precio_compra": 10.58,
+    "precio_venta": 17.11,
+    "stock": 25,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7501030457190",
+    "nombre": "Mini Barritas Fresa Marinela 222g",
+    "descripcion": "Mini barritas rellenas de fresa",
+    "categoria": "Dulces",
+    "precio_compra": 15.38,
+    "precio_venta": 24.89,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030457183",
+    "nombre": "Mini Barritas Piña Marinela 222g",
+    "descripcion": "Mini barritas rellenas de piña",
+    "categoria": "Dulces",
+    "precio_compra": 15.38,
+    "precio_venta": 24.89,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030418559",
+    "nombre": "Max Polvorones 310g",
+    "descripcion": "Polvorones tamaño maxi",
+    "categoria": "Galletas",
+    "precio_compra": 15.38,
+    "precio_venta": 24.89,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501030418542",
+    "nombre": "Max Canelitas 224g",
+    "descripcion": "Galletas de canela tamaño maxi",
+    "categoria": "Galletas",
+    "precio_compra": 15.38,
+    "precio_venta": 24.89,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501030418504",
+    "nombre": "Max Principe 210g",
+    "descripcion": "Galletas príncipe tamaño maxi",
+    "categoria": "Galletas",
+    "precio_compra": 15.38,
+    "precio_venta": 24.89,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7501030418528",
+    "nombre": "Max Triki-Trakes 215g",
+    "descripcion": "Galletas triki-trakes tamaño maxi",
+    "categoria": "Galletas",
+    "precio_compra": 15.38,
+    "precio_venta": 24.89,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7503030374842",
+    "nombre": "Maxi Sponch 180g",
+    "descripcion": "Galletas sponch tamaño maxi",
+    "categoria": "Galletas",
+    "precio_compra": 15.38,
+    "precio_venta": 24.89,
+    "stock": 15,
+    "stock_minimo": 5
+  },
+  {
+    "codigo_barras": "7500810016206",
+    "nombre": "Tartaletas de Zarzamora 133g 8 piezas",
+    "descripcion": "Tartaletas rellenas de zarzamora",
+    "categoria": "Dulces",
+    "precio_compra": 9.62,
+    "precio_venta": 15.56,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000142453",
+    "nombre": "Conchas Bimbo 2 piezas 120g",
+    "descripcion": "Pan dulce tipo concha",
+    "categoria": "Panadería",
+    "precio_compra": 10.46,
+    "precio_venta": 16.91,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501000142705",
+    "nombre": "Cuernos Bimbo 2 piezas 100g",
+    "descripcion": "Pan dulce tipo cuerno",
+    "categoria": "Panadería",
+    "precio_compra": 9.51,
+    "precio_venta": 15.37,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030456124",
+    "nombre": "Mantecada Chocolate Marinela 3 piezas",
+    "descripcion": "Mantecadas sabor chocolate",
+    "categoria": "Panadería",
+    "precio_compra": 12.35,
+    "precio_venta": 19.98,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810029206",
+    "nombre": "Bigote Cajeta 80g",
+    "descripcion": "Pastelito relleno de cajeta",
+    "categoria": "Dulces",
+    "precio_compra": 7.61,
+    "precio_venta": 12.30,
+    "stock": 25,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7503031287998",
+    "nombre": "Empanadas Cajeta 40g",
+    "descripcion": "Empanadas rellenas de cajeta",
+    "categoria": "Panadería",
+    "precio_compra": 2.92,
+    "precio_venta": 4.72,
+    "stock": 30,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7500810016008",
+    "nombre": "Del Choch 230g",
+    "descripcion": "Galletas de chocolate",
+    "categoria": "Galletas",
+    "precio_compra": 13.47,
+    "precio_venta": 21.78,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7501030475132",
+    "nombre": "Leche Gansito 23g",
+    "descripcion": "Bebida láctea sabor gansito",
+    "categoria": "Bebidas",
+    "precio_compra": 7.70,
+    "precio_venta": 12.45,
+    "stock": 30,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810027707",
+    "nombre": "Nueces Saladas Barcel 110g",
+    "descripcion": "Cacahuates salados",
+    "categoria": "Botanas",
+    "precio_compra": 12.03,
+    "precio_venta": 19.44,
+    "stock": 25,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810008874",
+    "nombre": "Hot Nuts Original Barcel 75g",
+    "descripcion": "Cacahuates enchilados",
+    "categoria": "Botanas",
+    "precio_compra": 9.62,
+    "precio_venta": 15.56,
+    "stock": 30,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810013199",
+    "nombre": "Bimix Fuego 80g",
+    "descripcion": "Botana mixta picante",
+    "categoria": "Botanas",
+    "precio_compra": 9.05,
+    "precio_venta": 14.63,
+    "stock": 25,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7575280382205",
+    "nombre": "Takis Fuego 200g",
+    "descripcion": "Totopos enrollados picantes",
+    "categoria": "Botanas",
+    "precio_compra": 21.67,
+    "precio_venta": 35.00,
+    "stock": 30,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810024553",
+    "nombre": "Chip's Jalapeño 52g",
+    "descripcion": "Papas sabor jalapeño",
+    "categoria": "Botanas",
+    "precio_compra": 9.62,
+    "precio_venta": 15.56,
+    "stock": 35,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7500810024546",
+    "nombre": "Chip's Fuego 52g",
+    "descripcion": "Papas sabor fuego",
+    "categoria": "Botanas",
+    "precio_compra": 9.62,
+    "precio_venta": 15.56,
+    "stock": 35,
+    "stock_minimo": 15
+  },
+  {
+    "codigo_barras": "7500810003671",
+    "nombre": "Takis Fuego 6 Pack",
+    "descripcion": "Takis fuego presentación múltiple",
+    "categoria": "Botanas",
+    "precio_compra": 9.61,
+    "precio_venta": 15.55,
+    "stock": 20,
+    "stock_minimo": 8
+  },
+  {
+    "codigo_barras": "7500810027790",
+    "nombre": "Papas Barcel Sal 45g",
+    "descripcion": "Papas fritas con sal",
+    "categoria": "Botanas",
+    "precio_compra": 7.70,
+    "precio_venta": 12.44,
+    "stock": 30,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810027820",
+    "nombre": "Runners Fuego 72g",
+    "descripcion": "Botana de papa y maíz picante",
+    "categoria": "Botanas",
+    "precio_compra": 8.67,
+    "precio_venta": 14.00,
+    "stock": 25,
+    "stock_minimo": 10
+  },
+  {
+    "codigo_barras": "7500810027837",
+    "nombre": "Runners Original 72g",
+    "descripcion": "Botana de papa y maíz",
+    "categoria": "Botanas",
+    "precio_compra": 8.67,
+    "precio_venta": 14.00,
+    "stock": 25,
+    "stock_minimo": 10
   }
 ]

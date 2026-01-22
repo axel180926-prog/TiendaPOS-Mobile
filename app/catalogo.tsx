@@ -48,7 +48,7 @@ export default function CatalogoScreen() {
   const cargarProductos = async () => {
     try {
       setLoading(true);
-      const data = await queries.obtenerProductos();
+      const data = await queries.obtenerCatalogoCompleto();
       setProductos(data);
 
       // Extraer categorías únicas
@@ -60,6 +60,39 @@ export default function CatalogoScreen() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleImportarCatalogo = async () => {
+    Alert.alert(
+      'Importar Catálogo',
+      '¿Deseas cargar el catálogo completo de productos mexicanos? Esto agregará 120 productos que podrás configurar después.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Importar',
+          onPress: async () => {
+            try {
+              setLoading(true);
+              const resultado = await queries.cargarCatalogoInicial();
+
+              Alert.alert(
+                'Catálogo Importado',
+                `✅ ${resultado.cargados} productos cargados\n` +
+                `⏭️ ${resultado.omitidos} productos ya existían\n` +
+                `📦 Total en catálogo: ${resultado.total}\n\n` +
+                `Los productos están inactivos. Configura precios y stock para activarlos.`,
+                [{ text: 'OK', onPress: () => cargarProductos() }]
+              );
+            } catch (error) {
+              console.error('Error al importar catálogo:', error);
+              Alert.alert('Error', 'No se pudo importar el catálogo');
+            } finally {
+              setLoading(false);
+            }
+          }
+        }
+      ]
+    );
   };
 
   const obtenerProductosPorCategoria = () => {
@@ -226,10 +259,33 @@ export default function CatalogoScreen() {
 
   return (
     <View style={styles.container}>
+      {/* Header con instrucciones */}
+      <Card style={styles.headerCard}>
+        <Card.Content>
+          <Text variant="titleMedium" style={styles.headerTitle}>
+            📦 Catálogo de Productos
+          </Text>
+          <Text variant="bodySmall" style={styles.headerSubtitle}>
+            Productos del catálogo listos para configurar. Solo ajusta código de barras, precios y stock.
+          </Text>
+        </Card.Content>
+        <Card.Actions>
+          <Button
+            mode="contained"
+            onPress={handleImportarCatalogo}
+            icon="download"
+            loading={loading}
+            style={{ marginRight: 8 }}
+          >
+            Importar Catálogo Completo
+          </Button>
+        </Card.Actions>
+      </Card>
+
       {/* Campo de búsqueda */}
       <View style={styles.searchContainer}>
         <TextInput
-          label="Buscar producto por nombre"
+          label="Buscar producto"
           value={searchQuery}
           onChangeText={setSearchQuery}
           mode="outlined"
@@ -241,6 +297,19 @@ export default function CatalogoScreen() {
               onPress={() => setSearchQuery('')}
             />
           ) : undefined}
+        />
+      </View>
+
+      {/* Filtro de estado */}
+      <View style={styles.filtroContainer}>
+        <SegmentedButtons
+          value={filtroEstado}
+          onValueChange={(value) => setFiltroEstado(value as FiltroEstado)}
+          buttons={[
+            { value: 'todos', label: 'Todos' },
+            { value: 'activos', label: 'Activos' },
+            { value: 'inactivos', label: 'Inactivos' }
+          ]}
         />
       </View>
 
@@ -418,8 +487,51 @@ export default function CatalogoScreen() {
 
             {productoEditando && (
               <>
-                <Text variant="bodyMedium" style={styles.modalSubtitle}>
-                  {productoEditando.nombre}
+                {/* Información del catálogo (solo lectura) */}
+                <Card style={styles.catalogoInfoCard}>
+                  <Card.Content>
+                    <Text variant="labelSmall" style={styles.catalogoLabel}>
+                      📦 INFORMACIÓN DEL CATÁLOGO (FIJA)
+                    </Text>
+
+                    <View style={styles.catalogoRow}>
+                      <Text style={styles.catalogoKey}>Nombre:</Text>
+                      <Text style={styles.catalogoValue}>{productoEditando.nombre}</Text>
+                    </View>
+
+                    {productoEditando.marca && (
+                      <View style={styles.catalogoRow}>
+                        <Text style={styles.catalogoKey}>Marca:</Text>
+                        <Text style={styles.catalogoValue}>{productoEditando.marca}</Text>
+                      </View>
+                    )}
+
+                    {productoEditando.presentacion && (
+                      <View style={styles.catalogoRow}>
+                        <Text style={styles.catalogoKey}>Presentación:</Text>
+                        <Text style={styles.catalogoValue}>{productoEditando.presentacion}</Text>
+                      </View>
+                    )}
+
+                    <View style={styles.catalogoRow}>
+                      <Text style={styles.catalogoKey}>Categoría:</Text>
+                      <Text style={styles.catalogoValue}>{productoEditando.categoria}</Text>
+                    </View>
+
+                    {productoEditando.descripcion && (
+                      <View style={styles.catalogoRow}>
+                        <Text style={styles.catalogoKey}>Descripción:</Text>
+                        <Text style={styles.catalogoValue}>{productoEditando.descripcion}</Text>
+                      </View>
+                    )}
+                  </Card.Content>
+                </Card>
+
+                <Divider style={styles.divider} />
+
+                {/* Campos editables */}
+                <Text variant="labelMedium" style={styles.seccionEditable}>
+                  ✏️ CONFIGURA TU PRODUCTO
                 </Text>
 
                 <View style={styles.fieldWithButton}>
@@ -610,16 +722,63 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#e8eff5',
   },
+  headerCard: {
+    marginHorizontal: 16,
+    marginTop: 16,
+    marginBottom: 12,
+    backgroundColor: '#2c5f7c',
+    elevation: 8,
+    borderRadius: 16,
+    shadowColor: '#2c5f7c',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
+  headerTitle: {
+    color: '#fff',
+    fontWeight: '900',
+    marginBottom: 6,
+    fontSize: 20,
+    letterSpacing: 0.3,
+  },
+  headerSubtitle: {
+    color: '#fff',
+    opacity: 0.95,
+    fontSize: 14,
+    fontWeight: '600',
+    lineHeight: 20,
+  },
   searchContainer: {
     paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingTop: 8,
     paddingBottom: 8,
     backgroundColor: 'transparent',
+  },
+  searchRow: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'flex-start',
   },
   searchInput: {
     backgroundColor: '#ffffff',
     elevation: 2,
     borderRadius: 12,
+  },
+  searchInputFlex: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    elevation: 2,
+    borderRadius: 12,
+  },
+  importButtonCompact: {
+    marginTop: 8,
+    borderRadius: 12,
+    elevation: 4,
+    minWidth: 100,
+  },
+  filtroContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
   categoriasContainer: {
     paddingHorizontal: 16,
@@ -867,6 +1026,50 @@ const styles = StyleSheet.create({
     minWidth: 110,
     borderRadius: 10,
   },
+  // Estilos para información del catálogo
+  catalogoInfoCard: {
+    backgroundColor: '#f5f5f5',
+    elevation: 0,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 12,
+  },
+  catalogoLabel: {
+    fontWeight: '800',
+    color: '#666',
+    marginBottom: 12,
+    fontSize: 11,
+    letterSpacing: 0.5,
+  },
+  catalogoRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+    paddingVertical: 2,
+  },
+  catalogoKey: {
+    fontWeight: '600',
+    color: '#888',
+    width: 100,
+    fontSize: 13,
+  },
+  catalogoValue: {
+    flex: 1,
+    fontWeight: '800',
+    color: '#333',
+    fontSize: 13,
+  },
+  divider: {
+    marginVertical: 16,
+    backgroundColor: '#e0e0e0',
+  },
+  seccionEditable: {
+    fontWeight: '800',
+    color: '#2196f3',
+    marginBottom: 12,
+    fontSize: 12,
+    letterSpacing: 0.5,
+  },
   fieldWithButton: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -932,6 +1135,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 20,
     height: 20,
+    borderTopWidth: 4,
+    borderLeftWidth: 4,
     borderColor: '#4caf50',
   },
   scanFrameText: {
