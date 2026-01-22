@@ -13,6 +13,7 @@ import {
   Switch,
   SegmentedButtons
 } from 'react-native-paper';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { formatearMoneda } from '@/lib/utils/formatters';
 import * as queries from '@/lib/database/queries';
 
@@ -34,6 +35,12 @@ export default function CatalogoScreen() {
   const [precioVenta, setPrecioVenta] = useState('');
   const [stockInicial, setStockInicial] = useState('');
 
+  // Estados para la cámara
+  const [cameraScannerVisible, setCameraScannerVisible] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+  const [isScanning, setIsScanning] = useState(false);
+  const [torchOn, setTorchOn] = useState(false);
+
   useEffect(() => {
     cargarProductos();
   }, []);
@@ -41,7 +48,7 @@ export default function CatalogoScreen() {
   const cargarProductos = async () => {
     try {
       setLoading(true);
-      const data = await queries.obtenerProductos();
+      const data = await queries.obtenerCatalogoCompleto();
       setProductos(data);
 
       // Extraer categorías únicas
@@ -53,6 +60,39 @@ export default function CatalogoScreen() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleImportarCatalogo = async () => {
+    Alert.alert(
+      'Importar Catálogo',
+      '¿Deseas cargar el catálogo completo de productos mexicanos? Esto agregará 120 productos que podrás configurar después.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Importar',
+          onPress: async () => {
+            try {
+              setLoading(true);
+              const resultado = await queries.cargarCatalogoInicial();
+
+              Alert.alert(
+                'Catálogo Importado',
+                `✅ ${resultado.cargados} productos cargados\n` +
+                `⏭️ ${resultado.omitidos} productos ya existían\n` +
+                `📦 Total en catálogo: ${resultado.total}\n\n` +
+                `Los productos están inactivos. Configura precios y stock para activarlos.`,
+                [{ text: 'OK', onPress: () => cargarProductos() }]
+              );
+            } catch (error) {
+              console.error('Error al importar catálogo:', error);
+              Alert.alert('Error', 'No se pudo importar el catálogo');
+            } finally {
+              setLoading(false);
+            }
+          }
+        }
+      ]
+    );
   };
 
   const obtenerProductosPorCategoria = () => {
@@ -186,6 +226,35 @@ export default function CatalogoScreen() {
     }
   };
 
+  const requestCameraPermission = async () => {
+    if (!permission) return;
+
+    if (!permission.granted) {
+      const { granted } = await requestPermission();
+      if (!granted) {
+        Alert.alert(
+          'Permiso Requerido',
+          'Se necesita acceso a la cámara para escanear códigos de barras'
+        );
+        return;
+      }
+    }
+
+    setCameraScannerVisible(true);
+    setIsScanning(true);
+  };
+
+  const handleBarcodeScanned = (code: string) => {
+    if (!isScanning) return;
+
+    setIsScanning(false);
+    setCodigoBarras(code);
+    setCameraScannerVisible(false);
+    setTorchOn(false);
+
+    Alert.alert('Código Escaneado', `Código de barras: ${code}`);
+  };
+
   const productosCategoria = obtenerProductosPorCategoria();
 
   return (
@@ -197,15 +266,26 @@ export default function CatalogoScreen() {
             📦 Catálogo de Productos
           </Text>
           <Text variant="bodySmall" style={styles.headerSubtitle}>
-            Selecciona una categoría, configura precios y activa los productos que vendes
+            Productos del catálogo listos para configurar. Solo ajusta código de barras, precios y stock.
           </Text>
         </Card.Content>
+        <Card.Actions>
+          <Button
+            mode="contained"
+            onPress={handleImportarCatalogo}
+            icon="download"
+            loading={loading}
+            style={{ marginRight: 8 }}
+          >
+            Importar Catálogo Completo
+          </Button>
+        </Card.Actions>
       </Card>
 
       {/* Campo de búsqueda */}
       <View style={styles.searchContainer}>
         <TextInput
-          label="Buscar producto por nombre"
+          label="Buscar producto"
           value={searchQuery}
           onChangeText={setSearchQuery}
           mode="outlined"
@@ -407,26 +487,74 @@ export default function CatalogoScreen() {
 
             {productoEditando && (
               <>
-                <Text variant="bodyMedium" style={styles.modalSubtitle}>
-                  {productoEditando.nombre}
+                {/* Información del catálogo (solo lectura) */}
+                <Card style={styles.catalogoInfoCard}>
+                  <Card.Content>
+                    <Text variant="labelSmall" style={styles.catalogoLabel}>
+                      📦 INFORMACIÓN DEL CATÁLOGO (FIJA)
+                    </Text>
+
+                    <View style={styles.catalogoRow}>
+                      <Text style={styles.catalogoKey}>Nombre:</Text>
+                      <Text style={styles.catalogoValue}>{productoEditando.nombre}</Text>
+                    </View>
+
+                    {productoEditando.marca && (
+                      <View style={styles.catalogoRow}>
+                        <Text style={styles.catalogoKey}>Marca:</Text>
+                        <Text style={styles.catalogoValue}>{productoEditando.marca}</Text>
+                      </View>
+                    )}
+
+                    {productoEditando.presentacion && (
+                      <View style={styles.catalogoRow}>
+                        <Text style={styles.catalogoKey}>Presentación:</Text>
+                        <Text style={styles.catalogoValue}>{productoEditando.presentacion}</Text>
+                      </View>
+                    )}
+
+                    <View style={styles.catalogoRow}>
+                      <Text style={styles.catalogoKey}>Categoría:</Text>
+                      <Text style={styles.catalogoValue}>{productoEditando.categoria}</Text>
+                    </View>
+
+                    {productoEditando.descripcion && (
+                      <View style={styles.catalogoRow}>
+                        <Text style={styles.catalogoKey}>Descripción:</Text>
+                        <Text style={styles.catalogoValue}>{productoEditando.descripcion}</Text>
+                      </View>
+                    )}
+                  </Card.Content>
+                </Card>
+
+                <Divider style={styles.divider} />
+
+                {/* Campos editables */}
+                <Text variant="labelMedium" style={styles.seccionEditable}>
+                  ✏️ CONFIGURA TU PRODUCTO
                 </Text>
 
-                <TextInput
-                  label="Código de Barras"
-                  value={codigoBarras}
-                  onChangeText={setCodigoBarras}
-                  keyboardType="numeric"
-                  mode="outlined"
-                  style={styles.input}
-                  left={<TextInput.Icon icon="barcode" />}
-                  right={
-                    <TextInput.Icon
-                      icon="information"
-                      onPress={() => Alert.alert('Info', 'Código de barras único del producto para escaneo rápido')}
-                    />
-                  }
-                  placeholder="Escribe o escanea el código"
-                />
+                <View style={styles.fieldWithButton}>
+                  <TextInput
+                    label="Código de Barras"
+                    value={codigoBarras}
+                    onChangeText={setCodigoBarras}
+                    keyboardType="numeric"
+                    mode="outlined"
+                    style={[styles.input, styles.inputFlex]}
+                    left={<TextInput.Icon icon="barcode" />}
+                    placeholder="Escribe o escanea el código"
+                  />
+                  <IconButton
+                    icon="camera"
+                    mode="contained"
+                    size={24}
+                    onPress={requestCameraPermission}
+                    style={styles.scanButton}
+                    containerColor="#4caf50"
+                    iconColor="#fff"
+                  />
+                </View>
 
                 <TextInput
                   label="Precio de Compra (Proveedor)"
@@ -508,6 +636,82 @@ export default function CatalogoScreen() {
             )}
           </ScrollView>
         </Modal>
+
+        {/* Modal de escáner de cámara */}
+        <Modal
+          visible={cameraScannerVisible}
+          onDismiss={() => {
+            setCameraScannerVisible(false);
+            setIsScanning(false);
+            setTorchOn(false);
+          }}
+          contentContainerStyle={styles.cameraModalContainer}
+        >
+          <View style={styles.cameraModalContent}>
+            <View style={styles.cameraHeader}>
+              <Text style={styles.cameraTitle}>Escanear Código de Barras</Text>
+              <IconButton
+                icon={torchOn ? 'flashlight' : 'flashlight-off'}
+                size={24}
+                iconColor="#fff"
+                onPress={() => setTorchOn(!torchOn)}
+                style={styles.torchButton}
+              />
+            </View>
+
+            <View style={styles.cameraContainer}>
+              {permission?.granted && (
+                <CameraView
+                  style={styles.camera}
+                  facing="back"
+                  enableTorch={torchOn}
+                  barcodeScannerSettings={{
+                    barcodeTypes: [
+                      'ean13',
+                      'ean8',
+                      'code128',
+                      'code39',
+                      'upc_a',
+                      'upc_e',
+                      'codabar',
+                      'itf14',
+                    ],
+                  }}
+                  onBarcodeScanned={(result) => {
+                    if (isScanning && result.data) {
+                      handleBarcodeScanned(result.data);
+                    }
+                  }}
+                >
+                  <View style={styles.scanFrame}>
+                    <View style={[styles.scanCorner, { top: -4, left: -4 }]} />
+                    <View style={[styles.scanCorner, { top: -4, right: -4, borderTopRightRadius: 4, borderLeftWidth: 0, borderRightWidth: 4 }]} />
+                    <View style={[styles.scanCorner, { bottom: -4, left: -4, borderBottomLeftRadius: 4, borderTopWidth: 0, borderBottomWidth: 4 }]} />
+                    <View style={[styles.scanCorner, { bottom: -4, right: -4, borderBottomRightRadius: 4, borderTopWidth: 0, borderBottomWidth: 4, borderLeftWidth: 0, borderRightWidth: 4 }]} />
+                    <Text style={styles.scanFrameText}>
+                      {isScanning ? 'Escaneando...' : 'Listo'}
+                    </Text>
+                  </View>
+                </CameraView>
+              )}
+            </View>
+
+            <View style={styles.cameraActions}>
+              <Button
+                mode="contained"
+                onPress={() => {
+                  setCameraScannerVisible(false);
+                  setIsScanning(false);
+                  setTorchOn(false);
+                }}
+                buttonColor="#f44336"
+                style={styles.cameraActionButton}
+              >
+                Cancelar
+              </Button>
+            </View>
+          </View>
+        </Modal>
       </Portal>
     </View>
   );
@@ -550,10 +754,27 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     backgroundColor: 'transparent',
   },
+  searchRow: {
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'flex-start',
+  },
   searchInput: {
     backgroundColor: '#ffffff',
     elevation: 2,
     borderRadius: 12,
+  },
+  searchInputFlex: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    elevation: 2,
+    borderRadius: 12,
+  },
+  importButtonCompact: {
+    marginTop: 8,
+    borderRadius: 12,
+    elevation: 4,
+    minWidth: 100,
   },
   filtroContainer: {
     paddingHorizontal: 16,
@@ -804,5 +1025,135 @@ const styles = StyleSheet.create({
   modalButton: {
     minWidth: 110,
     borderRadius: 10,
+  },
+  // Estilos para información del catálogo
+  catalogoInfoCard: {
+    backgroundColor: '#f5f5f5',
+    elevation: 0,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 12,
+  },
+  catalogoLabel: {
+    fontWeight: '800',
+    color: '#666',
+    marginBottom: 12,
+    fontSize: 11,
+    letterSpacing: 0.5,
+  },
+  catalogoRow: {
+    flexDirection: 'row',
+    marginBottom: 8,
+    paddingVertical: 2,
+  },
+  catalogoKey: {
+    fontWeight: '600',
+    color: '#888',
+    width: 100,
+    fontSize: 13,
+  },
+  catalogoValue: {
+    flex: 1,
+    fontWeight: '800',
+    color: '#333',
+    fontSize: 13,
+  },
+  divider: {
+    marginVertical: 16,
+    backgroundColor: '#e0e0e0',
+  },
+  seccionEditable: {
+    fontWeight: '800',
+    color: '#2196f3',
+    marginBottom: 12,
+    fontSize: 12,
+    letterSpacing: 0.5,
+  },
+  fieldWithButton: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  inputFlex: {
+    flex: 1,
+  },
+  scanButton: {
+    marginTop: 8,
+    width: 48,
+    height: 48,
+  },
+  // Estilos para modal de cámara
+  cameraModalContainer: {
+    backgroundColor: 'white',
+    margin: 20,
+    borderRadius: 16,
+    overflow: 'hidden',
+    maxHeight: 600,
+  },
+  cameraModalContent: {
+    maxHeight: 600,
+  },
+  cameraHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#2c5f7c',
+  },
+  cameraTitle: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  torchButton: {
+    margin: 0,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+  },
+  cameraContainer: {
+    height: 320,
+    backgroundColor: '#000',
+  },
+  camera: {
+    flex: 1,
+  },
+  scanFrame: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -120 }, { translateY: -80 }],
+    width: 240,
+    height: 160,
+    borderWidth: 3,
+    borderColor: '#4caf50',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scanCorner: {
+    position: 'absolute',
+    width: 20,
+    height: 20,
+    borderTopWidth: 4,
+    borderLeftWidth: 4,
+    borderColor: '#4caf50',
+  },
+  scanFrameText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '700',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  cameraActions: {
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  cameraActionButton: {
+    borderRadius: 8,
+    flex: 1,
   },
 });
