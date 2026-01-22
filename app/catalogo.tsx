@@ -13,6 +13,7 @@ import {
   Switch,
   SegmentedButtons
 } from 'react-native-paper';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { formatearMoneda } from '@/lib/utils/formatters';
 import * as queries from '@/lib/database/queries';
 
@@ -33,6 +34,12 @@ export default function CatalogoScreen() {
   const [precioCompra, setPrecioCompra] = useState('');
   const [precioVenta, setPrecioVenta] = useState('');
   const [stockInicial, setStockInicial] = useState('');
+
+  // Estados para la cámara
+  const [cameraScannerVisible, setCameraScannerVisible] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+  const [isScanning, setIsScanning] = useState(false);
+  const [torchOn, setTorchOn] = useState(false);
 
   useEffect(() => {
     cargarProductos();
@@ -186,22 +193,39 @@ export default function CatalogoScreen() {
     }
   };
 
+  const requestCameraPermission = async () => {
+    if (!permission) return;
+
+    if (!permission.granted) {
+      const { granted } = await requestPermission();
+      if (!granted) {
+        Alert.alert(
+          'Permiso Requerido',
+          'Se necesita acceso a la cámara para escanear códigos de barras'
+        );
+        return;
+      }
+    }
+
+    setCameraScannerVisible(true);
+    setIsScanning(true);
+  };
+
+  const handleBarcodeScanned = (code: string) => {
+    if (!isScanning) return;
+
+    setIsScanning(false);
+    setCodigoBarras(code);
+    setCameraScannerVisible(false);
+    setTorchOn(false);
+
+    Alert.alert('Código Escaneado', `Código de barras: ${code}`);
+  };
+
   const productosCategoria = obtenerProductosPorCategoria();
 
   return (
     <View style={styles.container}>
-      {/* Header con instrucciones */}
-      <Card style={styles.headerCard}>
-        <Card.Content>
-          <Text variant="titleMedium" style={styles.headerTitle}>
-            📦 Catálogo de Productos
-          </Text>
-          <Text variant="bodySmall" style={styles.headerSubtitle}>
-            Selecciona una categoría, configura precios y activa los productos que vendes
-          </Text>
-        </Card.Content>
-      </Card>
-
       {/* Campo de búsqueda */}
       <View style={styles.searchContainer}>
         <TextInput
@@ -217,19 +241,6 @@ export default function CatalogoScreen() {
               onPress={() => setSearchQuery('')}
             />
           ) : undefined}
-        />
-      </View>
-
-      {/* Filtro de estado */}
-      <View style={styles.filtroContainer}>
-        <SegmentedButtons
-          value={filtroEstado}
-          onValueChange={(value) => setFiltroEstado(value as FiltroEstado)}
-          buttons={[
-            { value: 'todos', label: 'Todos' },
-            { value: 'activos', label: 'Activos' },
-            { value: 'inactivos', label: 'Inactivos' }
-          ]}
         />
       </View>
 
@@ -411,22 +422,27 @@ export default function CatalogoScreen() {
                   {productoEditando.nombre}
                 </Text>
 
-                <TextInput
-                  label="Código de Barras"
-                  value={codigoBarras}
-                  onChangeText={setCodigoBarras}
-                  keyboardType="numeric"
-                  mode="outlined"
-                  style={styles.input}
-                  left={<TextInput.Icon icon="barcode" />}
-                  right={
-                    <TextInput.Icon
-                      icon="information"
-                      onPress={() => Alert.alert('Info', 'Código de barras único del producto para escaneo rápido')}
-                    />
-                  }
-                  placeholder="Escribe o escanea el código"
-                />
+                <View style={styles.fieldWithButton}>
+                  <TextInput
+                    label="Código de Barras"
+                    value={codigoBarras}
+                    onChangeText={setCodigoBarras}
+                    keyboardType="numeric"
+                    mode="outlined"
+                    style={[styles.input, styles.inputFlex]}
+                    left={<TextInput.Icon icon="barcode" />}
+                    placeholder="Escribe o escanea el código"
+                  />
+                  <IconButton
+                    icon="camera"
+                    mode="contained"
+                    size={24}
+                    onPress={requestCameraPermission}
+                    style={styles.scanButton}
+                    containerColor="#4caf50"
+                    iconColor="#fff"
+                  />
+                </View>
 
                 <TextInput
                   label="Precio de Compra (Proveedor)"
@@ -508,6 +524,82 @@ export default function CatalogoScreen() {
             )}
           </ScrollView>
         </Modal>
+
+        {/* Modal de escáner de cámara */}
+        <Modal
+          visible={cameraScannerVisible}
+          onDismiss={() => {
+            setCameraScannerVisible(false);
+            setIsScanning(false);
+            setTorchOn(false);
+          }}
+          contentContainerStyle={styles.cameraModalContainer}
+        >
+          <View style={styles.cameraModalContent}>
+            <View style={styles.cameraHeader}>
+              <Text style={styles.cameraTitle}>Escanear Código de Barras</Text>
+              <IconButton
+                icon={torchOn ? 'flashlight' : 'flashlight-off'}
+                size={24}
+                iconColor="#fff"
+                onPress={() => setTorchOn(!torchOn)}
+                style={styles.torchButton}
+              />
+            </View>
+
+            <View style={styles.cameraContainer}>
+              {permission?.granted && (
+                <CameraView
+                  style={styles.camera}
+                  facing="back"
+                  enableTorch={torchOn}
+                  barcodeScannerSettings={{
+                    barcodeTypes: [
+                      'ean13',
+                      'ean8',
+                      'code128',
+                      'code39',
+                      'upc_a',
+                      'upc_e',
+                      'codabar',
+                      'itf14',
+                    ],
+                  }}
+                  onBarcodeScanned={(result) => {
+                    if (isScanning && result.data) {
+                      handleBarcodeScanned(result.data);
+                    }
+                  }}
+                >
+                  <View style={styles.scanFrame}>
+                    <View style={[styles.scanCorner, { top: -4, left: -4 }]} />
+                    <View style={[styles.scanCorner, { top: -4, right: -4, borderTopRightRadius: 4, borderLeftWidth: 0, borderRightWidth: 4 }]} />
+                    <View style={[styles.scanCorner, { bottom: -4, left: -4, borderBottomLeftRadius: 4, borderTopWidth: 0, borderBottomWidth: 4 }]} />
+                    <View style={[styles.scanCorner, { bottom: -4, right: -4, borderBottomRightRadius: 4, borderTopWidth: 0, borderBottomWidth: 4, borderLeftWidth: 0, borderRightWidth: 4 }]} />
+                    <Text style={styles.scanFrameText}>
+                      {isScanning ? 'Escaneando...' : 'Listo'}
+                    </Text>
+                  </View>
+                </CameraView>
+              )}
+            </View>
+
+            <View style={styles.cameraActions}>
+              <Button
+                mode="contained"
+                onPress={() => {
+                  setCameraScannerVisible(false);
+                  setIsScanning(false);
+                  setTorchOn(false);
+                }}
+                buttonColor="#f44336"
+                style={styles.cameraActionButton}
+              >
+                Cancelar
+              </Button>
+            </View>
+          </View>
+        </Modal>
       </Portal>
     </View>
   );
@@ -518,35 +610,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#e8eff5',
   },
-  headerCard: {
-    marginHorizontal: 16,
-    marginTop: 16,
-    marginBottom: 12,
-    backgroundColor: '#2c5f7c',
-    elevation: 8,
-    borderRadius: 16,
-    shadowColor: '#2c5f7c',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontWeight: '900',
-    marginBottom: 6,
-    fontSize: 20,
-    letterSpacing: 0.3,
-  },
-  headerSubtitle: {
-    color: '#fff',
-    opacity: 0.95,
-    fontSize: 14,
-    fontWeight: '600',
-    lineHeight: 20,
-  },
   searchContainer: {
     paddingHorizontal: 16,
-    paddingTop: 8,
+    paddingTop: 16,
     paddingBottom: 8,
     backgroundColor: 'transparent',
   },
@@ -554,10 +620,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     elevation: 2,
     borderRadius: 12,
-  },
-  filtroContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
   },
   categoriasContainer: {
     paddingHorizontal: 16,
@@ -804,5 +866,89 @@ const styles = StyleSheet.create({
   modalButton: {
     minWidth: 110,
     borderRadius: 10,
+  },
+  fieldWithButton: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  inputFlex: {
+    flex: 1,
+  },
+  scanButton: {
+    marginTop: 8,
+    width: 48,
+    height: 48,
+  },
+  // Estilos para modal de cámara
+  cameraModalContainer: {
+    backgroundColor: 'white',
+    margin: 20,
+    borderRadius: 16,
+    overflow: 'hidden',
+    maxHeight: 600,
+  },
+  cameraModalContent: {
+    maxHeight: 600,
+  },
+  cameraHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#2c5f7c',
+  },
+  cameraTitle: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  torchButton: {
+    margin: 0,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+  },
+  cameraContainer: {
+    height: 320,
+    backgroundColor: '#000',
+  },
+  camera: {
+    flex: 1,
+  },
+  scanFrame: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -120 }, { translateY: -80 }],
+    width: 240,
+    height: 160,
+    borderWidth: 3,
+    borderColor: '#4caf50',
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scanCorner: {
+    position: 'absolute',
+    width: 20,
+    height: 20,
+    borderColor: '#4caf50',
+  },
+  scanFrameText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '700',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  cameraActions: {
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  cameraActionButton: {
+    borderRadius: 8,
+    flex: 1,
   },
 });

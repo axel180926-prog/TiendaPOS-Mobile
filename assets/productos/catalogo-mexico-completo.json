@@ -1,0 +1,1631 @@
+[
+  {
+    "nombre": "Coca-Cola 600ml",
+    "codigo_barras": "7501055300006",
+    "marca": "Coca-Cola",
+    "presentacion": "600ml",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco de cola",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Coca-Cola 2.5L",
+    "codigo_barras": "7501055302512",
+    "marca": "Coca-Cola",
+    "presentacion": "2.5L",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco de cola familiar",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Coca-Cola 355ml Lata",
+    "codigo_barras": "7501055325566",
+    "marca": "Coca-Cola",
+    "presentacion": "355ml",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco de cola en lata",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Coca-Cola 3L",
+    "codigo_barras": "7501055330003",
+    "marca": "Coca-Cola",
+    "presentacion": "3L",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco de cola mega",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Coca-Cola Zero 600ml",
+    "codigo_barras": "7501055363766",
+    "marca": "Coca-Cola",
+    "presentacion": "600ml",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco de cola sin azúcar",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Pepsi 600ml",
+    "codigo_barras": "7501055300013",
+    "marca": "Pepsi",
+    "presentacion": "600ml",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco de cola",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Pepsi 2.5L",
+    "codigo_barras": "7501055302529",
+    "marca": "Pepsi",
+    "presentacion": "2.5L",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco de cola familiar",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Sprite 600ml",
+    "codigo_barras": "7501055364800",
+    "marca": "Sprite",
+    "presentacion": "600ml",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco de lima-limón",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Sprite 2.5L",
+    "codigo_barras": "7501055302536",
+    "marca": "Sprite",
+    "presentacion": "2.5L",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco de lima-limón familiar",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Fanta Naranja 600ml",
+    "codigo_barras": "7501055310869",
+    "marca": "Fanta",
+    "presentacion": "600ml",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco de naranja",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Fanta Naranja 2.5L",
+    "codigo_barras": "7501055302543",
+    "marca": "Fanta",
+    "presentacion": "2.5L",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco de naranja familiar",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Manzanita Sol 600ml",
+    "codigo_barras": "7501055305483",
+    "marca": "Manzanita Sol",
+    "presentacion": "600ml",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco de manzana",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Peñafiel Tamarindo 600ml",
+    "codigo_barras": "7501008404003",
+    "marca": "Peñafiel",
+    "presentacion": "600ml",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco mineral de tamarindo",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Peñafiel Naranja 600ml",
+    "codigo_barras": "7501008404010",
+    "marca": "Peñafiel",
+    "presentacion": "600ml",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco mineral de naranja",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Peñafiel Toronja 600ml",
+    "codigo_barras": "7501008404027",
+    "marca": "Peñafiel",
+    "presentacion": "600ml",
+    "categoria": "Bebidas",
+    "descripcion": "Refresco mineral de toronja",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Peñafiel Twist Limón 600ml",
+    "codigo_barras": "7501008404034",
+    "marca": "Peñafiel",
+    "presentacion": "600ml",
+    "categoria": "Bebidas",
+    "descripcion": "Agua mineral con limón",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Agua Ciel 600ml",
+    "codigo_barras": "7501055306107",
+    "marca": "Ciel",
+    "presentacion": "600ml",
+    "categoria": "Bebidas",
+    "descripcion": "Agua purificada",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Agua Ciel 1.5L",
+    "codigo_barras": "7501055306114",
+    "marca": "Ciel",
+    "presentacion": "1.5L",
+    "categoria": "Bebidas",
+    "descripcion": "Agua purificada",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Agua Bonafont 600ml",
+    "codigo_barras": "7501055300020",
+    "marca": "Bonafont",
+    "presentacion": "600ml",
+    "categoria": "Bebidas",
+    "descripcion": "Agua purificada",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Agua Epura 600ml",
+    "codigo_barras": "7501055300037",
+    "marca": "Epura",
+    "presentacion": "600ml",
+    "categoria": "Bebidas",
+    "descripcion": "Agua purificada",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Jumex Mango 1L",
+    "codigo_barras": "7501013200014",
+    "marca": "Jumex",
+    "presentacion": "1L",
+    "categoria": "Bebidas",
+    "descripcion": "Néctar de mango",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Jumex Guayaba 1L",
+    "codigo_barras": "7501013200021",
+    "marca": "Jumex",
+    "presentacion": "1L",
+    "categoria": "Bebidas",
+    "descripcion": "Néctar de guayaba",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Jumex Durazno 1L",
+    "codigo_barras": "7501013200038",
+    "marca": "Jumex",
+    "presentacion": "1L",
+    "categoria": "Bebidas",
+    "descripcion": "Néctar de durazno",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Jumex Uva 1L",
+    "codigo_barras": "7501013200045",
+    "marca": "Jumex",
+    "presentacion": "1L",
+    "categoria": "Bebidas",
+    "descripcion": "Néctar de uva",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Boing Mango 500ml",
+    "codigo_barras": "7501055308507",
+    "marca": "Boing",
+    "presentacion": "500ml",
+    "categoria": "Bebidas",
+    "descripcion": "Bebida de mango",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Boing Fresa 500ml",
+    "codigo_barras": "7501055308514",
+    "marca": "Boing",
+    "presentacion": "500ml",
+    "categoria": "Bebidas",
+    "descripcion": "Bebida de fresa",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Boing Guayaba 500ml",
+    "codigo_barras": "7501055308521",
+    "marca": "Boing",
+    "presentacion": "500ml",
+    "categoria": "Bebidas",
+    "descripcion": "Bebida de guayaba",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Sabritas Original 40g",
+    "codigo_barras": "7501055300044",
+    "marca": "Sabritas",
+    "presentacion": "40g",
+    "categoria": "Botanas",
+    "descripcion": "Papas fritas sal",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Sabritas Adobadas 40g",
+    "codigo_barras": "7501055300051",
+    "marca": "Sabritas",
+    "presentacion": "40g",
+    "categoria": "Botanas",
+    "descripcion": "Papas fritas adobadas",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Sabritas Jalapeño 40g",
+    "codigo_barras": "7501055300068",
+    "marca": "Sabritas",
+    "presentacion": "40g",
+    "categoria": "Botanas",
+    "descripcion": "Papas fritas jalapeño",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Sabritas Original 62g",
+    "codigo_barras": "7501055301102",
+    "marca": "Sabritas",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Papas fritas sal",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Sabritas Original 170g",
+    "codigo_barras": "7501055301119",
+    "marca": "Sabritas",
+    "presentacion": "170g",
+    "categoria": "Botanas",
+    "descripcion": "Papas fritas sal familiar",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Ruffles Queso 45g",
+    "codigo_barras": "7501055300075",
+    "marca": "Ruffles",
+    "presentacion": "45g",
+    "categoria": "Botanas",
+    "descripcion": "Papas onduladas sabor queso",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Ruffles Queso 62g",
+    "codigo_barras": "7501055301126",
+    "marca": "Ruffles",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Papas onduladas sabor queso",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Doritos Nacho 62g",
+    "codigo_barras": "7501055300082",
+    "marca": "Doritos",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Totopos sabor nacho",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Doritos Nacho 170g",
+    "codigo_barras": "7501055301133",
+    "marca": "Doritos",
+    "presentacion": "170g",
+    "categoria": "Botanas",
+    "descripcion": "Totopos sabor nacho familiar",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Doritos Flamin Hot 62g",
+    "codigo_barras": "7501055300099",
+    "marca": "Doritos",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Totopos picantes",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Cheetos Poffs 62g",
+    "codigo_barras": "7501055300105",
+    "marca": "Cheetos",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Botana de queso inflada",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Cheetos Flamin Hot 62g",
+    "codigo_barras": "7501055300112",
+    "marca": "Cheetos",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Botana picante inflada",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Cheetos Bolita 62g",
+    "codigo_barras": "7501055300129",
+    "marca": "Cheetos",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Bolitas de queso",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Takis Fuego 62g",
+    "codigo_barras": "7501008400012",
+    "marca": "Barcel",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Totopos enrollados picantes",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Takis Blue Heat 62g",
+    "codigo_barras": "7501008400029",
+    "marca": "Barcel",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Totopos enrollados picantes",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Takis Fuego 113g",
+    "codigo_barras": "7501008400036",
+    "marca": "Barcel",
+    "presentacion": "113g",
+    "categoria": "Botanas",
+    "descripcion": "Totopos enrollados picantes",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Takis Zombie 62g",
+    "codigo_barras": "7501008400043",
+    "marca": "Barcel",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Totopos enrollados sabor habanero",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Chips Fuego 60g",
+    "codigo_barras": "7501008400050",
+    "marca": "Barcel",
+    "presentacion": "60g",
+    "categoria": "Botanas",
+    "descripcion": "Papas con chile y limón",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Chips Jalapeño 60g",
+    "codigo_barras": "7501008400067",
+    "marca": "Barcel",
+    "presentacion": "60g",
+    "categoria": "Botanas",
+    "descripcion": "Papas sabor jalapeño",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Tostitos Sal 62g",
+    "codigo_barras": "7501055300136",
+    "marca": "Tostitos",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Totopos horneados",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Tostitos Salsa Verde 62g",
+    "codigo_barras": "7501055300143",
+    "marca": "Tostitos",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Totopos sabor salsa verde",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Paketaxo 60g",
+    "codigo_barras": "7501008400074",
+    "marca": "Barcel",
+    "presentacion": "60g",
+    "categoria": "Botanas",
+    "descripcion": "Papas sabor queso",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Runners 50g",
+    "codigo_barras": "7501008400081",
+    "marca": "Barcel",
+    "presentacion": "50g",
+    "categoria": "Botanas",
+    "descripcion": "Papitas",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Churrumais Sal 62g",
+    "codigo_barras": "7501055300150",
+    "marca": "Churrumais",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Churros de maíz sal",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Churrumais Chile y Limón 62g",
+    "codigo_barras": "7501055300167",
+    "marca": "Churrumais",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Churros de maíz chile y limón",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Fritos Original 62g",
+    "codigo_barras": "7501055300174",
+    "marca": "Fritos",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Frituras de maíz",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Crujitos Queso 62g",
+    "codigo_barras": "7501055300181",
+    "marca": "Crujitos",
+    "presentacion": "62g",
+    "categoria": "Botanas",
+    "descripcion": "Frituras sabor queso",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Gansito Marinela",
+    "codigo_barras": "7501000110049",
+    "marca": "Marinela",
+    "presentacion": "Unidad",
+    "categoria": "Panadería",
+    "descripcion": "Pastelito relleno de mermelada",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Gansito Marinela Pack 3",
+    "codigo_barras": "7501000110056",
+    "marca": "Marinela",
+    "presentacion": "3 piezas",
+    "categoria": "Panadería",
+    "descripcion": "Paquete 3 gansiticos",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Pingüinos Marinela",
+    "codigo_barras": "7501000110063",
+    "marca": "Marinela",
+    "presentacion": "Unidad",
+    "categoria": "Panadería",
+    "descripcion": "Pastelito con chispas de chocolate",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Submarinos Marinela",
+    "codigo_barras": "7501000110070",
+    "marca": "Marinela",
+    "presentacion": "Unidad",
+    "categoria": "Panadería",
+    "descripcion": "Panqué de chocolate relleno",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Barritas Marinela Pack 6",
+    "codigo_barras": "7501000110087",
+    "marca": "Marinela",
+    "presentacion": "6 piezas",
+    "categoria": "Panadería",
+    "descripcion": "Barras de fresa",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Roles Canela Marinela",
+    "codigo_barras": "7501000110094",
+    "marca": "Marinela",
+    "presentacion": "Pack 2",
+    "categoria": "Panadería",
+    "descripcion": "Roles de canela",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Choco Roles Marinela",
+    "codigo_barras": "7501000110100",
+    "marca": "Marinela",
+    "presentacion": "Pack 2",
+    "categoria": "Panadería",
+    "descripcion": "Roles de chocolate",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Príncipe Chocolate",
+    "codigo_barras": "7501000110117",
+    "marca": "Marinela",
+    "presentacion": "Unidad",
+    "categoria": "Panadería",
+    "descripcion": "Galletas con chocolate",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Príncipe Vainilla",
+    "codigo_barras": "7501000110124",
+    "marca": "Marinela",
+    "presentacion": "Unidad",
+    "categoria": "Panadería",
+    "descripcion": "Galletas con crema de vainilla",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Suavicremas Fresa",
+    "codigo_barras": "7501000110131",
+    "marca": "Marinela",
+    "presentacion": "Unidad",
+    "categoria": "Panadería",
+    "descripcion": "Pastelito con crema de fresa",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Panditas Ricolino 40g",
+    "codigo_barras": "7501023200014",
+    "marca": "Ricolino",
+    "presentacion": "40g",
+    "categoria": "Dulces",
+    "descripcion": "Gomitas sabor frutas",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Panditas Ricolino 100g",
+    "codigo_barras": "7501023200021",
+    "marca": "Ricolino",
+    "presentacion": "100g",
+    "categoria": "Dulces",
+    "descripcion": "Gomitas sabor frutas",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Duvalin Avellana-Vainilla",
+    "codigo_barras": "7501023200038",
+    "marca": "Ricolino",
+    "presentacion": "18g",
+    "categoria": "Dulces",
+    "descripcion": "Crema de avellana y vainilla",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Duvalin Fresa-Vainilla",
+    "codigo_barras": "7501023200045",
+    "marca": "Ricolino",
+    "presentacion": "18g",
+    "categoria": "Dulces",
+    "descripcion": "Crema de fresa y vainilla",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Kranky Ricolino",
+    "codigo_barras": "7501023200052",
+    "marca": "Ricolino",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Barra de chocolate con nuez",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Bocadin Ricolino",
+    "codigo_barras": "7501023200069",
+    "marca": "Ricolino",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Oblea con chocolate",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Bubulubu Ricolino",
+    "codigo_barras": "7501023200076",
+    "marca": "Ricolino",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Barra con malvavisco y chocolate",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Picafresa Ricolino",
+    "codigo_barras": "7501023200083",
+    "marca": "Ricolino",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Dulce enchilado de fresa",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Tutsi Pop Ricolino",
+    "codigo_barras": "7501023200090",
+    "marca": "Ricolino",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Paleta de caramelo con chicle",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Pulparindo",
+    "codigo_barras": "7501023200106",
+    "marca": "De la Rosa",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Dulce de tamarindo enchilado",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Pulparindo Extra Picante",
+    "codigo_barras": "7501023200113",
+    "marca": "De la Rosa",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Dulce de tamarindo extra picante",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Pelon Pelo Rico",
+    "codigo_barras": "7501023200120",
+    "marca": "Lorena",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Dulce líquido de tamarindo",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Vero Mango",
+    "codigo_barras": "7501023200137",
+    "marca": "Vero",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Paleta de mango enchilado",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Vero Elote",
+    "codigo_barras": "7501023200144",
+    "marca": "Vero",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Paleta sabor elote",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Rockaleta",
+    "codigo_barras": "7501023200151",
+    "marca": "Vero",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Paleta de capas sabores variados",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Lucas Muecas",
+    "codigo_barras": "7501023200168",
+    "marca": "Lucas",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Dulce con polvo y paleta",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Lucas Salsagheti",
+    "codigo_barras": "7501023200175",
+    "marca": "Lucas",
+    "presentacion": "26g",
+    "categoria": "Dulces",
+    "descripcion": "Espagueti enchilado",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Lucas Gusano",
+    "codigo_barras": "7501023200182",
+    "marca": "Lucas",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Gusano de tamarindo enchilado",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Mazapán De la Rosa",
+    "codigo_barras": "7501023200199",
+    "marca": "De la Rosa",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Mazapán de cacahuate",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Glorias",
+    "codigo_barras": "7501023200205",
+    "marca": "Glorias",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Dulce de leche quemada con nuez",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Carlos V",
+    "codigo_barras": "7501000110148",
+    "marca": "Nestlé",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Barra de chocolate",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Carlos V Mini Pack 10",
+    "codigo_barras": "7501000110155",
+    "marca": "Nestlé",
+    "presentacion": "10 piezas",
+    "categoria": "Dulces",
+    "descripcion": "Mini chocolates",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Kinder Sorpresa",
+    "codigo_barras": "7501000110162",
+    "marca": "Ferrero",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Huevo de chocolate con sorpresa",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Kinder Delice",
+    "codigo_barras": "7501000110179",
+    "marca": "Ferrero",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Pastelito con chocolate",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Milky Way",
+    "codigo_barras": "7501000110186",
+    "marca": "Mars",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Barra de chocolate con caramelo",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Snickers",
+    "codigo_barras": "7501000110193",
+    "marca": "Mars",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Barra de chocolate con cacahuate",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Twix",
+    "codigo_barras": "7501000110209",
+    "marca": "Mars",
+    "presentacion": "Unidad",
+    "categoria": "Dulces",
+    "descripcion": "Galleta con caramelo y chocolate",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "M&M's Chocolate 45g",
+    "codigo_barras": "7501000110216",
+    "marca": "Mars",
+    "presentacion": "45g",
+    "categoria": "Dulces",
+    "descripcion": "Chocolates de colores",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "M&M's Cacahuate 45g",
+    "codigo_barras": "7501000110223",
+    "marca": "Mars",
+    "presentacion": "45g",
+    "categoria": "Dulces",
+    "descripcion": "Chocolates con cacahuate",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Oreo Original",
+    "codigo_barras": "7501000110230",
+    "marca": "Nabisco",
+    "presentacion": "Pack 3",
+    "categoria": "Galletas",
+    "descripcion": "Galletas de chocolate con crema",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Oreo Original 432g",
+    "codigo_barras": "7501000110247",
+    "marca": "Nabisco",
+    "presentacion": "432g",
+    "categoria": "Galletas",
+    "descripcion": "Galletas de chocolate con crema",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Oreo Golden",
+    "codigo_barras": "7501000110254",
+    "marca": "Nabisco",
+    "presentacion": "Pack 3",
+    "categoria": "Galletas",
+    "descripcion": "Galletas de vainilla con crema",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Chokis Chips Ahoy",
+    "codigo_barras": "7501000110261",
+    "marca": "Nabisco",
+    "presentacion": "Pack 3",
+    "categoria": "Galletas",
+    "descripcion": "Galletas con chispas de chocolate",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Ritz Crackers Original",
+    "codigo_barras": "7501000110278",
+    "marca": "Nabisco",
+    "presentacion": "200g",
+    "categoria": "Galletas",
+    "descripcion": "Galletas saladas",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Ritz Crackers Queso",
+    "codigo_barras": "7501000110285",
+    "marca": "Nabisco",
+    "presentacion": "200g",
+    "categoria": "Galletas",
+    "descripcion": "Galletas saladas sabor queso",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Marías Gamesa",
+    "codigo_barras": "7501000110292",
+    "marca": "Gamesa",
+    "presentacion": "Paquete",
+    "categoria": "Galletas",
+    "descripcion": "Galletas marías",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Arcoíris Gamesa",
+    "codigo_barras": "7501000110308",
+    "marca": "Gamesa",
+    "presentacion": "Paquete",
+    "categoria": "Galletas",
+    "descripcion": "Galletas con malvavisco y chocolate",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Emperador Chocolate",
+    "codigo_barras": "7501000110315",
+    "marca": "Gamesa",
+    "presentacion": "Paquete",
+    "categoria": "Galletas",
+    "descripcion": "Galletas con crema de chocolate",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Emperador Limón",
+    "codigo_barras": "7501000110322",
+    "marca": "Gamesa",
+    "presentacion": "Paquete",
+    "categoria": "Galletas",
+    "descripcion": "Galletas con crema de limón",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Canelitas Gamesa",
+    "codigo_barras": "7501000110339",
+    "marca": "Gamesa",
+    "presentacion": "Paquete",
+    "categoria": "Galletas",
+    "descripcion": "Galletas de canela",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Mamut Chocolate",
+    "codigo_barras": "7501000110346",
+    "marca": "Gamesa",
+    "presentacion": "Paquete",
+    "categoria": "Galletas",
+    "descripcion": "Galletas de chocolate",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Choco Krispis 320g",
+    "codigo_barras": "7501000110353",
+    "marca": "Kellogg's",
+    "presentacion": "320g",
+    "categoria": "Despensa",
+    "descripcion": "Cereal de arroz con chocolate",
+    "unidad_medida": "caja"
+  },
+  {
+    "nombre": "Zucaritas 340g",
+    "codigo_barras": "7501000110360",
+    "marca": "Kellogg's",
+    "presentacion": "340g",
+    "categoria": "Despensa",
+    "descripcion": "Cereal de maíz azucarado",
+    "unidad_medida": "caja"
+  },
+  {
+    "nombre": "Corn Flakes 350g",
+    "codigo_barras": "7501000110377",
+    "marca": "Kellogg's",
+    "presentacion": "350g",
+    "categoria": "Despensa",
+    "descripcion": "Hojuelas de maíz",
+    "unidad_medida": "caja"
+  },
+  {
+    "nombre": "Froot Loops 290g",
+    "codigo_barras": "7501000110384",
+    "marca": "Kellogg's",
+    "presentacion": "290g",
+    "categoria": "Despensa",
+    "descripcion": "Cereal de colores sabor frutas",
+    "unidad_medida": "caja"
+  },
+  {
+    "nombre": "Bimbo Blanco Grande",
+    "codigo_barras": "7501000110391",
+    "marca": "Bimbo",
+    "presentacion": "680g",
+    "categoria": "Panadería",
+    "descripcion": "Pan de caja blanco grande",
+    "unidad_medida": "bolsa"
+  },
+  {
+    "nombre": "Bimbo Blanco Chico",
+    "codigo_barras": "7501000110407",
+    "marca": "Bimbo",
+    "presentacion": "420g",
+    "categoria": "Panadería",
+    "descripcion": "Pan de caja blanco chico",
+    "unidad_medida": "bolsa"
+  },
+  {
+    "nombre": "Bimbo Integral Grande",
+    "codigo_barras": "7501000110414",
+    "marca": "Bimbo",
+    "presentacion": "680g",
+    "categoria": "Panadería",
+    "descripcion": "Pan de caja integral grande",
+    "unidad_medida": "bolsa"
+  },
+  {
+    "nombre": "Bimbo Integral Chico",
+    "codigo_barras": "7501000110421",
+    "marca": "Bimbo",
+    "presentacion": "420g",
+    "categoria": "Panadería",
+    "descripcion": "Pan de caja integral chico",
+    "unidad_medida": "bolsa"
+  },
+  {
+    "nombre": "Bimbo Doble Fibra",
+    "codigo_barras": "7501000110438",
+    "marca": "Bimbo",
+    "presentacion": "680g",
+    "categoria": "Panadería",
+    "descripcion": "Pan de caja con fibra",
+    "unidad_medida": "bolsa"
+  },
+  {
+    "nombre": "Conchas Bimbo Pack 4",
+    "codigo_barras": "7501000110445",
+    "marca": "Bimbo",
+    "presentacion": "4 piezas",
+    "categoria": "Panadería",
+    "descripcion": "Conchas de chocolate y vainilla",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Donas Azucaradas Bimbo",
+    "codigo_barras": "7501000110452",
+    "marca": "Bimbo",
+    "presentacion": "4 piezas",
+    "categoria": "Panadería",
+    "descripcion": "Donas con azúcar",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Donas Chocolate Bimbo",
+    "codigo_barras": "7501000110469",
+    "marca": "Bimbo",
+    "presentacion": "4 piezas",
+    "categoria": "Panadería",
+    "descripcion": "Donas con chocolate",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Pan Tostado Bimbo",
+    "codigo_barras": "7501000110476",
+    "marca": "Bimbo",
+    "presentacion": "200g",
+    "categoria": "Panadería",
+    "descripcion": "Pan tostado tipo biscote",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Mantecadas Bimbo Pack 4",
+    "codigo_barras": "7501000110483",
+    "marca": "Bimbo",
+    "presentacion": "4 piezas",
+    "categoria": "Panadería",
+    "descripcion": "Panqués tipo mantecada",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Panqué Marmoleado Bimbo",
+    "codigo_barras": "7501000110490",
+    "marca": "Bimbo",
+    "presentacion": "Unidad",
+    "categoria": "Panadería",
+    "descripcion": "Panqué de vainilla y chocolate",
+    "unidad_medida": "pieza"
+  },
+  {
+    "nombre": "Tortillas Harina 500g",
+    "codigo_barras": "7501000110506",
+    "marca": "Mission",
+    "presentacion": "500g",
+    "categoria": "Tortillería",
+    "descripcion": "Tortillas de harina",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Tostadas 24cm Pack 22",
+    "codigo_barras": "7501000110513",
+    "marca": "Charras",
+    "presentacion": "22 piezas",
+    "categoria": "Tortillería",
+    "descripcion": "Tostadas de maíz grandes",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Tostadas Horneadas 16cm",
+    "codigo_barras": "7501000110520",
+    "marca": "Charras",
+    "presentacion": "24 piezas",
+    "categoria": "Tortillería",
+    "descripcion": "Tostadas horneadas pequeñas",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Salsa Valentina 370ml",
+    "codigo_barras": "7501000110537",
+    "marca": "Valentina",
+    "presentacion": "370ml",
+    "categoria": "Salsas",
+    "descripcion": "Salsa picante",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Salsa Valentina Negra 370ml",
+    "codigo_barras": "7501000110544",
+    "marca": "Valentina",
+    "presentacion": "370ml",
+    "categoria": "Salsas",
+    "descripcion": "Salsa extra picante",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Salsa Búfalo 150ml",
+    "codigo_barras": "7501000110551",
+    "marca": "Búfalo",
+    "presentacion": "150ml",
+    "categoria": "Salsas",
+    "descripcion": "Salsa picante",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Salsa Tabasco 60ml",
+    "codigo_barras": "7501000110568",
+    "marca": "Tabasco",
+    "presentacion": "60ml",
+    "categoria": "Salsas",
+    "descripcion": "Salsa picante",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Salsa Botanera Herdez 300g",
+    "codigo_barras": "7501000110575",
+    "marca": "Herdez",
+    "presentacion": "300g",
+    "categoria": "Salsas",
+    "descripcion": "Salsa verde para botanear",
+    "unidad_medida": "frasco"
+  },
+  {
+    "nombre": "Salsa Verde Herdez 210g",
+    "codigo_barras": "7501000110582",
+    "marca": "Herdez",
+    "presentacion": "210g",
+    "categoria": "Salsas",
+    "descripcion": "Salsa verde casera",
+    "unidad_medida": "frasco"
+  },
+  {
+    "nombre": "Salsa Roja Herdez 210g",
+    "codigo_barras": "7501000110599",
+    "marca": "Herdez",
+    "presentacion": "210g",
+    "categoria": "Salsas",
+    "descripcion": "Salsa roja casera",
+    "unidad_medida": "frasco"
+  },
+  {
+    "nombre": "Frijoles Negros Refritos Isadora 430g",
+    "codigo_barras": "7501000110605",
+    "marca": "Isadora",
+    "presentacion": "430g",
+    "categoria": "Enlatados",
+    "descripcion": "Frijoles refritos",
+    "unidad_medida": "lata"
+  },
+  {
+    "nombre": "Frijoles Bayos Refritos Isadora 430g",
+    "codigo_barras": "7501000110612",
+    "marca": "Isadora",
+    "presentacion": "430g",
+    "categoria": "Enlatados",
+    "descripcion": "Frijoles bayos refritos",
+    "unidad_medida": "lata"
+  },
+  {
+    "nombre": "Atún Herdez 140g",
+    "codigo_barras": "7501000110629",
+    "marca": "Herdez",
+    "presentacion": "140g",
+    "categoria": "Enlatados",
+    "descripcion": "Atún en agua",
+    "unidad_medida": "lata"
+  },
+  {
+    "nombre": "Atún Tuny 140g",
+    "codigo_barras": "7501000110636",
+    "marca": "Tuny",
+    "presentacion": "140g",
+    "categoria": "Enlatados",
+    "descripcion": "Atún en aceite",
+    "unidad_medida": "lata"
+  },
+  {
+    "nombre": "Sardina Calmex Tomate 425g",
+    "codigo_barras": "7501000110643",
+    "marca": "Calmex",
+    "presentacion": "425g",
+    "categoria": "Enlatados",
+    "descripcion": "Sardinas en tomate",
+    "unidad_medida": "lata"
+  },
+  {
+    "nombre": "Sardina El Dorado 425g",
+    "codigo_barras": "7501000110650",
+    "marca": "El Dorado",
+    "presentacion": "425g",
+    "categoria": "Enlatados",
+    "descripcion": "Sardinas en tomate",
+    "unidad_medida": "lata"
+  },
+  {
+    "nombre": "Chiles Jalapeños Herdez 380g",
+    "codigo_barras": "7501000110667",
+    "marca": "Herdez",
+    "presentacion": "380g",
+    "categoria": "Enlatados",
+    "descripcion": "Chiles jalapeños en vinagre",
+    "unidad_medida": "frasco"
+  },
+  {
+    "nombre": "Chiles Chipotles Herdez 215g",
+    "codigo_barras": "7501000110674",
+    "marca": "Herdez",
+    "presentacion": "215g",
+    "categoria": "Enlatados",
+    "descripcion": "Chiles chipotles adobados",
+    "unidad_medida": "lata"
+  },
+  {
+    "nombre": "Sopa Maruchan Res 64g",
+    "codigo_barras": "7501000110681",
+    "marca": "Maruchan",
+    "presentacion": "64g",
+    "categoria": "Sopas",
+    "descripcion": "Sopa instantánea sabor res",
+    "unidad_medida": "vaso"
+  },
+  {
+    "nombre": "Sopa Maruchan Pollo 64g",
+    "codigo_barras": "7501000110698",
+    "marca": "Maruchan",
+    "presentacion": "64g",
+    "categoria": "Sopas",
+    "descripcion": "Sopa instantánea sabor pollo",
+    "unidad_medida": "vaso"
+  },
+  {
+    "nombre": "Sopa Maruchan Camarón 64g",
+    "codigo_barras": "7501000110704",
+    "marca": "Maruchan",
+    "presentacion": "64g",
+    "categoria": "Sopas",
+    "descripcion": "Sopa instantánea sabor camarón",
+    "unidad_medida": "vaso"
+  },
+  {
+    "nombre": "Sopa Nissin Res 64g",
+    "codigo_barras": "7501000110711",
+    "marca": "Nissin",
+    "presentacion": "64g",
+    "categoria": "Sopas",
+    "descripcion": "Sopa instantánea sabor res",
+    "unidad_medida": "vaso"
+  },
+  {
+    "nombre": "Leche Lala Entera 1L",
+    "codigo_barras": "7501000110728",
+    "marca": "Lala",
+    "presentacion": "1L",
+    "categoria": "Lácteos",
+    "descripcion": "Leche entera pasteurizada",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Leche Lala Light 1L",
+    "codigo_barras": "7501000110735",
+    "marca": "Lala",
+    "presentacion": "1L",
+    "categoria": "Lácteos",
+    "descripcion": "Leche semidescremada",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Leche Alpura Entera 1L",
+    "codigo_barras": "7501000110742",
+    "marca": "Alpura",
+    "presentacion": "1L",
+    "categoria": "Lácteos",
+    "descripcion": "Leche entera pasteurizada",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Leche Alpura Deslactosada 1L",
+    "codigo_barras": "7501000110759",
+    "marca": "Alpura",
+    "presentacion": "1L",
+    "categoria": "Lácteos",
+    "descripcion": "Leche sin lactosa",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Yoghurt Lala Natural 1L",
+    "codigo_barras": "7501000110766",
+    "marca": "Lala",
+    "presentacion": "1L",
+    "categoria": "Lácteos",
+    "descripcion": "Yoghurt natural",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Yoghurt Lala Fresa 1L",
+    "codigo_barras": "7501000110773",
+    "marca": "Lala",
+    "presentacion": "1L",
+    "categoria": "Lácteos",
+    "descripcion": "Yoghurt sabor fresa",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Yakult 80ml Pack 7",
+    "codigo_barras": "7501000110780",
+    "marca": "Yakult",
+    "presentacion": "7 botellas",
+    "categoria": "Lácteos",
+    "descripcion": "Bebida láctea fermentada",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Danonino Fresa Pack 4",
+    "codigo_barras": "7501000110797",
+    "marca": "Danone",
+    "presentacion": "4 piezas",
+    "categoria": "Lácteos",
+    "descripcion": "Petit suisse sabor fresa",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Aceite Capullo 1L",
+    "codigo_barras": "7501000110803",
+    "marca": "Capullo",
+    "presentacion": "1L",
+    "categoria": "Despensa",
+    "descripcion": "Aceite vegetal",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Aceite 123 900ml",
+    "codigo_barras": "7501000110810",
+    "marca": "123",
+    "presentacion": "900ml",
+    "categoria": "Despensa",
+    "descripcion": "Aceite vegetal",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Arroz Verde Valle 1kg",
+    "codigo_barras": "7501000110827",
+    "marca": "Verde Valle",
+    "presentacion": "1kg",
+    "categoria": "Despensa",
+    "descripcion": "Arroz blanco",
+    "unidad_medida": "bolsa"
+  },
+  {
+    "nombre": "Arroz Morelos 1kg",
+    "codigo_barras": "7501000110834",
+    "marca": "Morelos",
+    "presentacion": "1kg",
+    "categoria": "Despensa",
+    "descripcion": "Arroz blanco",
+    "unidad_medida": "bolsa"
+  },
+  {
+    "nombre": "Azúcar Refinada 1kg",
+    "codigo_barras": "7501000110841",
+    "marca": "San Cristóbal",
+    "presentacion": "1kg",
+    "categoria": "Despensa",
+    "descripcion": "Azúcar refinada estándar",
+    "unidad_medida": "bolsa"
+  },
+  {
+    "nombre": "Azúcar Morena 1kg",
+    "codigo_barras": "7501000110858",
+    "marca": "San Cristóbal",
+    "presentacion": "1kg",
+    "categoria": "Despensa",
+    "descripcion": "Azúcar morena mascabado",
+    "unidad_medida": "bolsa"
+  },
+  {
+    "nombre": "Harina de Trigo 1kg",
+    "codigo_barras": "7501000110865",
+    "marca": "Tres Estrellas",
+    "presentacion": "1kg",
+    "categoria": "Despensa",
+    "descripcion": "Harina de trigo para todo uso",
+    "unidad_medida": "bolsa"
+  },
+  {
+    "nombre": "Sal La Fina 1kg",
+    "codigo_barras": "7501000110872",
+    "marca": "La Fina",
+    "presentacion": "1kg",
+    "categoria": "Despensa",
+    "descripcion": "Sal de mesa refinada",
+    "unidad_medida": "bolsa"
+  },
+  {
+    "nombre": "Maseca 1kg",
+    "codigo_barras": "7501000110889",
+    "marca": "Maseca",
+    "presentacion": "1kg",
+    "categoria": "Despensa",
+    "descripcion": "Harina de maíz nixtamalizado",
+    "unidad_medida": "bolsa"
+  },
+  {
+    "nombre": "Mayonesa McCormick 395g",
+    "codigo_barras": "7501000110896",
+    "marca": "McCormick",
+    "presentacion": "395g",
+    "categoria": "Despensa",
+    "descripcion": "Mayonesa",
+    "unidad_medida": "frasco"
+  },
+  {
+    "nombre": "Mayonesa Hellmann's 400g",
+    "codigo_barras": "7501000110902",
+    "marca": "Hellmann's",
+    "presentacion": "400g",
+    "categoria": "Despensa",
+    "descripcion": "Mayonesa real",
+    "unidad_medida": "frasco"
+  },
+  {
+    "nombre": "Catsup Heinz 397g",
+    "codigo_barras": "7501000110919",
+    "marca": "Heinz",
+    "presentacion": "397g",
+    "categoria": "Despensa",
+    "descripcion": "Salsa catsup",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Catsup Del Monte 397g",
+    "codigo_barras": "7501000110926",
+    "marca": "Del Monte",
+    "presentacion": "397g",
+    "categoria": "Despensa",
+    "descripcion": "Salsa catsup",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Mostaza Clemente Jacques 142g",
+    "codigo_barras": "7501000110933",
+    "marca": "Clemente Jacques",
+    "presentacion": "142g",
+    "categoria": "Despensa",
+    "descripcion": "Mostaza amarilla",
+    "unidad_medida": "frasco"
+  },
+  {
+    "nombre": "Pasta de Tomate La Costeña 170g",
+    "codigo_barras": "7501000110940",
+    "marca": "La Costeña",
+    "presentacion": "170g",
+    "categoria": "Enlatados",
+    "descripcion": "Puré de tomate concentrado",
+    "unidad_medida": "lata"
+  },
+  {
+    "nombre": "Chamoy Miguelito 1L",
+    "codigo_barras": "7501000110957",
+    "marca": "Miguelito",
+    "presentacion": "1L",
+    "categoria": "Salsas",
+    "descripcion": "Chamoy líquido",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Tang Naranja Sobre",
+    "codigo_barras": "7501000110964",
+    "marca": "Tang",
+    "presentacion": "20g",
+    "categoria": "Bebidas",
+    "descripcion": "Polvo para preparar agua de naranja",
+    "unidad_medida": "sobre"
+  },
+  {
+    "nombre": "Tang Uva Sobre",
+    "codigo_barras": "7501000110971",
+    "marca": "Tang",
+    "presentacion": "20g",
+    "categoria": "Bebidas",
+    "descripcion": "Polvo para preparar agua de uva",
+    "unidad_medida": "sobre"
+  },
+  {
+    "nombre": "Tang Limón Sobre",
+    "codigo_barras": "7501000110988",
+    "marca": "Tang",
+    "presentacion": "20g",
+    "categoria": "Bebidas",
+    "descripcion": "Polvo para preparar agua de limón",
+    "unidad_medida": "sobre"
+  },
+  {
+    "nombre": "Red Bull 250ml",
+    "codigo_barras": "7501000110995",
+    "marca": "Red Bull",
+    "presentacion": "250ml",
+    "categoria": "Bebidas",
+    "descripcion": "Bebida energética",
+    "unidad_medida": "lata"
+  },
+  {
+    "nombre": "Monster Energy 473ml",
+    "codigo_barras": "7501000111008",
+    "marca": "Monster",
+    "presentacion": "473ml",
+    "categoria": "Bebidas",
+    "descripcion": "Bebida energética",
+    "unidad_medida": "lata"
+  },
+  {
+    "nombre": "Vive100 Naranja 500ml",
+    "codigo_barras": "7501000111015",
+    "marca": "Vive100",
+    "presentacion": "500ml",
+    "categoria": "Bebidas",
+    "descripcion": "Bebida con jugo de naranja",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Powerade Mora Azul 500ml",
+    "codigo_barras": "7501000111022",
+    "marca": "Powerade",
+    "presentacion": "500ml",
+    "categoria": "Bebidas",
+    "descripcion": "Bebida isotónica",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Gatorade Naranja 500ml",
+    "codigo_barras": "7501000111039",
+    "marca": "Gatorade",
+    "presentacion": "500ml",
+    "categoria": "Bebidas",
+    "descripcion": "Bebida deportiva",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Electrolit Uva 625ml",
+    "codigo_barras": "7501000111046",
+    "marca": "Electrolit",
+    "presentacion": "625ml",
+    "categoria": "Bebidas",
+    "descripcion": "Suero rehidratante oral",
+    "unidad_medida": "botella"
+  },
+  {
+    "nombre": "Pringles Original 124g",
+    "codigo_barras": "7501000111053",
+    "marca": "Pringles",
+    "presentacion": "124g",
+    "categoria": "Botanas",
+    "descripcion": "Papas apiladas original",
+    "unidad_medida": "tubo"
+  },
+  {
+    "nombre": "Pringles Crema y Cebolla 124g",
+    "codigo_barras": "7501000111060",
+    "marca": "Pringles",
+    "presentacion": "124g",
+    "categoria": "Botanas",
+    "descripcion": "Papas apiladas crema y cebolla",
+    "unidad_medida": "tubo"
+  },
+  {
+    "nombre": "Palomitas Act II Mantequilla",
+    "codigo_barras": "7501000111077",
+    "marca": "Act II",
+    "presentacion": "3 bolsas",
+    "categoria": "Botanas",
+    "descripcion": "Palomitas para microondas",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Chicles Trident Menta 10.5g",
+    "codigo_barras": "7501000111084",
+    "marca": "Trident",
+    "presentacion": "10.5g",
+    "categoria": "Dulces",
+    "descripcion": "Chicles sin azúcar sabor menta",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Halls Negro 28 pastillas",
+    "codigo_barras": "7501000111091",
+    "marca": "Halls",
+    "presentacion": "28 piezas",
+    "categoria": "Dulces",
+    "descripcion": "Pastillas de menta mentol",
+    "unidad_medida": "paquete"
+  },
+  {
+    "nombre": "Clorets Hierbabuena",
+    "codigo_barras": "7501000111107",
+    "marca": "Clorets",
+    "presentacion": "Paquete",
+    "categoria": "Dulces",
+    "descripcion": "Chicles con actifresh",
+    "unidad_medida": "paquete"
+  }
+]

@@ -865,3 +865,133 @@ export async function obtenerResumenFinanciero(fechaInicio: string, fechaFin: st
     balanceNeto: ganancias.gananciaTotal - comprasResult[0].totalCompras
   };
 }
+
+// ============================================
+// CATÁLOGO DE PRODUCTOS
+// ============================================
+
+/**
+ * Carga el catálogo inicial de productos mexicanos desde el JSON
+ * Los productos se cargan como inactivos (activo=0) para que el dueño configure precios
+ */
+export async function cargarCatalogoInicial() {
+  try {
+    // Importar el catálogo desde el archivo JSON
+    const catalogoCompleto = require('../../assets/productos/catalogo-mexico-completo.json');
+
+    let cargados = 0;
+    let omitidos = 0;
+    const errores: string[] = [];
+
+    for (const producto of catalogoCompleto) {
+      try {
+        // Verificar si ya existe el código de barras
+        const existe = await db.select()
+          .from(schema.productos)
+          .where(eq(schema.productos.codigoBarras, producto.codigo_barras))
+          .limit(1);
+
+        if (existe.length > 0) {
+          omitidos++;
+          continue;
+        }
+
+        // Insertar producto con precios en 0 y stock en 0 (inactivo por defecto)
+        await db.insert(schema.productos).values({
+          nombre: producto.nombre,
+          codigoBarras: producto.codigo_barras,
+          marca: producto.marca || null,
+          presentacion: producto.presentacion || null,
+          categoria: producto.categoria || 'General',
+          descripcion: producto.descripcion || null,
+          unidadMedida: producto.unidad_medida || 'pieza',
+          precioCompra: 0,
+          precioVenta: 0,
+          stock: 0,
+          stockMinimo: 5,
+          activo: false // Inactivo hasta que el dueño configure precios
+        });
+
+        cargados++;
+      } catch (error) {
+        errores.push(`Error al cargar ${producto.nombre}: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      }
+    }
+
+    return {
+      exito: true,
+      mensaje: `Catálogo cargado exitosamente`,
+      cargados,
+      omitidos,
+      total: catalogoCompleto.length,
+      errores: errores.length > 0 ? errores : undefined
+    };
+  } catch (error) {
+    throw new Error(`Error al cargar catálogo: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+  }
+}
+
+/**
+ * Obtiene todos los productos del catálogo (incluye inactivos)
+ * Útil para mostrar el catálogo completo al dueño
+ */
+export async function obtenerCatalogoCompleto(filtro?: {
+  categoria?: string;
+  marca?: string;
+  activo?: boolean;
+  busqueda?: string;
+}) {
+  const condiciones = [];
+
+  if (filtro?.categoria) {
+    condiciones.push(eq(schema.productos.categoria, filtro.categoria));
+  }
+
+  if (filtro?.marca) {
+    condiciones.push(eq(schema.productos.marca, filtro.marca));
+  }
+
+  if (filtro?.activo !== undefined) {
+    condiciones.push(eq(schema.productos.activo, filtro.activo));
+  }
+
+  if (filtro?.busqueda) {
+    condiciones.push(like(schema.productos.nombre, `%${filtro.busqueda}%`));
+  }
+
+  if (condiciones.length > 0) {
+    return await db.select().from(schema.productos).where(and(...condiciones));
+  }
+
+  return await db.select().from(schema.productos);
+}
+
+/**
+ * Activa un producto del catálogo después de configurar precios
+ */
+export async function activarProductoCatalogo(
+  id: number,
+  precioCompra: number,
+  precioVenta: number,
+  stock: number,
+  stockMinimo?: number
+) {
+  // Validar precios
+  const validacion = validarPreciosProducto(precioCompra, precioVenta);
+  if (!validacion.valido) {
+    throw new Error('Precios inválidos: ' + validacion.advertencias.join(', '));
+  }
+
+  const result = await db.update(schema.productos)
+    .set({
+      precioCompra,
+      precioVenta,
+      stock,
+      stockMinimo: stockMinimo || 5,
+      activo: true
+    })
+    .where(eq(schema.productos.id, id))
+    .returning();
+
+  return result[0];
+}

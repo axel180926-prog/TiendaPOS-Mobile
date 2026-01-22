@@ -447,6 +447,62 @@ export async function initDatabase() {
       // No lanzar error, los índices son opcionales
     }
 
+    // ============================================
+    // CARGA AUTOMÁTICA DEL CATÁLOGO DE PRODUCTOS
+    // ============================================
+    try {
+      console.log('📦 Verificando catálogo de productos...');
+
+      // Verificar si ya hay productos cargados
+      const productosExistentes = await expo.getAllAsync('SELECT COUNT(*) as count FROM productos');
+      const count = productosExistentes[0]?.count || 0;
+
+      if (count === 0) {
+        console.log('📥 Cargando catálogo inicial de productos mexicanos...');
+
+        // Importar el catálogo
+        const catalogoCompleto = require('../../assets/productos/catalogo-mexico-completo.json');
+
+        let cargados = 0;
+        for (const producto of catalogoCompleto) {
+          try {
+            await expo.runAsync(
+              `INSERT INTO productos (
+                nombre, codigo_barras, marca, presentacion, categoria,
+                descripcion, unidad_medida, precio_compra, precio_venta,
+                stock, stock_minimo, activo
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+              [
+                producto.nombre,
+                producto.codigo_barras,
+                producto.marca || null,
+                producto.presentacion || null,
+                producto.categoria || 'General',
+                producto.descripcion || null,
+                producto.unidad_medida || 'pieza',
+                0,  // precio_compra
+                0,  // precio_venta
+                0,  // stock
+                5,  // stock_minimo
+                0   // activo (inactivo hasta configurar)
+              ]
+            );
+            cargados++;
+          } catch (insertError) {
+            // Si falla por duplicado, continuar con el siguiente
+            console.log(`⚠️ Producto duplicado omitido: ${producto.nombre}`);
+          }
+        }
+
+        console.log(`✅ Catálogo cargado: ${cargados}/${catalogoCompleto.length} productos`);
+      } else {
+        console.log(`✅ Catálogo ya existe (${count} productos)`);
+      }
+    } catch (catalogError) {
+      console.log('⚠️ Advertencia al cargar catálogo:', catalogError);
+      // No lanzar error, el catálogo es opcional
+    }
+
     console.log('✅ Base de datos inicializada correctamente');
     return true;
   } catch (error) {
