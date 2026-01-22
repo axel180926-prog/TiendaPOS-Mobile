@@ -37,7 +37,7 @@ interface ScannerConfig {
 
 const defaultConfig = {
   vibracionHabilitada: true,
-  sonidoHabilitado: false,
+  sonidoHabilitado: true,
   flashVisualHabilitado: true,
   mostrarContador: true,
   mostrarHistorial: true,

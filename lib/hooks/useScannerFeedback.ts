@@ -31,13 +31,22 @@ export const useScannerFeedback = () => {
       if (soundRef.current) {
         await soundRef.current.replayAsync();
       } else {
-        // Crear sonido beep sintético usando Audio
-        // Nota: En producción, podrías usar un archivo .mp3 de beep
-        const { sound } = await Audio.Sound.createAsync(
-          { uri: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=scanner-beep-95077.mp3' },
-          { shouldPlay: true, volume: 0.5 }
-        );
-        soundRef.current = sound;
+        // Crear sonido beep de escáner
+        // Primero intenta usar el archivo local, si no existe usa URL de respaldo
+        try {
+          const { sound } = await Audio.Sound.createAsync(
+            require('@/assets/sounds/scanner-beep.mp3'),
+            { shouldPlay: true, volume: 0.7 }
+          );
+          soundRef.current = sound;
+        } catch (localError) {
+          // Si el archivo local no existe, usar URL de respaldo
+          const { sound } = await Audio.Sound.createAsync(
+            { uri: 'https://cdn.pixabay.com/download/audio/2021/08/04/audio_0625c1539c.mp3?filename=scanner-beep-95077.mp3' },
+            { shouldPlay: true, volume: 0.7 }
+          );
+          soundRef.current = sound;
+        }
       }
     } catch (error) {
       console.warn('Error al reproducir sonido:', error);
