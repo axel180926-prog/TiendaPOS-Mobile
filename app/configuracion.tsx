@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView, Alert, ActivityIndicator } from 'react-native';
-import { Card, Text, TextInput, Button, Switch, Divider, List, IconButton, SegmentedButtons } from 'react-native-paper';
+import { Card, Text, TextInput, Button, Switch, Divider, List, IconButton, SegmentedButtons, Chip } from 'react-native-paper';
 import { useConfigStore } from '@/lib/store/useConfigStore';
 import { useScannerConfigStore } from '@/lib/store/useScannerConfigStore';
+import { useSyncService } from '@/lib/hooks/useSyncService';
 import {
   crearBackupManual,
   listarBackups,
@@ -15,6 +16,15 @@ import {
 export default function ConfiguracionScreen() {
   const { configuracion, actualizarConfiguracion: actualizarConfig, cargarConfiguracion } = useConfigStore();
   const scannerConfig = useScannerConfigStore();
+  const {
+    syncing,
+    lastSync,
+    ventasPendientes,
+    conectado,
+    autoSyncEnabled,
+    syncManual,
+    toggleAutoSync,
+  } = useSyncService();
   const [loading, setLoading] = useState(false);
 
   // Campos editables
@@ -169,6 +179,23 @@ export default function ConfiguracionScreen() {
     const min = String(fecha.getMinutes()).padStart(2, '0');
 
     return `${dia}/${mes}/${año} ${hora}:${min}`;
+  };
+
+  const handleSyncManual = async () => {
+    try {
+      const result = await syncManual();
+
+      if (result.ventas.success && result.productos.success) {
+        Alert.alert('Éxito', '✅ Sincronización completada correctamente');
+      } else {
+        let mensaje = 'Sincronización parcial:\n';
+        if (!result.ventas.success) mensaje += `❌ Ventas: ${result.ventas.error}\n`;
+        if (!result.productos.success) mensaje += `❌ Productos: ${result.productos.error}`;
+        Alert.alert('Advertencia', mensaje);
+      }
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo completar la sincronización');
+    }
   };
 
   return (
@@ -533,6 +560,81 @@ export default function ConfiguracionScreen() {
           </Card.Content>
         </Card>
 
+        {/* Sección de Sincronización con Backend */}
+        <Card style={styles.card}>
+          <Card.Title
+            title="🔄 Sincronización con Backend"
+            subtitle="Sincroniza productos y ventas con el servidor"
+          />
+          <Card.Content>
+            {/* Estado de conexión */}
+            <View style={styles.syncStatusContainer}>
+              <View style={styles.syncStatusRow}>
+                <Text variant="bodyMedium">Estado:</Text>
+                <Chip
+                  mode="flat"
+                  style={{ backgroundColor: conectado ? '#e8f5e9' : '#ffebee' }}
+                  textStyle={{ color: conectado ? '#2e7d32' : '#c62828' }}
+                >
+                  {conectado ? '🟢 Conectado' : '🔴 Sin conexión'}
+                </Chip>
+              </View>
+
+              {lastSync && (
+                <View style={styles.syncStatusRow}>
+                  <Text variant="bodyMedium">Última sincronización:</Text>
+                  <Text variant="bodyMedium" style={styles.syncDate}>
+                    {formatearFecha(lastSync)}
+                  </Text>
+                </View>
+              )}
+
+              {ventasPendientes > 0 && (
+                <View style={styles.syncStatusRow}>
+                  <Text variant="bodyMedium">Ventas pendientes:</Text>
+                  <Chip mode="flat" style={{ backgroundColor: '#fff3e0' }}>
+                    {ventasPendientes}
+                  </Chip>
+                </View>
+              )}
+            </View>
+
+            <Divider style={styles.divider} />
+
+            {/* Switch para auto-sync */}
+            <View style={styles.switchRow}>
+              <View style={styles.switchInfo}>
+                <Text variant="titleSmall">⏰ Sincronización Automática</Text>
+                <Text variant="bodySmall" style={styles.switchDescription}>
+                  Sincronizar automáticamente en segundo plano
+                </Text>
+              </View>
+              <Switch value={autoSyncEnabled} onValueChange={toggleAutoSync} />
+            </View>
+
+            <Divider style={styles.divider} />
+
+            {/* Botón de sincronización manual */}
+            <Button
+              mode="contained"
+              onPress={handleSyncManual}
+              loading={syncing}
+              disabled={!conectado || syncing}
+              icon="sync"
+              style={styles.syncButton}
+              buttonColor="#2196f3"
+            >
+              {syncing ? 'Sincronizando...' : 'Sincronizar Ahora'}
+            </Button>
+
+            {!conectado && (
+              <Text variant="bodySmall" style={styles.syncWarning}>
+                ⚠️ No hay conexión con el servidor. Verifica tu internet.
+              </Text>
+            )}
+          </Card.Content>
+        </Card>
+
         <Card style={styles.card}>
           <Card.Content>
             <Button
@@ -702,5 +804,26 @@ const styles = StyleSheet.create({
   },
   segmentedButtons: {
     marginBottom: 12,
+  },
+  syncStatusContainer: {
+    marginBottom: 15,
+  },
+  syncStatusRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  syncDate: {
+    fontWeight: '600',
+    color: '#2c5f7c',
+  },
+  syncButton: {
+    marginTop: 10,
+  },
+  syncWarning: {
+    color: '#f57c00',
+    textAlign: 'center',
+    marginTop: 10,
   },
 });

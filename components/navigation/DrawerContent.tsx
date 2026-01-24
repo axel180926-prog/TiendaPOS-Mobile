@@ -52,14 +52,6 @@ export function DrawerContent(props: DrawerContentComponentProps) {
       gradient: ['#42A5F5', '#2196F3']
     },
     {
-      title: 'Catálogo',
-      icon: 'book-open-variant',
-      route: '/catalogo',
-      group: 'inventario',
-      color: '#2196F3',
-      gradient: ['#42A5F5', '#2196F3']
-    },
-    {
       title: 'Proveedores',
       icon: 'truck-delivery',
       route: '/proveedores',
