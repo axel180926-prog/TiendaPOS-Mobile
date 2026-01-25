@@ -3,10 +3,11 @@
  * Permite exportar e importar la base de datos completa
  */
 
-import * as FileSystem from 'expo-file-system/legacy';
+import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { Alert } from 'react-native';
 import { db } from '../database';
+import * as schema from '../database/schema';
 import * as queries from '../database/queries';
 
 // Directorio para backups automáticos
@@ -65,13 +66,13 @@ async function obtenerTodosLosDatos() {
     ] = await Promise.all([
       queries.obtenerProductos(),
       queries.obtenerVentas(10000), // Todas las ventas
-      db.select().from(require('../database/schema').ventaItems).all(),
+      db.select().from(schema.ventaItems),
       queries.obtenerHistorialCajas(10000), // Todas las cajas
-      db.select().from(require('../database/schema').movimientosCaja).all(),
+      db.select().from(schema.movimientosCaja),
       queries.obtenerProveedores(),
-      db.select().from(require('../database/schema').productosProveedores).all(),
+      db.select().from(schema.productosProveedores),
       queries.obtenerCompras(10000), // Todas las compras
-      db.select().from(require('../database/schema').compraItems).all(),
+      db.select().from(schema.compraItems),
       queries.obtenerListaCompras(),
       queries.obtenerConfiguracion()
     ]);

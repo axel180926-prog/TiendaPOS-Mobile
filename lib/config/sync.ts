@@ -3,10 +3,8 @@
 // ============================================
 
 export const SYNC_CONFIG = {
-  // URL del backend (cambiar en producción)
-  API_URL: __DEV__
-    ? 'http://localhost:3000/api'
-    : 'http://srv949273.hstgr.cloud/api',
+  // URL del backend - siempre usar el servidor de producción
+  API_URL: 'http://srv949273.hstgr.cloud/api',
 
   // Intervalo de sincronización automática (en milisegundos)
   AUTO_SYNC_INTERVAL: 30000, // 30 segundos
