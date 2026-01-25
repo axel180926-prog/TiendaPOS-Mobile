@@ -185,12 +185,29 @@ export default function ConfiguracionScreen() {
     try {
       const result = await syncManual();
 
-      if (result.ventas.success && result.productos.success) {
-        Alert.alert('Éxito', '✅ Sincronización completada correctamente');
+      // Verificar si todas las operaciones fueron exitosas
+      const todoExitoso = result.ventas.success && result.productos.success && result.descarga.success;
+
+      if (todoExitoso) {
+        let mensaje = '✅ Sincronización bidireccional completada\n\n';
+        if (result.descarga.sincronizadas > 0) {
+          mensaje += `📥 Productos descargados: ${result.descarga.mensaje}\n`;
+        }
+        if (result.ventas.sincronizadas > 0) {
+          mensaje += `📤 Ventas sincronizadas: ${result.ventas.sincronizadas}\n`;
+        }
+        if (result.productos.sincronizadas > 0) {
+          mensaje += `📤 Productos subidos: ${result.productos.sincronizadas}`;
+        }
+        if (result.descarga.sincronizadas === 0 && result.ventas.sincronizadas === 0 && result.productos.sincronizadas === 0) {
+          mensaje = '✅ Todo está sincronizado\n\nNo hay cambios pendientes.';
+        }
+        Alert.alert('Éxito', mensaje);
       } else {
-        let mensaje = 'Sincronización parcial:\n';
-        if (!result.ventas.success) mensaje += `❌ Ventas: ${result.ventas.error}\n`;
-        if (!result.productos.success) mensaje += `❌ Productos: ${result.productos.error}`;
+        let mensaje = 'Sincronización parcial:\n\n';
+        if (!result.descarga.success) mensaje += `❌ Descarga: ${result.descarga.error || result.descarga.mensaje}\n`;
+        if (!result.ventas.success) mensaje += `❌ Ventas: ${result.ventas.error || result.ventas.mensaje}\n`;
+        if (!result.productos.success) mensaje += `❌ Productos: ${result.productos.error || result.productos.mensaje}`;
         Alert.alert('Advertencia', mensaje);
       }
     } catch (error) {

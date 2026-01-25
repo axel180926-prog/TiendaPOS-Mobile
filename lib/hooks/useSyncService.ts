@@ -24,18 +24,21 @@ export function useSyncService() {
     setConectado(estado.conectado);
   }, []);
 
-  // Sincronización manual completa
+  // Sincronización manual completa (bidireccional)
   const syncManual = useCallback(async () => {
-    if (syncing) return;
+    if (syncing) return {
+      ventas: { success: false, sincronizadas: 0, errores: 0, mensaje: 'Ya hay una sincronización en curso' },
+      productos: { success: false, sincronizadas: 0, errores: 0, mensaje: 'Ya hay una sincronización en curso' },
+      descarga: { success: false, sincronizadas: 0, errores: 0, mensaje: 'Ya hay una sincronización en curso' },
+    };
 
     setSyncing(true);
-    console.log('🔄 Sincronización manual iniciada');
+    console.log('🔄 Sincronización manual bidireccional iniciada');
 
     try {
       const result = await sincronizarTodo();
 
-      if (result.ventas.success || result.productos.success) {
-        await guardarUltimaSyncTimestamp();
+      if (result.ventas.success || result.productos.success || result.descarga.success) {
         console.log('✅ Sincronización manual completada');
       }
 
